@@ -1,26 +1,26 @@
 {
-    "id": "285CE6B8",
-    "path": "~/Documents/shiny-triz/test.qmd",
-    "project_path": "test.qmd",
+    "id": "82771EDD",
+    "path": "~/Documents/shiny-triz/9w.qmd",
+    "project_path": "9w.qmd",
     "type": "quarto_markdown",
-    "hash": "0",
+    "hash": "3660823527",
     "contents": "",
     "dirty": false,
-    "created": 1740689939023.0,
+    "created": 1740690871081.0,
     "source_on_save": false,
-    "relative_order": 2,
+    "relative_order": 3,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "0,0",
-        "scrollLine": "0"
+        "cursorPosition": "347,25",
+        "scrollLine": "319"
     },
     "folds": "",
-    "lastKnownWriteTime": 1740689323,
+    "lastKnownWriteTime": 1740693611,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1740689323,
+    "last_content_update": 1740693611145,
     "read_only": false,
     "read_only_alternatives": []
 }

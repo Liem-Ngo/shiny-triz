@@ -1,0 +1,349 @@
+---
+title: Shinylive in Quarto example
+format: html
+filters:
+  - shinylive
+---
+
+### Editor with app
+
+If you want to display an editor panel with along with the running application, use `#| components: [editor, viewer]`. Users will be able to use the editor to modify the code and re-run the application.
+
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 900
+from shiny import App, ui, render, reactive
+from datetime import datetime
+
+app_ui = ui.page_fluid(
+    ui.tags.style("""
+        .card { 
+            margin: 0;
+            border: 1px solid #ddd;
+            border-radius: 0;
+            height: 100%;
+        }
+        .card-header { 
+            background-color: #f8f9fa; 
+            padding: 8px;
+            font-weight: bold;
+            border-radius: 0;
+            text-align: center;
+        }
+        .card-body {
+            padding: 10px;
+            height: calc(100% - 40px);
+        }
+        body { 
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .title-area { 
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 150px 1fr 1fr 1fr;
+            grid-template-rows: auto auto auto auto;
+            gap: 0;
+            width: 100%;
+        }
+        .grid-header {
+            grid-column: span 1;
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+        }
+        .grid-row-header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            height: 100%;
+        }
+        .grid-cell {
+            min-height: 220px;
+            padding: 0;
+            border: 1px solid #ddd;
+        }
+        /* For HTML2Canvas capturing */
+        #capture-area {
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #eee;
+        }
+    """),
+    
+    # Add HTML2Canvas JavaScript library
+    ui.tags.script(src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"),
+    
+    ui.div(
+        ui.h1("Think in space and time.", class_="mb-2"),
+        ui.p("Analyze a system and predict future development.", class_="text-muted mb-4"),
+        class_="title-area"
+    ),
+    
+    # Capture area div to wrap the grid
+    ui.div(
+        ui.div(
+            # Grid Headers
+            ui.div(class_="grid-header"),  # Empty corner cell
+            ui.div(ui.h4("Past"), class_="grid-header"),
+            ui.div(ui.h4("Present"), class_="grid-header"),
+            ui.div(ui.h4("Future"), class_="grid-header"),
+            
+            # Super System Row
+            ui.div(ui.h4("Super System", class_="grid-row-header")),
+            ui.div(ui.input_text_area("past_super", "", width="100%", height="220px"), class_="grid-cell"),
+            ui.div(ui.input_text_area("present_super", "", width="100%", height="220px"), class_="grid-cell"),
+            ui.div(ui.input_text_area("future_super", "", width="100%", height="220px"), class_="grid-cell"),
+            
+            # System Row
+            ui.div(ui.h4("System", class_="grid-row-header")),
+            ui.div(ui.input_text_area("past_system", "", width="100%", height="220px"), class_="grid-cell"),
+            ui.div(ui.input_text_area("present_system", "", width="100%", height="220px"), class_="grid-cell"),
+            ui.div(ui.input_text_area("future_system", "", width="100%", height="220px"), class_="grid-cell"),
+            
+            # Subsystem Row
+            ui.div(ui.h4("Subsystem", class_="grid-row-header")),
+            ui.div(ui.input_text_area("past_subsystem", "", width="100%", height="220px"), class_="grid-cell"),
+            ui.div(ui.input_text_area("present_subsystem", "", width="100%", height="220px"), class_="grid-cell"),
+            ui.div(ui.input_text_area("future_subsystem", "", width="100%", height="220px"), class_="grid-cell"),
+            
+            class_="grid-container"
+        ),
+        id="capture-area",
+        class_="mb-4"
+    ),
+    
+    ui.div(
+        ui.input_action_button("save_btn", "Save Analysis", class_="btn-primary me-2"),
+        ui.input_action_button("export_png_btn", "Export as PNG", class_="btn-success me-2"),
+        ui.input_action_button("clear_btn", "Clear All", class_="btn-outline-secondary"),
+        class_="d-flex justify-content-center mt-4"
+    ),
+    
+    # Container for PNG download link
+    ui.div(id="download-container", class_="text-center mt-3"),
+    
+    # JavaScript to handle PNG export
+    ui.tags.script("""
+    $(document).ready(function() {
+        $("#export_png_btn").click(function() {
+            // Clear any existing download link
+            $("#download-container").empty();
+            
+            // Show loading message
+            $("#download-container").html('<p>Generating PNG...</p>');
+            
+            // Create a temporary div to build our table representation
+            var tempDiv = document.createElement('div');
+            tempDiv.id = 'export-container';
+            tempDiv.style.backgroundColor = 'white';
+            tempDiv.style.padding = '30px';
+            tempDiv.style.border = '1px solid #eee';
+            tempDiv.style.width = '1000px';
+            tempDiv.style.position = 'absolute';
+            tempDiv.style.left = '-9999px';
+            tempDiv.style.top = '-9999px';
+            document.body.appendChild(tempDiv);
+            
+            // Create a proper HTML table for export
+            var table = document.createElement('table');
+            table.style.width = '100%';
+            table.style.borderCollapse = 'collapse';
+            table.style.border = '1px solid #ddd';
+            table.style.tableLayout = 'fixed';
+            
+            // Create header row
+            var headerRow = document.createElement('tr');
+            
+            // Empty cell for the top-left corner
+            var emptyTh = document.createElement('th');
+            emptyTh.style.width = '150px';
+            emptyTh.style.padding = '10px';
+            emptyTh.style.textAlign = 'right';
+            emptyTh.style.fontWeight = 'bold';
+            headerRow.appendChild(emptyTh);
+            
+            // Headers for Past, Present, Future
+            var headers = ['Past', 'Present', 'Future'];
+            headers.forEach(function(header) {
+                var th = document.createElement('th');
+                th.textContent = header;
+                th.style.padding = '10px';
+                th.style.textAlign = 'center';
+                th.style.fontWeight = 'bold';
+                th.style.border = '1px solid #ddd';
+                headerRow.appendChild(th);
+            });
+            
+            table.appendChild(headerRow);
+            
+            // Create rows for Super System, System, Subsystem
+            var rowLabels = ['Super System', 'System', 'Subsystem'];
+            var rowIds = [
+                ['past_super', 'present_super', 'future_super'],
+                ['past_system', 'present_system', 'future_system'],
+                ['past_subsystem', 'present_subsystem', 'future_subsystem']
+            ];
+            
+            rowLabels.forEach(function(label, index) {
+                var tr = document.createElement('tr');
+                
+                // Row label
+                var th = document.createElement('th');
+                th.textContent = label;
+                th.style.padding = '10px';
+                th.style.textAlign = 'right';
+                th.style.fontWeight = 'bold';
+                th.style.height = '220px';
+                th.style.verticalAlign = 'top';
+                tr.appendChild(th);
+                
+                // Cells for each column
+                rowIds[index].forEach(function(id) {
+                    var td = document.createElement('td');
+                    td.style.border = '1px solid #ddd';
+                    td.style.padding = '10px';
+                    td.style.verticalAlign = 'top';
+                    td.style.height = '220px';
+                    td.style.width = '250px'; // Fixed width
+                    td.style.wordWrap = 'break-word'; // Enable word wrapping
+                    td.style.whiteSpace = 'pre-wrap'; // Preserve line breaks and wrap text
+                    td.style.overflowWrap = 'break-word'; // Break words to prevent overflow
+                    
+                    // Get the text content and preserve formatting
+                    var content = $('#' + id).val() || '';
+                    td.textContent = content; // This preserves line breaks with pre-wrap
+                    
+                    tr.appendChild(td);
+                });
+                
+                table.appendChild(tr);
+            });
+            
+            tempDiv.appendChild(table);
+            
+            // Use html2canvas with improved options to capture the table
+            html2canvas(tempDiv, {
+                scale: 2, // Higher scale for better quality
+                useCORS: true,
+                backgroundColor: "#ffffff",
+                logging: false,
+                height: tempDiv.offsetHeight,
+                width: tempDiv.offsetWidth
+            }).then(function(canvas) {
+                // Convert canvas to data URL
+                var dataURL = canvas.toDataURL("image/png");
+                
+                // Generate timestamp for filename
+                var timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+                
+                // Create download link
+                var downloadLink = document.createElement("a");
+                downloadLink.href = dataURL;
+                downloadLink.download = "system_analysis_" + timestamp + ".png";
+                downloadLink.innerHTML = "Download PNG";
+                downloadLink.className = "btn btn-primary";
+                
+                // Clear loading message and add the download link
+                $("#download-container").empty();
+                $("#download-container").append(downloadLink);
+                
+                // Clean up the temporary div
+                document.body.removeChild(tempDiv);
+            });
+        });
+    });
+    """),
+    
+    ui.h3("Saved Analyses", class_="mt-5"),
+    ui.output_ui("saved_analyses"),
+)
+
+def server(input, output, session):
+    saved_data = []
+    
+    @render.ui
+    def saved_analyses():
+        if not saved_data:
+            return ui.p("No saved analyses yet.", class_="text-muted")
+        
+        cards = []
+        for i, data in enumerate(saved_data):
+            cards.append(
+                ui.card(
+                    ui.card_header(f"Analysis #{i+1}"),
+                    ui.card_body(
+                        ui.p(f"Created on: {data['timestamp']}"),
+                        ui.input_action_button(f"view_{i}", "View", class_="btn-sm btn-outline-primary"),
+                        ui.input_action_button(f"load_{i}", "Load", class_="btn-sm btn-outline-secondary ms-2")
+                    )
+                )
+            )
+        return ui.div(*cards, class_="d-flex flex-wrap gap-3")
+    
+    @reactive.Effect
+    def _():
+        if input.save_btn():
+            # Add code to save the current state
+            index = len(saved_data)
+            saved_data.append({
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "data": {
+                    "past_super": input.past_super(),
+                    "present_super": input.present_super(),
+                    "future_super": input.future_super(),
+                    "past_system": input.past_system(),
+                    "present_system": input.present_system(),
+                    "future_system": input.future_system(),
+                    "past_subsystem": input.past_subsystem(),
+                    "present_subsystem": input.present_subsystem(),
+                    "future_subsystem": input.future_subsystem(),
+                }
+            })
+            
+            # Create a new load handler for this saved analysis
+            load_handlers[index] = create_load_handler(index)
+    
+    @reactive.Effect
+    def _():
+        if input.clear_btn():
+            ui.update_text_area("past_super", value="")
+            ui.update_text_area("present_super", value="")
+            ui.update_text_area("future_super", value="")
+            ui.update_text_area("past_system", value="")
+            ui.update_text_area("present_system", value="")
+            ui.update_text_area("future_system", value="")
+            ui.update_text_area("past_subsystem", value="")
+            ui.update_text_area("present_subsystem", value="")
+            ui.update_text_area("future_subsystem", value="")
+    
+    # Function to create load handlers for each saved analysis
+    def create_load_handler(index):
+        @reactive.Effect
+        def _():
+            # Check if the button with ID f"load_{index}" was clicked
+            if input[f"load_{index}"]:
+                data = saved_data[index]["data"]
+                
+                ui.update_text_area("past_super", value=data["past_super"])
+                ui.update_text_area("present_super", value=data["present_super"])
+                ui.update_text_area("future_super", value=data["future_super"])
+                ui.update_text_area("past_system", value=data["past_system"])
+                ui.update_text_area("present_system", value=data["present_system"])
+                ui.update_text_area("future_system", value=data["future_system"])
+                ui.update_text_area("past_subsystem", value=data["past_subsystem"])
+                ui.update_text_area("present_subsystem", value=data["present_subsystem"])
+                ui.update_text_area("future_subsystem", value=data["future_subsystem"])
+        return _
+    
+    # Dictionary to store the handlers
+    load_handlers = {}
+
+app = App(app_ui, server)
+```
