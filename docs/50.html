@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.43">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>test_shiny_python – Shinylive in Quarto example</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<meta name="shinylive:serviceworker_dir" content=".">
+<script src="site_libs/quarto-contrib/shinylive-0.4.1/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="site_libs/quarto-contrib/shinylive-0.4.1/shinylive/run-python-blocks.js" type="module"></script>
+<link href="site_libs/quarto-contrib/shinylive-0.4.1/shinylive/shinylive.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">test_shiny_python</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">TRIZ-39</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">TRIZ-45</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./50.html" aria-current="page"> 
+<span class="menu-text">TRIZ-50</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#editor-with-app" id="toc-editor-with-app" class="nav-link active" data-scroll-target="#editor-with-app">Editor with app</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Shinylive in Quarto example</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="editor-with-app" class="level3">
+<h3 class="anchored" data-anchor-id="editor-with-app">Editor with app</h3>
+<p>If you want to display an editor panel with along with the running application, use <code>#| components: [editor, viewer]</code>. Users will be able to use the editor to modify the code and re-run the application.</p>
+<pre class="shinylive-python" data-engine="python"><code>#| standalone: true
+#| viewerHeight: 600
+#| echo: false
+from shiny import App, ui, render
+import pandas as pd
+from pyodide.http import open_url
+from shiny import App, Inputs, Outputs, Session, reactive, render, ui
+
+# Define the directory and file path
+URL = "https://raw.githubusercontent.com/Liem-Ngo/test-shiny/main/triz_50.csv"
+file_path = open_url(URL)
+
+# Define parameter mapping for 50x50 matrix
+parameter_mapping = {
+    "1. Trọng Lượng Của Đối Tượng Chuyển Động (Weight of Moving Object)": 1,
+    "2. Trọng Lượng Của Đối Tượng Bất Động (Weight of Stationary Object)": 2,
+    "3. Độ Dài/ Góc Của Đối Tượng Chuyển Động (Length/Angle of Moving Object)": 3,
+    "4. Độ Dài/ Góc Của Đối Tượng Bất Động (Length/Angle of Stationary Object)": 4,
+    "5. Diện Tích Của Đối Tượng Chuyển Động (Area of Moving Object)": 5,
+    "6. Diện Tích Của Đối Tượng Bất Động (Area of Stationary Object)": 6,
+    "7. Thể Tích Đối Tượng Chuyển Động (Volume of Moving Object)": 7,
+    "8. Thể Tích Đối Tượng Bất Động (Volume of Stationary Object)": 8,
+    "9. Hình Dạng (Shape)": 9,
+    "10. Lượng Chất Thể (Amount of Substance)": 10,
+    "11. Lượng Thông Tin (Amount of Information)": 11,
+    "12. Thời Gian Hoạt Động Của Đối Tượng Chuyển Động (Duration of Action of Moving Object)": 12,
+    "13. Thời Gian Hoạt Động Của Đối Tượng Bất Động (Duration of Action of Stationary Object)": 13,
+    "14. Tốc Độ (Speed)": 14,
+    "15. Lực/ Momen Xoắn (Force/Torque)": 15,
+    "16. Năng Lượng Tiêu Hao Bởi Đối Tượng Chuyển Động (Energy Used by Moving Object)": 16,
+    "17. Năng Lượng Tiêu Hao Bởi Đối Tượng Bất Động (Energy Used by Stationary Object)": 17,
+    "18. Công Suất (Power)": 18,
+    "19. Ứng Suất/ Áp Suất (Stress/Pressure)": 19,
+    "20. Độ Bền (Strength)": 20,
+    "21. Độ Ổn Định (Stability)": 21,
+    "22. Nhiệt Độ (Temperature)": 22,
+    "23. Độ Chiếu Sáng (Illumination Intensity)": 23,
+    "24. Hiệu Quả Chức Năng (Function Efficiency)": 24,
+    "25. Chất Thể Mất Mát (Loss of Substance)": 25,
+    "26. Thời Gian Mất Mát (Loss of Time)": 26,
+    "27. Năng Lượng Mất Mát (Loss of Energy)": 27,
+    "28. Thông Tin Mất Mát (Loss of Information)": 28,
+    "29. Độ Ồn/ Nhiễu (Noise)": 29,
+    "30. Phát Thải Độc Hại (Harmful Emissions)": 30,
+    "31. Những Nhân Tố Có Hại Sinh Ra Bởi Đối Tượng (Other Harmful Effects Generated by System)": 31,
+    "32. Độ Thích Nghi (Adaptability/ Versatility)": 32,
+    "33. Khả Năng Tương Thích (Compatibility/ Connectability)": 33,
+    "34. Tiện Lợi Trong Hoạt Động (Trainability/Operability/Controllability)": 34,
+    "35. Độ Tin Cậy (Reliability/ Robustness)": 35,
+    "36. Khả Năng Sửa Chữa (Repairability)": 36,
+    "37. Độ Bảo Mật (Security)": 37,
+    "38. Độ An Toàn (Safety/ Vulnerability)": 38,
+    "39. Tính Thẩm Mỹ (Aesthetics/Appearance)": 39,
+    "40. Những Hiệu Ứng Có Hại Tác Động Lên Đối Tượng (Other Harmful Effects Acting on System)": 40,
+    "41. Năng Lực Chế Tạo (Manufacturability)": 41,
+    "42. Độ Chính Xác Trong Chế Tạo (Manufacture Precision/Consistency)": 42,
+    "43. Mức Độ Tự Động Hóa (Automation)": 43,
+    "44. Năng Suất (Productivity)": 44,
+    "45. Độ Phức Tạp Của Đối Tượng (System Complexity)": 45,
+    "46. Độ Phức Tạp Trong Kiểm Soát (Control Complexity)": 46,
+    "47. Điều Vô Hình Tích Cực (Positive Intangible Factors)": 47,
+    "48. Điều Vô Hình Tiêu Cực (Negative Intangible Factors)": 48,
+    "49. Năng Lực Xác Định (Ability to Detect/Measure)": 49,
+    "50. Độ Chính Xác Trong Đo Lường (Measurement Precision)": 50
+}
+
+# Define creative principles mapping
+creative_principles = {
+    0: "Lựa chọn tham số khác",
+    1: "Nguyên tắc phân nhỏ (Segmentation)",
+    2: "Nguyên tắc “tách khỏi” (Taking out)",
+    3: "Nguyên tắc phẩm chất cục bộ (Local quality)",
+    4: "Nguyên tắc phản đối xứng (Asymmetry)",
+    5: "Nguyên tắc kết hợp (Merging)",
+    6: "Nguyên tắc vạn năng (Universality)",
+    7: "Nguyên tắc “chứa trong” (Nested Doll)",
+    8: "Nguyên tắc phản trọng lượng (Anti-Weight)",
+    9: "Nguyên tắc gây ứng suất sơ bộ (Preliminary Anti-Action)",
+    10: "Nguyên tắc thực hiện sơ bộ (Preliminary Action)",
+    11: "Nguyên tắc dự phòng (Beforehand Cushioning)",
+    12: "Nguyên tắc đẳng thế (Equipotentiality)",
+    13: "Nguyên tắc đảo ngược (The Other Way Round)",
+    14: "Nguyên tắc cầu (tròn) hóa (Spheroidality - Curvature)",
+    15: "Nguyên tắc linh động (Dynamics)",
+    16: "Nguyên tắc giải “thiếu” hoặc “thừa” (Partial or Excessive Actions)",
+    17: "Nguyên tắc chuyển sang chiều khác (Another Dimension)",
+    18: "Nguyên tắc sử dụng các dao động cơ học (Mechanical vibration)",
+    19: "Nguyên tắc tác động theo chu kỳ (Periodic Action)",
+    20: "Nguyên tắc liên tục tác động có ích (Continuity of Useful Action)",
+    21: "Nguyên tắc “vượt nhanh” (Skipping)",
+    22: "Nguyên tắc biến hại thành lợi (\"Blessing in Disguise\" or \"Turn Lemons into Lemonade\")",
+    23: "Nguyên tắc quan hệ phản hồi (Feedback)",
+    24: "Nguyên tắc sử dụng trung gian (Intermediary)",
+    25: "Nguyên tắc tự phục vụ (Self-service)",
+    26: "Nguyên tắc sao chép (Copying)",
+    27: "Nguyên tắc “rẻ” thay cho “đắt” (Cheap Short-Living Objects)",
+    28: "Thay thế sơ đồ cơ học (Mechanics Substitution)",
+    29: "Sử dụng các kết cấu khí và lỏng (Pneumatics and Hydraulics)",
+    30: "Sử dụng vỏ dẻo và màng mỏng (Flexible Shells and Thin Films)",
+    31: "Sử dụng các vật liệu nhiều lỗ (Porous Materials)",
+    32: "Nguyên tắc thay đổi màu sắc (Color Changes)",
+    33: "Nguyên tắc đồng nhất (Homogeneity)",
+    34: "Nguyên tắc phân hủy hoặc tái sinh các phần (Discarding and Recovering)",
+    35: "Thay đổi các thông số hóa lý của đối tượng (Parameter Changes)",
+    36: "Sử dụng chuyển pha (Phase Transitions)",
+    37: "Sử dụng sự nở nhiệt (Thermal Expansion)",
+    38: "Sử dụng các chất oxy hóa mạnh (Strong Oxidants or Boosted Interactions)",
+    39: "Thay đổi độ trơ (Inert Atmosphere)",
+    40: "Sử dụng các vật liệu hợp thành (Composite Structures)"
+}
+
+# Define the UI components
+app_ui = ui.page_fluid(
+    ui.layout_sidebar(
+        ui.panel_sidebar(
+            ui.h3("Matrix 50"),
+            ui.input_select(
+                "col_select",
+                "Tốt lên:",
+                list(parameter_mapping.keys()),
+                width="100%"
+            ),
+            ui.input_select(
+                "row_select",
+                "Xấu đi:",
+                list(parameter_mapping.keys()),
+                width="100%"
+            ),
+            ui.input_action_button("submitbutton", "Submit", class_="btn btn-primary", width="100%"),
+        ),
+        ui.panel_main(
+            ui.h3(" "),
+            ui.output_table("selected_table", class_="table table-sm table-striped"),
+            ui.HTML("&lt;style&gt; .table { font-size: 15px; text-align: left; } &lt;/style&gt;"),
+        ),
+        style="font-size: 15px; padding: 0px;"
+    ),
+    style="font-size: 15px; padding: 0px;"
+)
+
+def server(input: Inputs, output: Outputs, session: Session):
+    @reactive.Calc
+    def read_file():
+        try:
+            df = pd.read_csv(file_path, delimiter=';')
+            return df
+        except Exception as e:
+            return pd.DataFrame({"Error": [f"Could not load the file: {str(e)}"]})
+
+    @reactive.Calc
+    def selected_value_calc():
+        df_matrix = read_file()
+        if "Error" in df_matrix.columns:
+            return df_matrix
+        
+        if input.submitbutton() &gt; 0:
+            row_select = input.row_select()
+            col_select = input.col_select()
+            row_idx = parameter_mapping[row_select] - 1  # Adjust for 0-based indexing
+            col_idx = parameter_mapping[col_select] - 1  # Adjust for 0-based indexing
+            try:
+                value = df_matrix.iloc[row_idx, col_idx]
+                selected_values = [int(val) for val in str(value).split(',')]
+                result = pd.DataFrame({
+                    " ": selected_values,
+                    "Các Nguyên Tắc Sáng Tạo": [creative_principles[val] for val in selected_values]
+                })
+                return result
+            except Exception as e:
+                return pd.DataFrame({"Error": [f"Error processing selection: {str(e)}"]})
+        
+        return pd.DataFrame(columns=[" ", "Các Nguyên Tắc Sáng Tạo"])
+
+    @output
+    @render.table
+    def selected_table():
+        return selected_value_calc()
+
+app = App(app_ui, server)
+</code></pre>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

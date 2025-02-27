@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.43">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>test_shiny_python – Shinylive in Quarto example</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<meta name="shinylive:serviceworker_dir" content=".">
+<script src="site_libs/quarto-contrib/shinylive-0.4.1/shinylive/load-shinylive-sw.js" type="module"></script>
+<script src="site_libs/quarto-contrib/shinylive-0.4.1/shinylive/run-python-blocks.js" type="module"></script>
+<link href="site_libs/quarto-contrib/shinylive-0.4.1/shinylive/shinylive.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/shinylive-quarto-css/shinylive-quarto.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">test_shiny_python</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">TRIZ-39</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">TRIZ-45</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./50.html"> 
+<span class="menu-text">TRIZ-50</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#bảng-tra-ma-trận-39-thông-số-kỹ-thuật" id="toc-bảng-tra-ma-trận-39-thông-số-kỹ-thuật" class="nav-link active" data-scroll-target="#bảng-tra-ma-trận-39-thông-số-kỹ-thuật">Bảng tra ma trận 39 thông số kỹ thuật</a></li>
+  <li><a href="#thông-số-kỹ-thuật" id="toc-thông-số-kỹ-thuật" class="nav-link" data-scroll-target="#thông-số-kỹ-thuật">39 Thông số kỹ thuật</a>
+  <ul class="collapse">
+  <li><a href="#trọng-lượng-của-vật-thể-di-chuyển" id="toc-trọng-lượng-của-vật-thể-di-chuyển" class="nav-link" data-scroll-target="#trọng-lượng-của-vật-thể-di-chuyển">1. <strong>Trọng lượng của vật thể di chuyển</strong></a></li>
+  <li><a href="#trọng-lượng-của-vật-thể-đứng-yên" id="toc-trọng-lượng-của-vật-thể-đứng-yên" class="nav-link" data-scroll-target="#trọng-lượng-của-vật-thể-đứng-yên">2. <strong>Trọng lượng của vật thể đứng yên</strong></a></li>
+  <li><a href="#chiều-dài-của-vật-thể-di-chuyển" id="toc-chiều-dài-của-vật-thể-di-chuyển" class="nav-link" data-scroll-target="#chiều-dài-của-vật-thể-di-chuyển">3. <strong>Chiều dài của vật thể di chuyển</strong></a></li>
+  <li><a href="#chiều-dài-của-vật-thể-đứng-yên" id="toc-chiều-dài-của-vật-thể-đứng-yên" class="nav-link" data-scroll-target="#chiều-dài-của-vật-thể-đứng-yên">4. <strong>Chiều dài của vật thể đứng yên</strong></a></li>
+  <li><a href="#diện-tích-của-vật-thể-di-chuyển" id="toc-diện-tích-của-vật-thể-di-chuyển" class="nav-link" data-scroll-target="#diện-tích-của-vật-thể-di-chuyển">5. <strong>Diện tích của vật thể di chuyển</strong></a></li>
+  <li><a href="#diện-tích-của-vật-thể-đứng-yên" id="toc-diện-tích-của-vật-thể-đứng-yên" class="nav-link" data-scroll-target="#diện-tích-của-vật-thể-đứng-yên">6. <strong>Diện tích của vật thể đứng yên</strong></a></li>
+  <li><a href="#thể-tích-của-vật-thể-di-chuyển" id="toc-thể-tích-của-vật-thể-di-chuyển" class="nav-link" data-scroll-target="#thể-tích-của-vật-thể-di-chuyển">7. <strong>Thể tích của vật thể di chuyển</strong></a></li>
+  <li><a href="#thể-tích-của-vật-thể-đứng-yên" id="toc-thể-tích-của-vật-thể-đứng-yên" class="nav-link" data-scroll-target="#thể-tích-của-vật-thể-đứng-yên">8. <strong>Thể tích của vật thể đứng yên</strong></a></li>
+  <li><a href="#tốc-độ" id="toc-tốc-độ" class="nav-link" data-scroll-target="#tốc-độ">9. <strong>Tốc độ</strong></a></li>
+  <li><a href="#lực" id="toc-lực" class="nav-link" data-scroll-target="#lực">10. <strong>Lực</strong></a></li>
+  <li><a href="#căng-thẳng-hoặc-áp-lực" id="toc-căng-thẳng-hoặc-áp-lực" class="nav-link" data-scroll-target="#căng-thẳng-hoặc-áp-lực">11. <strong>Căng thẳng hoặc Áp lực</strong></a></li>
+  <li><a href="#hình-dạng" id="toc-hình-dạng" class="nav-link" data-scroll-target="#hình-dạng">12. <strong>Hình dạng</strong></a></li>
+  <li><a href="#độ-ổn-định-của-cấu-trúc-vật-thể" id="toc-độ-ổn-định-của-cấu-trúc-vật-thể" class="nav-link" data-scroll-target="#độ-ổn-định-của-cấu-trúc-vật-thể">13. <strong>Độ ổn định của cấu trúc vật thể</strong></a></li>
+  <li><a href="#độ-bền" id="toc-độ-bền" class="nav-link" data-scroll-target="#độ-bền">14. <strong>Độ bền</strong></a></li>
+  <li><a href="#thời-gian-hoạt-động-của-vật-thể-di-chuyển" id="toc-thời-gian-hoạt-động-của-vật-thể-di-chuyển" class="nav-link" data-scroll-target="#thời-gian-hoạt-động-của-vật-thể-di-chuyển">15. <strong>Thời gian hoạt động của vật thể di chuyển</strong></a></li>
+  <li><a href="#thời-gian-hoạt-động-của-vật-thể-đứng-yên" id="toc-thời-gian-hoạt-động-của-vật-thể-đứng-yên" class="nav-link" data-scroll-target="#thời-gian-hoạt-động-của-vật-thể-đứng-yên">16. <strong>Thời gian hoạt động của vật thể đứng yên</strong></a></li>
+  <li><a href="#nhiệt-độ" id="toc-nhiệt-độ" class="nav-link" data-scroll-target="#nhiệt-độ">17. <strong>Nhiệt độ</strong></a></li>
+  <li><a href="#cường-độ-chiếu-sáng" id="toc-cường-độ-chiếu-sáng" class="nav-link" data-scroll-target="#cường-độ-chiếu-sáng">18. <strong>Cường độ chiếu sáng</strong></a></li>
+  <li><a href="#sử-dụng-năng-lượng-của-vật-thể-di-chuyển" id="toc-sử-dụng-năng-lượng-của-vật-thể-di-chuyển" class="nav-link" data-scroll-target="#sử-dụng-năng-lượng-của-vật-thể-di-chuyển">19. <strong>Sử dụng năng lượng của vật thể di chuyển</strong></a></li>
+  <li><a href="#sử-dụng-năng-lượng-của-vật-thể-đứng-yên" id="toc-sử-dụng-năng-lượng-của-vật-thể-đứng-yên" class="nav-link" data-scroll-target="#sử-dụng-năng-lượng-của-vật-thể-đứng-yên">20. <strong>Sử dụng năng lượng của vật thể đứng yên</strong></a></li>
+  <li><a href="#công-suất" id="toc-công-suất" class="nav-link" data-scroll-target="#công-suất">21. <strong>Công suất</strong></a></li>
+  <li><a href="#mất-năng-lượng" id="toc-mất-năng-lượng" class="nav-link" data-scroll-target="#mất-năng-lượng">22. <strong>Mất năng lượng</strong></a></li>
+  <li><a href="#mất-vật-chất" id="toc-mất-vật-chất" class="nav-link" data-scroll-target="#mất-vật-chất">23. <strong>Mất vật chất</strong></a></li>
+  <li><a href="#mất-thông-tin" id="toc-mất-thông-tin" class="nav-link" data-scroll-target="#mất-thông-tin">24. <strong>Mất thông tin</strong></a></li>
+  <li><a href="#mất-thời-gian" id="toc-mất-thời-gian" class="nav-link" data-scroll-target="#mất-thời-gian">25. <strong>Mất thời gian</strong></a></li>
+  <li><a href="#số-lượng-vật-chất" id="toc-số-lượng-vật-chất" class="nav-link" data-scroll-target="#số-lượng-vật-chất">26. <strong>Số lượng vật chất</strong></a></li>
+  <li><a href="#độ-tin-cậy" id="toc-độ-tin-cậy" class="nav-link" data-scroll-target="#độ-tin-cậy">27. <strong>Độ tin cậy</strong></a></li>
+  <li><a href="#độ-chính-xác-của-phép-đo" id="toc-độ-chính-xác-của-phép-đo" class="nav-link" data-scroll-target="#độ-chính-xác-của-phép-đo">28. <strong>Độ chính xác của phép đo</strong></a></li>
+  <li><a href="#độ-chính-xác-trong-sản-xuất" id="toc-độ-chính-xác-trong-sản-xuất" class="nav-link" data-scroll-target="#độ-chính-xác-trong-sản-xuất">29. <strong>Độ chính xác trong sản xuất</strong></a></li>
+  <li><a href="#tác-hại-bên-ngoài-ảnh-hưởng-đến-vật-thể" id="toc-tác-hại-bên-ngoài-ảnh-hưởng-đến-vật-thể" class="nav-link" data-scroll-target="#tác-hại-bên-ngoài-ảnh-hưởng-đến-vật-thể">30. <strong>Tác hại bên ngoài ảnh hưởng đến vật thể</strong></a></li>
+  <li><a href="#yếu-tố-có-hại-do-vật-thể-gây-ra" id="toc-yếu-tố-có-hại-do-vật-thể-gây-ra" class="nav-link" data-scroll-target="#yếu-tố-có-hại-do-vật-thể-gây-ra">31. <strong>Yếu tố có hại do vật thể gây ra</strong></a></li>
+  <li><a href="#dễ-sản-xuất" id="toc-dễ-sản-xuất" class="nav-link" data-scroll-target="#dễ-sản-xuất">32. <strong>Dễ sản xuất</strong></a></li>
+  <li><a href="#dễ-vận-hành" id="toc-dễ-vận-hành" class="nav-link" data-scroll-target="#dễ-vận-hành">33. <strong>Dễ vận hành</strong></a></li>
+  <li><a href="#dễ-sửa-chữa" id="toc-dễ-sửa-chữa" class="nav-link" data-scroll-target="#dễ-sửa-chữa">34. <strong>Dễ sửa chữa</strong></a></li>
+  <li><a href="#khả-năng-thích-nghi-hoặc-đa-năng" id="toc-khả-năng-thích-nghi-hoặc-đa-năng" class="nav-link" data-scroll-target="#khả-năng-thích-nghi-hoặc-đa-năng">35. <strong>Khả năng thích nghi hoặc đa năng</strong></a></li>
+  <li><a href="#độ-phức-tạp-của-thiết-bị" id="toc-độ-phức-tạp-của-thiết-bị" class="nav-link" data-scroll-target="#độ-phức-tạp-của-thiết-bị">36. <strong>Độ phức tạp của thiết bị</strong></a></li>
+  <li><a href="#khó-khăn-trong-việc-phát-hiện-và-đo-lường" id="toc-khó-khăn-trong-việc-phát-hiện-và-đo-lường" class="nav-link" data-scroll-target="#khó-khăn-trong-việc-phát-hiện-và-đo-lường">37. <strong>Khó khăn trong việc phát hiện và đo lường</strong></a></li>
+  <li><a href="#mức-độ-tự-động-hóa" id="toc-mức-độ-tự-động-hóa" class="nav-link" data-scroll-target="#mức-độ-tự-động-hóa">38. <strong>Mức độ tự động hóa</strong></a></li>
+  <li><a href="#năng-suất" id="toc-năng-suất" class="nav-link" data-scroll-target="#năng-suất">39. <strong>Năng suất</strong></a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Shinylive in Quarto example</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="bảng-tra-ma-trận-39-thông-số-kỹ-thuật" class="level3">
+<h3 class="anchored" data-anchor-id="bảng-tra-ma-trận-39-thông-số-kỹ-thuật">Bảng tra ma trận 39 thông số kỹ thuật</h3>
+<pre class="shinylive-python" data-engine="python"><code>#| standalone: true
+#| viewerHeight: 600
+
+from shiny import App, ui, render
+import pandas as pd
+from pyodide.http import open_url
+from shiny import App, Inputs, Outputs, Session, reactive, render, ui
+
+# Define the directory and file path
+file_path = open_url("https://raw.githubusercontent.com/Liem-Ngo/test-shiny/main/triz_39_1.csv")
+
+# Define parameter mapping
+parameter_mapping = {
+    "1. Trọng lượng đối tượng chuyển động": 1,
+    "2. Trọng lượng đối tượng bất động": 2,
+    "3. Độ dài đối tượng chuyển động": 3,
+    "4. Độ dài đối tượng bất động": 4,
+    "5. Diện tích đối tượng chuyển động": 5,
+    "6. Diện tích đối tượng bất động": 6,
+    "7. Thể tích đối tượng chuyển động": 7,
+    "8. Thể tích đối tượng bất động": 8,
+    "9. Vận tốc": 9,
+    "10. Lực": 10,
+    "11. Ứng suất, áp suất": 11,
+    "12. Hình dạng": 12,
+    "13. Tính ổn định của thành phần đối tượng": 13,
+    "14. Độ bền": 14,
+    "15. Thời hạn hoạt động của đối tượng chuyển động": 15,
+    "16. Thời hạn hoạt động của đối tượng bất động": 16,
+    "17. Nhiệt độ": 17,
+    "18. Độ chiếu sáng (độ rọi)": 18,
+    "19. Năng lượng tiêu hao bởi đối tượng chuyển động": 19,
+    "20. Năng lượng tiêu hao bởi đối tượng bất động": 20,
+    "21. Công suất": 21,
+    "22. Năng lượng mất mát": 22,
+    "23. Chất thể mất mát": 23,
+    "24. Thông tin mất mát": 24,
+    "25. Thời gian mất mát": 25,
+    "26. Lượng chất thể": 26,
+    "27. Độ tin cậy": 27,
+    "28. Độ chính xác trong đo lường": 28,
+    "29. Độ chính xác trong chế tạo": 29,
+    "30. Các nhân tố có hại từ bên ngoài tác động lên đối tượng": 30,
+    "31. Các nhân tố có hại sinh ra bởi chính đối tượng": 31,
+    "32. Tiện lợi trong chế tạo": 32,
+    "33. Tiện lợi trong sử dụng, vận hành": 33,
+    "34. Tiện lợi trong sửa chữa": 34,
+    "35. Độ thích nghi, tính phổ dụng (vạn năng)": 35,
+    "36. Độ phức tạp của thiết bị": 36,
+    "37. Độ phức tạp trong kiểm tra và đo lường": 37,
+    "38. Mức độ tự động hóa": 38,
+    "39. Năng suất": 39
+}
+
+# Define creative principles mapping and replace &lt;br&gt; with a space
+creative_principles = {
+    0: "Lựa chọn tham số khác",
+    1: "Nguyên tắc phân nhỏ (Segmentation)",
+    2: "Nguyên tắc “tách khỏi” (Taking out)",
+    3: "Nguyên tắc phẩm chất cục bộ (Local quality)",
+    4: "Nguyên tắc phản đối xứng (Asymmetry)",
+    5: "Nguyên tắc kết hợp (Merging)",
+    6: "Nguyên tắc vạn năng (Universality)",
+    7: "Nguyên tắc “chứa trong” (Nested Doll)",
+    8: "Nguyên tắc phản trọng lượng (Anti-Weight)",
+    9: "Nguyên tắc gây ứng suất sơ bộ (Preliminary Anti-Action)",
+    10: "Nguyên tắc thực hiện sơ bộ (Preliminary Action)",
+    11: "Nguyên tắc dự phòng (Beforehand Cushioning)",
+    12: "Nguyên tắc đẳng thế (Equipotentiality)",
+    13: "Nguyên tắc đảo ngược (The Other Way Round)",
+    14: "Nguyên tắc cầu (tròn) hóa (Spheroidality - Curvature)",
+    15: "Nguyên tắc linh động (Dynamics)",
+    16: "Nguyên tắc giải “thiếu” hoặc “thừa” (Partial or Excessive Actions)",
+    17: "Nguyên tắc chuyển sang chiều khác (Another Dimension)",
+    18: "Nguyên tắc sử dụng các dao động cơ học (Mechanical vibration)",
+    19: "Nguyên tắc tác động theo chu kỳ (Periodic Action)",
+    20: "Nguyên tắc liên tục tác động có ích (Continuity of Useful Action)",
+    21: "Nguyên tắc “vượt nhanh” (Skipping)",
+    22: "Nguyên tắc biến hại thành lợi (\"Blessing in Disguise\" or \"Turn Lemons into Lemonade\")",
+    23: "Nguyên tắc quan hệ phản hồi (Feedback)",
+    24: "Nguyên tắc sử dụng trung gian (Intermediary)",
+    25: "Nguyên tắc tự phục vụ (Self-service)",
+    26: "Nguyên tắc sao chép (Copying)",
+    27: "Nguyên tắc “rẻ” thay cho “đắt” (Cheap Short-Living Objects)",
+    28: "Thay thế sơ đồ cơ học (Mechanics Substitution)",
+    29: "Sử dụng các kết cấu khí và lỏng (Pneumatics and Hydraulics)",
+    30: "Sử dụng vỏ dẻo và màng mỏng (Flexible Shells and Thin Films)",
+    31: "Sử dụng các vật liệu nhiều lỗ (Porous Materials)",
+    32: "Nguyên tắc thay đổi màu sắc (Color Changes)",
+    33: "Nguyên tắc đồng nhất (Homogeneity)",
+    34: "Nguyên tắc phân hủy hoặc tái sinh các phần (Discarding and Recovering)",
+    35: "Thay đổi các thông số hóa lý của đối tượng (Parameter Changes)",
+    36: "Sử dụng chuyển pha (Phase Transitions)",
+    37: "Sử dụng sự nở nhiệt (Thermal Expansion)",
+    38: "Sử dụng các chất oxy hóa mạnh (Strong Oxidants or Boosted Interactions)",
+    39: "Thay đổi độ trơ (Inert Atmosphere)",
+    40: "Sử dụng các vật liệu hợp thành (Composite Structures)"
+}
+
+# Define the UI components
+app_ui = ui.page_fluid(
+    ui.layout_sidebar(
+        ui.panel_sidebar(
+            ui.h3("Matrix 39"),
+            ui.input_select(
+                "col_select",
+                "Tốt lên:",
+                list(parameter_mapping.keys()),
+                width="100%"
+            ),
+            ui.input_select(
+                "row_select",
+                "Xấu đi:",
+                list(parameter_mapping.keys()),
+                width="100%"
+            ),
+            ui.input_action_button("submitbutton", "Submit", class_="btn btn-primary", width="100%"),
+        ),
+        ui.panel_main(
+            ui.h3(" "),
+            ui.output_table("selected_table", class_="table table-sm table-striped"),
+            ui.HTML("&lt;style&gt; .table { font-size: 15px; text-align: left; } &lt;/style&gt;"),
+        ),
+        style="font-size: 15px; padding: 0px;"
+    ),
+    style="font-size: 15px; padding: 0px;"
+)
+
+def server(input: Inputs, output: Outputs, session: Session):
+    @reactive.Calc
+    def read_file():
+        return pd.read_csv(file_path, delimiter=';')
+
+    @reactive.Calc
+    def selected_value_calc():
+        df_matrix = read_file()
+        if df_matrix.empty:
+            return pd.DataFrame({"Error": ["The data file could not be loaded."]})
+        
+        if input.submitbutton() &gt; 0:
+            row_select = input.row_select()
+            col_select = input.col_select()
+            row_idx = parameter_mapping[row_select] - 1  # Adjust for 0-based indexing
+            col_idx = parameter_mapping[col_select] - 1  # Adjust for 0-based indexing
+            value = df_matrix.iloc[row_idx, col_idx]
+            selected_values = [int(val) for val in str(value).split(',')]
+            result = pd.DataFrame({
+                " ": selected_values,
+                "Các Nguyên Tắc Sáng Tạo": [creative_principles[val] for val in selected_values]
+            })
+            return result
+        return pd.DataFrame(columns=[" ", "Các Nguyên Tắc Sáng Tạo"])
+
+    @output
+    @render.table
+    def selected_table():
+        return selected_value_calc()
+
+app = App(app_ui, server)
+</code></pre>
+</section>
+<section id="thông-số-kỹ-thuật" class="level2">
+<h2 class="anchored" data-anchor-id="thông-số-kỹ-thuật">39 Thông số kỹ thuật</h2>
+<section id="trọng-lượng-của-vật-thể-di-chuyển" class="level3">
+<h3 class="anchored" data-anchor-id="trọng-lượng-của-vật-thể-di-chuyển">1. <strong>Trọng lượng của vật thể di chuyển</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Trọng lượng là lực mà trọng lực tác động lên khối lượng của một vật thể. Đối với các vật thể di chuyển, lực này ảnh hưởng đến cách chúng tương tác với môi trường, chẳng hạn như các hệ thống hỗ trợ hoặc treo mà chúng dựa vào. Trọng lượng ảnh hưởng đến khả năng di chuyển hoặc vận chuyển của vật thể và ảnh hưởng đến năng lượng cần thiết để thay đổi vị trí của nó.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Nghĩ về cảm giác nặng của ba lô khi bạn mang nó. Nếu bạn thêm nhiều sách hơn, nó sẽ nặng hơn. Trọng lượng là mức độ nặng của một vật và nó quan trọng vì nó cho chúng ta biết cần bao nhiêu nỗ lực để di chuyển nó. Ví dụ, một chiếc xe ô tô nặng hơn một chiếc ô tô đồ chơi, vì vậy nó cần nhiều sức mạnh hơn để di chuyển.</li>
+</ul>
+</section>
+<section id="trọng-lượng-của-vật-thể-đứng-yên" class="level3">
+<h3 class="anchored" data-anchor-id="trọng-lượng-của-vật-thể-đứng-yên">2. <strong>Trọng lượng của vật thể đứng yên</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Tương tự như các vật thể di chuyển, trọng lượng của một vật thể đứng yên là lực mà nó tác động do trọng lực. Lực này ảnh hưởng đến tính toàn vẹn cấu trúc và độ ổn định của các bề mặt hoặc hỗ trợ mà vật thể đặt trên đó. Hiểu rõ trọng lượng này là rất quan trọng để thiết kế các hỗ trợ và đảm bảo rằng các vật thể đứng yên vẫn ổn định và an toàn dưới các điều kiện khác nhau.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Hãy tưởng tượng một tảng đá lớn không di chuyển. Trọng lượng của tảng đá đó cho chúng ta biết nó nặng bao nhiêu và nó đẩy xuống đất mạnh như thế nào. Điều này giúp chúng ta hiểu liệu mặt đất có thể giữ được nó hay không hoặc nếu cần có một sự hỗ trợ đặc biệt để nó không chìm hoặc đổ.</li>
+</ul>
+</section>
+<section id="chiều-dài-của-vật-thể-di-chuyển" class="level3">
+<h3 class="anchored" data-anchor-id="chiều-dài-của-vật-thể-di-chuyển">3. <strong>Chiều dài của vật thể di chuyển</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Chiều dài của một vật thể di chuyển có thể đề cập đến bất kỳ một kích thước tuyến tính nào của nó, không nhất thiết là chiều dài nhất. Đo lường này quan trọng để hiểu không gian mà vật thể chiếm, tính khí động học của nó và cách nó phù hợp hoặc tương tác với môi trường xung quanh.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Nghĩ về một đoàn tàu đồ chơi. Chiều dài của nó là từ đầu đến cuối. Điều này giúp chúng ta biết không gian mà nó cần để di chuyển xung quanh. Ví dụ, một đoàn tàu dài hơn cần một đường ray lớn hơn để di chuyển.</li>
+</ul>
+</section>
+<section id="chiều-dài-của-vật-thể-đứng-yên" class="level3">
+<h3 class="anchored" data-anchor-id="chiều-dài-của-vật-thể-đứng-yên">4. <strong>Chiều dài của vật thể đứng yên</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Chiều dài của một vật thể đứng yên cũng đề cập đến bất kỳ kích thước tuyến tính nào. Đo lường này giúp thiết kế không gian nơi vật thể sẽ được đặt và đảm bảo nó phù hợp chính xác trong vị trí dự kiến mà không gây cản trở các yếu tố khác.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Bây giờ hãy nghĩ về giường của bạn. Chiều dài của nó cũng từ một đầu đến đầu kia. Biết điều này giúp chúng ta quyết định nơi đặt nó trong phòng để nó vừa vặn mà không chặn cửa hoặc đồ nội thất khác.</li>
+</ul>
+</section>
+<section id="diện-tích-của-vật-thể-di-chuyển" class="level3">
+<h3 class="anchored" data-anchor-id="diện-tích-của-vật-thể-di-chuyển">5. <strong>Diện tích của vật thể di chuyển</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Diện tích của một vật thể di chuyển là bề mặt mà nó chiếm. Điều này có thể đề cập đến diện tích mặt phẳng (2D) bao quanh bởi đường viền của nó hoặc diện tích bề mặt bên ngoài của nó. Diện tích ảnh hưởng đến cách vật thể tương tác với các lực như lực cản không khí và xác định không gian mà nó cần để di chuyển.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Hãy tưởng tượng một chiếc diều bay. Diện tích là không gian mà nó chiếm trên bầu trời. Điều này giúp chúng ta biết không gian xung quanh cần để bay diều mà không va vào bất cứ thứ gì khác.</li>
+</ul>
+</section>
+<section id="diện-tích-của-vật-thể-đứng-yên" class="level3">
+<h3 class="anchored" data-anchor-id="diện-tích-của-vật-thể-đứng-yên">6. <strong>Diện tích của vật thể đứng yên</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Diện tích của một vật thể đứng yên, tương tự như của một vật thể di chuyển, đề cập đến bề mặt mà nó che phủ hoặc chiếm. Đo lường này quan trọng để hiểu cách vật thể tương tác với môi trường, đặc biệt là về các bề mặt tiếp xúc và yêu cầu không gian.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Nghĩ về một tấm thảm trên sàn nhà. Diện tích là không gian mà nó che phủ trên sàn. Điều này giúp chúng ta thấy bao nhiêu không gian trên sàn được che phủ và bao nhiêu còn lại để sử dụng cho các vật khác.</li>
+</ul>
+</section>
+<section id="thể-tích-của-vật-thể-di-chuyển" class="level3">
+<h3 class="anchored" data-anchor-id="thể-tích-của-vật-thể-di-chuyển">7. <strong>Thể tích của vật thể di chuyển</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Thể tích đo lường không gian ba chiều mà một vật thể chiếm. Đối với các vật thể di chuyển, điều này quan trọng để hiểu khả năng chứa, sức nổi và cách chúng tương tác với môi trường xung quanh. Thể tích ảnh hưởng đến việc lưu trữ, vận chuyển và năng lượng cần thiết cho sự di chuyển của vật thể.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Nghĩ về một chiếc hộp lớn mà bạn có thể di chuyển. Thể tích là không gian bên trong chiếc hộp đó. Điều này cho chúng ta biết có thể chứa bao nhiêu đồ chơi hoặc sách bên trong. Nếu chiếc hộp lớn hơn, nó có thể chứa nhiều thứ hơn.</li>
+</ul>
+</section>
+<section id="thể-tích-của-vật-thể-đứng-yên" class="level3">
+<h3 class="anchored" data-anchor-id="thể-tích-của-vật-thể-đứng-yên">8. <strong>Thể tích của vật thể đứng yên</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Thể tích của một vật thể đứng yên, giống như của một vật thể di chuyển, chỉ ra không gian mà nó chiếm. Đo lường này quan trọng để lập kế hoạch không gian, đảm bảo rằng vật thể phù hợp trong khu vực dự kiến và tương tác phù hợp với môi trường xung quanh.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Nghĩ về chiếc hộp đựng đồ chơi của bạn. Thể tích của nó cũng là không gian bên trong. Điều này giúp chúng ta biết có thể chứa bao nhiêu đồ chơi để giữ phòng gọn gàng.</li>
+</ul>
+</section>
+<section id="tốc-độ" class="level3">
+<h3 class="anchored" data-anchor-id="tốc-độ">9. <strong>Tốc độ</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Tốc độ là tốc độ mà một vật thể thay đổi vị trí theo thời gian. Nó là một tham số quan trọng để hiểu động học của các vật thể di chuyển, ảnh hưởng đến tốc độ mà chúng có thể di chuyển hoặc hoàn thành một quy trình. Tốc độ ảnh hưởng đến thời gian di chuyển, hiệu quả nhiên liệu và hiệu suất tổng thể.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Tốc độ là mức độ nhanh mà một vật di chuyển. Ví dụ, khi bạn chạy nhanh, bạn sẽ đi được nhiều hơn trong thời gian ngắn. Nếu bạn đi bộ chậm, sẽ mất nhiều thời gian hơn để đến cùng một địa điểm. Tốc độ cho chúng ta biết bạn có thể đi từ nơi này đến nơi khác nhanh như thế nào.</li>
+</ul>
+</section>
+<section id="lực" class="level3">
+<h3 class="anchored" data-anchor-id="lực">10. <strong>Lực</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Lực là bất kỳ sự tương tác nào làm thay đổi chuyển động hoặc tình trạng của một vật thể. Trong vật lý cổ điển, nó được định nghĩa là khối lượng nhân gia tốc (F = ma). Trong thực tế, lực là điều khiến các vật thể bắt đầu di chuyển, dừng lại hoặc thay đổi hướng. Hiểu rõ lực giúp thiết kế các hệ thống có thể chịu đựng hoặc sử dụng các tương tác này một cách hiệu quả.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Lực giống như một cú đẩy hoặc kéo. Nếu bạn đẩy một cái xích đu, bạn sử dụng lực để làm nó di chuyển. Nếu bạn kéo một chiếc ô tô đồ chơi bằng một sợi dây, bạn sử dụng lực để làm nó tiến lại gần. Lực giúp mọi thứ bắt đầu di chuyển, dừng lại hoặc thay đổi hướng.</li>
+</ul>
+</section>
+<section id="căng-thẳng-hoặc-áp-lực" class="level3">
+<h3 class="anchored" data-anchor-id="căng-thẳng-hoặc-áp-lực">11. <strong>Căng thẳng hoặc Áp lực</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Căng thẳng là lực nội tại trên một đơn vị diện tích trong vật liệu phát sinh từ các lực tác động từ bên ngoài. Áp lực là lực tác động trên một đơn vị diện tích lên bề mặt. Những khái niệm này rất quan trọng trong kỹ thuật và khoa học vật liệu để đảm bảo rằng các cấu trúc và vật liệu có thể chịu đựng các tải trọng mà không bị hỏng.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Căng thẳng hoặc áp lực là lực đẩy được phân bố trên một diện tích. Hãy tưởng tượng bạn ấn ngón tay cái lên một miếng đất sét. Bạn ấn càng mạnh, đất sét càng thay đổi hình dạng. Điều này giúp chúng ta hiểu được cần bao nhiêu lực để làm những thứ giữ vững dưới tác động của lực đẩy hoặc nén.</li>
+</ul>
+</section>
+<section id="hình-dạng" class="level3">
+<h3 class="anchored" data-anchor-id="hình-dạng">12. <strong>Hình dạng</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Hình dạng là các đường viền bên ngoài và hình dáng tổng thể của một vật thể hoặc hệ thống. Hình dạng ảnh hưởng đến tính khí động học, thẩm mỹ, chức năng và cách vật thể tương tác với môi trường xung quanh. Nó rất quan trọng trong thiết kế, sản xuất và tối ưu hóa hiệu suất.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Hình dạng là hình dáng bên ngoài của một vật thể. Một quả bóng là hình tròn, một cái hộp là hình vuông. Hình dạng có thể giúp một vật di chuyển trơn tru hơn, như cách mà một quả bóng tròn lăn dễ dàng hơn một cái hộp vuông.</li>
+</ul>
+</section>
+<section id="độ-ổn-định-của-cấu-trúc-vật-thể" class="level3">
+<h3 class="anchored" data-anchor-id="độ-ổn-định-của-cấu-trúc-vật-thể">13. <strong>Độ ổn định của cấu trúc vật thể</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Độ ổn định là sự toàn vẹn và nhất quán của các thành phần trong một hệ thống. Độ ổn định cao có nghĩa là hệ thống có thể duy trì cấu trúc và chức năng của nó theo thời gian mà không bị suy giảm. Các yếu tố như mòn, phản ứng hóa học và tháo rời làm giảm độ ổn định. Độ ổn định quan trọng để đảm bảo độ tin cậy và hiệu suất lâu dài.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Độ ổn định là mức độ mà một vật duy trì được sự vững chắc mà không bị hỏng. Nghĩ về một tòa tháp LEGO. Nếu nó được xây dựng tốt, nó sẽ không dễ dàng đổ. Nếu nó được xây dựng kém, nó sẽ nhanh chóng đổ. Độ ổn định giúp chúng ta biết mức độ mạnh mẽ và bền bỉ của một vật thể.</li>
+</ul>
+</section>
+<section id="độ-bền" class="level3">
+<h3 class="anchored" data-anchor-id="độ-bền">14. <strong>Độ bền</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Độ bền là khả năng của một vật thể chịu đựng các lực mà không bị vỡ hoặc biến dạng. Nó đo lường khả năng chống lại căng thẳng, va đập và các lực khác. Các vật liệu và cấu trúc bền bỉ là điều cần thiết cho an toàn, độ bền và hiệu suất trong các ứng dụng khác nhau.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Độ bền là khả năng mà một vật thể chịu được lực mà không bị vỡ. Hãy tưởng tượng một món đồ chơi nhựa mạnh mẽ không bị vỡ khi bạn làm rơi, so với một món đồ chơi giấy yếu dễ bị rách. Những vật bền bỉ kéo dài lâu hơn và có thể chịu được chơi mạnh.</li>
+</ul>
+</section>
+<section id="thời-gian-hoạt-động-của-vật-thể-di-chuyển" class="level3">
+<h3 class="anchored" data-anchor-id="thời-gian-hoạt-động-của-vật-thể-di-chuyển">15. <strong>Thời gian hoạt động của vật thể di chuyển</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Điều này đề cập đến thời gian mà một vật thể di chuyển có thể thực hiện chức năng dự định của nó trước khi cần bảo trì hoặc thay thế. Nó bao gồm tuổi thọ và độ bền, quan trọng để đánh giá độ tin cậy và hiệu quả của các hệ thống di chuyển.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là thời gian mà một vật thể có thể tiếp tục di chuyển hoặc làm việc. Ví dụ, một chiếc ô tô đồ chơi có pin có thể di chuyển cho đến khi hết pin. Biết điều này giúp chúng ta lên kế hoạch khi cần sạc lại hoặc thay pin.</li>
+</ul>
+</section>
+<section id="thời-gian-hoạt-động-của-vật-thể-đứng-yên" class="level3">
+<h3 class="anchored" data-anchor-id="thời-gian-hoạt-động-của-vật-thể-đứng-yên">16. <strong>Thời gian hoạt động của vật thể đứng yên</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Tương tự như các vật thể di chuyển, đây là thời gian mà một vật thể đứng yên có thể duy trì chức năng của nó trước khi hỏng. Hiểu điều này giúp lập kế hoạch bảo trì, đảm bảo độ tin cậy và thiết kế các hệ thống cho sử dụng lâu dài.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là thời gian mà một vật đứng yên có thể tiếp tục hoạt động. Hãy nghĩ về một đèn ngủ. Nó đứng yên một chỗ nhưng sáng cho đến khi hết điện. Biết điều này giúp chúng ta đảm bảo nó luôn hoạt động khi cần.</li>
+</ul>
+</section>
+<section id="nhiệt-độ" class="level3">
+<h3 class="anchored" data-anchor-id="nhiệt-độ">17. <strong>Nhiệt độ</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Nhiệt độ là thước đo năng lượng nhiệt bên trong một hệ thống. Nó ảnh hưởng đến các đặc tính vật liệu, các phản ứng và hiệu suất của các vật thể và hệ thống. Quản lý nhiệt độ rất quan trọng để duy trì điều kiện tối ưu và ngăn ngừa hư hỏng.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Nhiệt độ là mức độ nóng hoặc lạnh của một vật. Chúng ta sử dụng nó để biết khi nào cần mặc áo khoác khi trời lạnh bên ngoài hoặc khi nào cần quạt khi trời nóng. Nó cũng giúp trong việc nấu nướng, như nướng bánh quy ở nhiệt độ đúng.</li>
+</ul>
+</section>
+<section id="cường-độ-chiếu-sáng" class="level3">
+<h3 class="anchored" data-anchor-id="cường-độ-chiếu-sáng">18. <strong>Cường độ chiếu sáng</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Đây là thước đo lượng ánh sáng trên một đơn vị diện tích và bao gồm các đặc tính như độ sáng và chất lượng. Chiếu sáng đúng cách là rất quan trọng để đảm bảo tầm nhìn, an toàn và đạt được các hiệu ứng mong muốn trong các môi trường khác nhau.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là mức độ sáng của một nguồn sáng. Một đèn pin rất sáng và giúp bạn nhìn thấy trong bóng tối. Một đèn ngủ mờ không rất sáng nhưng giúp bạn nhìn đủ vào ban đêm. Các loại ánh sáng khác nhau được sử dụng cho các mục đích khác nhau.</li>
+</ul>
+</section>
+<section id="sử-dụng-năng-lượng-của-vật-thể-di-chuyển" class="level3">
+<h3 class="anchored" data-anchor-id="sử-dụng-năng-lượng-của-vật-thể-di-chuyển">19. <strong>Sử dụng năng lượng của vật thể di chuyển</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Điều này đề cập đến năng lượng cần thiết cho một vật thể di chuyển để thực hiện công việc, bao gồm năng lượng được cung cấp từ các nguồn bên ngoài như điện hoặc nhiên liệu. Sử dụng năng lượng hiệu quả rất quan trọng để hoạt động hiệu quả về chi phí và bền vững.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là lượng năng lượng mà một vật cần để di chuyển. Ví dụ, một chiếc ô tô sử dụng xăng để di chuyển. Một chiếc ô tô đồ chơi sử dụng pin. Biết mức năng lượng cần thiết giúp chúng ta đảm bảo có đủ nhiên liệu hoặc pin.</li>
+</ul>
+</section>
+<section id="sử-dụng-năng-lượng-của-vật-thể-đứng-yên" class="level3">
+<h3 class="anchored" data-anchor-id="sử-dụng-năng-lượng-của-vật-thể-đứng-yên">20. <strong>Sử dụng năng lượng của vật thể đứng yên</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Tương tự như các vật thể di chuyển, đây là năng lượng cần thiết cho một vật thể đứng yên để thực hiện các chức năng của nó. Quản lý sử dụng năng lượng rất quan trọng để đảm bảo hiệu quả và bền vững.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là lượng năng lượng mà một vật đứng yên cần để hoạt động. Một cái đèn sử dụng điện để sáng. Biết điều này giúp chúng ta đảm bảo cắm điện và có nguồn năng lượng sẵn có.</li>
+</ul>
+</section>
+<section id="công-suất" class="level3">
+<h3 class="anchored" data-anchor-id="công-suất">21. <strong>Công suất</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Công suất là tốc độ mà công việc được thực hiện hoặc năng lượng được chuyển giao. Nó đo lường hiệu quả và hiệu suất của các hệ thống, với công suất cao hơn chỉ ra công việc nhanh hơn hoặc mạnh mẽ hơn.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Công suất là mức độ nhanh mà một vật có thể làm việc. Ví dụ, một chiếc quạt mạnh di chuyển không khí nhiều hơn một chiếc quạt nhỏ trong cùng một khoảng thời gian. Công suất cao hơn nghĩa là mọi thứ được hoàn thành nhanh hơn.</li>
+</ul>
+</section>
+<section id="mất-năng-lượng" class="level3">
+<h3 class="anchored" data-anchor-id="mất-năng-lượng">22. <strong>Mất năng lượng</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Điều này đề cập đến phần năng lượng không đóng góp vào công việc mong muốn, thường mất dưới dạng nhiệt hoặc ma sát. Giảm thiểu mất năng lượng rất quan trọng để cải thiện hiệu quả và giảm chi phí.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là khi năng lượng bị lãng phí và không được sử dụng cho công việc chính. Như nếu pin của ô tô đồ chơi hết chỉ vì để trong nắng thay vì được sử dụng để làm ô tô di chuyển. Tiết kiệm năng lượng giúp mọi thứ kéo dài lâu hơn.</li>
+</ul>
+</section>
+<section id="mất-vật-chất" class="level3">
+<h3 class="anchored" data-anchor-id="mất-vật-chất">23. <strong>Mất vật chất</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Điều này liên quan đến sự mất mát một phần hoặc toàn bộ các vật liệu, có thể ảnh hưởng đến chức năng và hiệu quả của hệ thống. Quản lý mất vật chất rất quan trọng để duy trì hiệu suất và giảm lãng phí.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là khi các bộ phận hoặc vật liệu bị mất. Như nếu robot đồ chơi của bạn mất một bánh xe, nó không thể di chuyển đúng cách nữa. Giữ theo dõi tất cả các bộ phận giúp mọi thứ hoạt động đúng.</li>
+</ul>
+</section>
+<section id="mất-thông-tin" class="level3">
+<h3 class="anchored" data-anchor-id="mất-thông-tin">24. <strong>Mất thông tin</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Điều này bao gồm sự mất dữ liệu hoặc thông tin cảm biến, có thể cản trở việc ra quyết định và hoạt động của hệ thống. Đảm bảo tính toàn vẹn và khả năng truy cập dữ liệu là rất quan trọng để hoạt động hiệu quả.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là khi thông tin quan trọng bị mất. Như nếu bạn quên nơi đặt bài tập về nhà của mình. Giữ thông tin an toàn giúp chúng ta tìm thấy những gì cần thiết khi cần.</li>
+</ul>
+</section>
+<section id="mất-thời-gian" class="level3">
+<h3 class="anchored" data-anchor-id="mất-thời-gian">25. <strong>Mất thời gian</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Thời gian mất trong quá trình có thể giảm hiệu quả và năng suất. Giảm thời gian chu kỳ và cải thiện quy trình làm việc là rất quan trọng để tối ưu hóa hiệu suất.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là khi thời gian bị lãng phí. Như nếu bạn mất quá nhiều thời gian để tìm một món đồ chơi bị mất, bạn có ít thời gian hơn để chơi. Sử dụng thời gian tốt</li>
+</ul>
+<p>giúp chúng ta hoàn thành nhiều việc hơn và có nhiều niềm vui hơn.</p>
+</section>
+<section id="số-lượng-vật-chất" class="level3">
+<h3 class="anchored" data-anchor-id="số-lượng-vật-chất">26. <strong>Số lượng vật chất</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Điều này đo lường lượng vật liệu hoặc thành phần trong một hệ thống. Quản lý số lượng rất quan trọng để duy trì sự cân bằng, đảm bảo chức năng và tối ưu hóa việc sử dụng tài nguyên.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là mức độ của một cái gì đó. Như đếm tất cả các mảnh LEGO của bạn để đảm bảo bạn có đủ để xây một lâu đài. Biết số lượng giúp chúng ta đảm bảo có những gì cần thiết.</li>
+</ul>
+</section>
+<section id="độ-tin-cậy" class="level3">
+<h3 class="anchored" data-anchor-id="độ-tin-cậy">27. <strong>Độ tin cậy</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Độ tin cậy là khả năng của một hệ thống hoạt động nhất quán dưới các điều kiện xác định. Độ tin cậy cao là rất quan trọng để đảm bảo hiệu suất, an toàn và sự hài lòng của khách hàng.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là mức độ mà một vật hoạt động tốt mỗi lần. Như nếu món đồ chơi yêu thích của bạn luôn hoạt động khi bạn bật nó. Những thứ đáng tin cậy không dễ hỏng và hoạt động khi cần.</li>
+</ul>
+</section>
+<section id="độ-chính-xác-của-phép-đo" class="level3">
+<h3 class="anchored" data-anchor-id="độ-chính-xác-của-phép-đo">28. <strong>Độ chính xác của phép đo</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Điều này đề cập đến mức độ gần của một giá trị đo lường so với giá trị thực. Độ chính xác cao là rất quan trọng để kiểm soát chất lượng, đảm bảo hoạt động chính xác và giảm lỗi.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là mức độ gần của một phép đo so với thực tế. Như nếu bạn đo chiều cao của mình bằng thước kẻ và nó cho thấy số chính xác. Các phép đo chính xác giúp chúng ta biết kích thước hoặc số lượng thật.</li>
+</ul>
+</section>
+<section id="độ-chính-xác-trong-sản-xuất" class="level3">
+<h3 class="anchored" data-anchor-id="độ-chính-xác-trong-sản-xuất">29. <strong>Độ chính xác trong sản xuất</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Độ chính xác trong sản xuất đảm bảo rằng các sản phẩm đáp ứng các tiêu chuẩn quy định và hoạt động như dự định. Độ chính xác cao giảm thiểu các lỗi và cải thiện chất lượng.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là mức độ chính xác mà mọi thứ được sản xuất. Như nếu mỗi mảnh LEGO vừa khít hoàn hảo với mọi mảnh khác. Độ chính xác đảm bảo mọi thứ hoạt động tốt cùng nhau.</li>
+</ul>
+</section>
+<section id="tác-hại-bên-ngoài-ảnh-hưởng-đến-vật-thể" class="level3">
+<h3 class="anchored" data-anchor-id="tác-hại-bên-ngoài-ảnh-hưởng-đến-vật-thể">30. <strong>Tác hại bên ngoài ảnh hưởng đến vật thể</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Điều này đo lường khả năng chịu đựng của các vật thể trước sự hư hại từ các nguồn bên ngoài. Giảm thiểu tác hại bên ngoài rất quan trọng để bảo vệ các hệ thống và đảm bảo tuổi thọ.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là mức độ hư hại có thể đến từ bên ngoài. Như nếu mưa làm rỉ các đồ chơi ngoài trời của bạn. Bảo vệ mọi thứ khỏi tác hại giúp chúng kéo dài lâu hơn.</li>
+</ul>
+</section>
+<section id="yếu-tố-có-hại-do-vật-thể-gây-ra" class="level3">
+<h3 class="anchored" data-anchor-id="yếu-tố-có-hại-do-vật-thể-gây-ra">31. <strong>Yếu tố có hại do vật thể gây ra</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Đây là các tác động tiêu cực do chính hệ thống tạo ra, có thể làm giảm hiệu quả hoặc chất lượng. Quản lý các yếu tố này rất quan trọng để tối ưu hóa hiệu suất và giảm thiểu các tác động tiêu cực.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là khi một vật gây ra vấn đề cho chính nó. Như nếu một đồ chơi có cạnh sắc có thể làm bạn bị thương. Khắc phục những vấn đề này làm mọi thứ an toàn hơn để sử dụng.</li>
+</ul>
+</section>
+<section id="dễ-sản-xuất" class="level3">
+<h3 class="anchored" data-anchor-id="dễ-sản-xuất">32. <strong>Dễ sản xuất</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Điều này đề cập đến mức độ dễ dàng và hiệu quả mà một vật thể có thể được sản xuất. Cải thiện dễ sản xuất giảm chi phí, tăng tốc độ sản xuất và nâng cao hiệu quả tổng thể.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là mức độ dễ dàng để làm một cái gì đó. Như nếu dễ dàng xây một món đồ chơi chỉ với vài bước. Dễ sản xuất nghĩa là mọi thứ có thể được làm nhanh chóng và tốt.</li>
+</ul>
+</section>
+<section id="dễ-vận-hành" class="level3">
+<h3 class="anchored" data-anchor-id="dễ-vận-hành">33. <strong>Dễ vận hành</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Điều này đo lường mức độ đơn giản và dễ dàng để sử dụng một hệ thống. Dễ vận hành cao cải thiện trải nghiệm người dùng, giảm lỗi và tăng năng suất.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là mức độ dễ dàng để sử dụng một cái gì đó. Như nếu một đồ chơi có các nút đơn giản mà bạn có thể nhấn để làm nó chạy. Dễ vận hành nghĩa là bất cứ ai cũng có thể sử dụng mà không gặp khó khăn.</li>
+</ul>
+</section>
+<section id="dễ-sửa-chữa" class="level3">
+<h3 class="anchored" data-anchor-id="dễ-sửa-chữa">34. <strong>Dễ sửa chữa</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Điều này chỉ ra mức độ nhanh chóng và dễ dàng mà một hệ thống có thể được sửa chữa khi gặp vấn đề. Dễ sửa chữa cao giảm thời gian ngừng hoạt động và chi phí bảo trì.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là mức độ dễ dàng để sửa chữa một cái gì đó. Như nếu đồ chơi của bạn bị hỏng và bạn có thể dễ dàng dán lại nó. Dễ sửa chữa nghĩa là mọi thứ có thể được sửa chữa nhanh chóng và sử dụng lại.</li>
+</ul>
+</section>
+<section id="khả-năng-thích-nghi-hoặc-đa-năng" class="level3">
+<h3 class="anchored" data-anchor-id="khả-năng-thích-nghi-hoặc-đa-năng">35. <strong>Khả năng thích nghi hoặc đa năng</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Điều này đo lường khả năng của một hệ thống để phản ứng với sự thay đổi và hoạt động dưới các điều kiện khác nhau. Khả năng thích nghi cao là quan trọng để linh hoạt và chuẩn bị cho tương lai các hệ thống.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là mức độ mà một vật có thể được sử dụng theo nhiều cách khác nhau. Như nếu một chiếc ô tô đồ chơi cũng có thể là một chiếc thuyền trong nước. Những thứ đa năng có thể được sử dụng theo nhiều cách thú vị.</li>
+</ul>
+</section>
+<section id="độ-phức-tạp-của-thiết-bị" class="level3">
+<h3 class="anchored" data-anchor-id="độ-phức-tạp-của-thiết-bị">36. <strong>Độ phức tạp của thiết bị</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Độ phức tạp đề cập đến số lượng và sự đa dạng của các thành phần và các tương tác của chúng trong một hệ thống. Quản lý độ phức tạp rất quan trọng để đảm bảo độ tin cậy, khả năng sử dụng và bảo trì.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là mức độ phức tạp của một vật. Như nếu một robot đồ chơi có nhiều bộ phận và dây điện. Những thứ đơn giản dễ hiểu và sử dụng hơn, trong khi những thứ phức tạp có thể làm nhiều hơn nhưng khó hiểu hơn.</li>
+</ul>
+</section>
+<section id="khó-khăn-trong-việc-phát-hiện-và-đo-lường" class="level3">
+<h3 class="anchored" data-anchor-id="khó-khăn-trong-việc-phát-hiện-và-đo-lường">37. <strong>Khó khăn trong việc phát hiện và đo lường</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Điều này bao gồm các thách thức trong việc đo lường hoặc giám sát một hệ thống một cách chính xác. Giảm bớt những khó khăn này rất quan trọng để quản lý và kiểm soát hiệu quả.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là mức độ khó khăn để kiểm tra hoặc đo lường một cái gì đó. Như nếu bạn cần dụng cụ đặc biệt để thấy bao nhiêu không khí trong một quả bóng. Đo lường dễ hơn nghĩa là bạn có thể kiểm tra mọi thứ nhanh chóng.</li>
+</ul>
+</section>
+<section id="mức-độ-tự-động-hóa" class="level3">
+<h3 class="anchored" data-anchor-id="mức-độ-tự-động-hóa">38. <strong>Mức độ tự động hóa</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Tự động hóa đề cập đến mức độ mà một hệ thống có thể hoạt động độc lập mà không cần sự can thiệp của con người. Tự động hóa cao hơn có thể tăng hiệu quả, giảm lỗi con người và giảm chi phí vận hành.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là mức độ mà một vật có thể tự hoạt động mà không cần sự giúp đỡ. Như nếu một robot có thể tự dọn dẹp phòng của bạn. Tự động hóa nhiều hơn nghĩa là ít công việc hơn cho bạn.</li>
+</ul>
+</section>
+<section id="năng-suất" class="level3">
+<h3 class="anchored" data-anchor-id="năng-suất">39. <strong>Năng suất</strong></h3>
+<ul>
+<li><strong>Giải thích chi tiết</strong>: Năng suất đo lường sản lượng hoặc hiệu suất của một hệ thống trên một đơn vị thời gian. Cải thiện năng suất rất quan trọng để tối ưu hóa tài nguyên, tăng sản lượng và giảm chi phí.</li>
+<li><strong>Ngữ cảnh đơn giản</strong>: Đây là mức độ mà công việc được hoàn thành trong một khoảng thời gian. Như nếu bạn xây nhiều ngôi nhà LEGO hơn trong một giờ so với trước đây. Năng suất cao hơn nghĩa là nhiều việc được hoàn thành nhanh hơn.</li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

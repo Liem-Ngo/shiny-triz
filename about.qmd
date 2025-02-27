@@ -1,0 +1,188 @@
+---
+title: Shinylive in Quarto example
+format: html
+filters:
+  - shinylive
+---
+### Editor with app
+
+If you want to display an editor panel with along with the running application, use `#| components: [editor, viewer]`. Users will be able to use the editor to modify the code and re-run the application.
+
+```{shinylive-python}
+#| standalone: true
+#| viewerHeight: 600
+from shiny import App, ui, render
+import pandas as pd
+from pyodide.http import open_url
+from shiny import App, Inputs, Outputs, Session, reactive, render, ui
+
+# Define the directory and file path
+URL="https://raw.githubusercontent.com/Liem-Ngo/test-shiny/main/triz_45_1.csv"
+file_path = open_url(URL)
+
+# Define parameter mapping for 45x45 matrix
+parameter_mapping = {
+    "1. Thiết Kế/Khả Năng/Phương Tiện (Design Spec/ Capability/Means)": 1,
+    "2. Chi Phí Thiết Kế (Design Cost)": 2,
+    "3. Thời Gian Thiết Kế (Design Time)": 3,
+    "4. Rủi Ro Thiết Kế (Design Risk)": 4,
+    "5. Giao Diện Thiết Kế (Design Interfaces)": 5,
+    "6. Quy Cách Sản Xuất/Khả Năng/Phương Tiện (Production Spec/Capability/Means)": 6,
+    "7. Chi Phí Sản Xuất (Production Cost)": 7,
+    "8. Thời Gian Sản Xuất (Production Time)": 8,
+    "9. Rủi Ro Sản Xuất (Production Risk)": 9,
+    "10. Giao Diện Sản Xuất (Production Interfaces)": 10,
+    "11. Thông Số/Khả Năng/Phương Tiện Cung Cấp (Supply Spec/Capability/Means)": 11,
+    "12. Chi Phí Cung Ứng (Supply Cost)": 12,
+    "13. Thời Gian Cung Ứng (Supply Time)": 13,
+    "14. Rủi Ro Nguồn Cung (Supply Risk)": 14,
+    "15. Giao Diện Cung Ứng (Supply Interfaces)": 15,
+    "16. Thông Số Hỗ Trợ/Khả Năng/Phương Tiện (Support Spec/ Capability/Means)": 16,
+    "17. Chi Phí Hỗ Trợ (Support Cost)": 17,
+    "18. Thời Gian Hỗ Trợ (Support Time)": 18,
+    "19. Rủi Ro Hỗ Trợ (Support Risk)": 19,
+    "20. Giao Diện Hỗ Trợ (Support Interfaces)": 20,
+    "21. Doanh Thu Khách Hàng (Customer Revenue)": 21,
+    "22. Nhu Cầu Thị Trường (Market Demand)": 22,
+    "23. Phản Hồi Của Khách Hàng (Customer Feedback)": 23,
+    "24. Lòng Trung Thành Của Khách Hàng (Customer Loyalty)": 24,
+    "25. Lượng Thông Tin (Amount Of Information)": 25,
+    "26. Lưu Lượng Truyền Thông (Communication Flow)": 26,
+    "27. Tính Tiện Lợi (Convenience)": 27,
+    "28. Khả Năng Thích Ứng/Tính Linh Hoạt (Adaptability/ Versatility)": 28,
+    "29. Độ Phức Tạp Của Hệ Thống (System Complexity)": 29,
+    "30. Độ Phức Tạp Kiểm Soát (Control Complexity)": 30,
+    "31. Áp Lực /Stress (Tension/Stress)": 31,
+    "32. Tính Ổn Định/Khả Năng Phục Hồi (Stability/Resilience)": 32,
+    "33. Tính Tự Chủ (Autonomy)": 33,
+    "34. Sự Gắn Kết (Belonging)": 34,
+    "35. Năng Lực Cạnh Tranh (Competence)": 35,
+    "36. Cảm Giác Về Sự Tiến Bộ (Sense Of Progress)": 36,
+    "37. Yếu Tố Vô Hình Tích Cực (Positive Intangibles)": 37,
+    "38. Yếu Tố Vô Hình Tiêu Cực (Negative Intangibles)": 38,
+    "39. Tin Tưởng (Trust)": 39,
+    "40. Sự Cam Kết (Engagement)": 40,
+    "41. Ý Nghĩa (Meaning)": 41,
+    "42. Khả Năng Đo Lường (Ability To Measure)": 42,
+    "43. Độ Chính Xác Của Phép Đo (Measurement Accuracy)": 43,
+    "44. Yếu Tố Có Hại Ảnh Hưởng Đến Hệ Thống (Harmful Factors Affecting System)": 44,
+    "45. Yếu Tố Có Hại Do Hệ Thống Tạo Ra (System Generated Harmful Factors)": 45
+}
+
+
+# Define creative principles mapping and replace <br> with a space
+creative_principles = {
+    0: "Lựa chọn tham số khác",
+    1: "Nguyên tắc phân nhỏ (Segmentation)",
+    2: "Nguyên tắc “tách khỏi” (Taking out)",
+    3: "Nguyên tắc phẩm chất cục bộ (Local quality)",
+    4: "Nguyên tắc phản đối xứng (Asymmetry)",
+    5: "Nguyên tắc kết hợp (Merging)",
+    6: "Nguyên tắc vạn năng (Universality)",
+    7: "Nguyên tắc “chứa trong” (Nested Doll)",
+    8: "Nguyên tắc phản trọng lượng (Anti-Weight)",
+    9: "Nguyên tắc gây ứng suất sơ bộ (Preliminary Anti-Action)",
+    10: "Nguyên tắc thực hiện sơ bộ (Preliminary Action)",
+    11: "Nguyên tắc dự phòng (Beforehand Cushioning)",
+    12: "Nguyên tắc đẳng thế (Equipotentiality)",
+    13: "Nguyên tắc đảo ngược (The Other Way Round)",
+    14: "Nguyên tắc cầu (tròn) hóa (Spheroidality - Curvature)",
+    15: "Nguyên tắc linh động (Dynamics)",
+    16: "Nguyên tắc giải “thiếu” hoặc “thừa” (Partial or Excessive Actions)",
+    17: "Nguyên tắc chuyển sang chiều khác (Another Dimension)",
+    18: "Nguyên tắc sử dụng các dao động cơ học (Mechanical vibration)",
+    19: "Nguyên tắc tác động theo chu kỳ (Periodic Action)",
+    20: "Nguyên tắc liên tục tác động có ích (Continuity of Useful Action)",
+    21: "Nguyên tắc “vượt nhanh” (Skipping)",
+    22: "Nguyên tắc biến hại thành lợi (\"Blessing in Disguise\" or \"Turn Lemons into Lemonade\")",
+    23: "Nguyên tắc quan hệ phản hồi (Feedback)",
+    24: "Nguyên tắc sử dụng trung gian (Intermediary)",
+    25: "Nguyên tắc tự phục vụ (Self-service)",
+    26: "Nguyên tắc sao chép (Copying)",
+    27: "Nguyên tắc “rẻ” thay cho “đắt” (Cheap Short-Living Objects)",
+    28: "Thay thế sơ đồ cơ học (Mechanics Substitution)",
+    29: "Sử dụng các kết cấu khí và lỏng (Pneumatics and Hydraulics)",
+    30: "Sử dụng vỏ dẻo và màng mỏng (Flexible Shells and Thin Films)",
+    31: "Sử dụng các vật liệu nhiều lỗ (Porous Materials)",
+    32: "Nguyên tắc thay đổi màu sắc (Color Changes)",
+    33: "Nguyên tắc đồng nhất (Homogeneity)",
+    34: "Nguyên tắc phân hủy hoặc tái sinh các phần (Discarding and Recovering)",
+    35: "Thay đổi các thông số hóa lý của đối tượng (Parameter Changes)",
+    36: "Sử dụng chuyển pha (Phase Transitions)",
+    37: "Sử dụng sự nở nhiệt (Thermal Expansion)",
+    38: "Sử dụng các chất oxy hóa mạnh (Strong Oxidants or Boosted Interactions)",
+    39: "Thay đổi độ trơ (Inert Atmosphere)",
+    40: "Sử dụng các vật liệu hợp thành (Composite Structures)"
+}
+
+# Define the UI components
+app_ui = ui.page_fluid(
+    ui.layout_sidebar(
+        ui.panel_sidebar(
+            ui.h3("Matrix 45"),
+            ui.input_select(
+                "col_select",
+                "Tốt lên:",
+                list(parameter_mapping.keys()),
+                width="100%"
+            ),
+            ui.input_select(
+                "row_select",
+                "Xấu đi:",
+                list(parameter_mapping.keys()),
+                width="100%"
+            ),
+            ui.input_action_button("submitbutton", "Submit", class_="btn btn-primary", width="100%"),
+        ),
+        ui.panel_main(
+            ui.h3(" "),
+            ui.output_table("selected_table", class_="table table-sm table-striped"),
+            ui.HTML("<style> .table { font-size: 15px; text-align: left; } </style>"),
+        ),
+        style="font-size: 15px; padding: 0px;"
+    ),
+    style="font-size: 15px; padding: 0px;"
+)
+
+def server(input: Inputs, output: Outputs, session: Session):
+    @reactive.Calc
+    def read_file():
+        try:
+            df = pd.read_csv(file_path, delimiter=';')
+            return df
+        except Exception as e:
+            return pd.DataFrame({"Error": [f"Could not load the file: {str(e)}"]})
+
+    @reactive.Calc
+    def selected_value_calc():
+        df_matrix = read_file()
+        if "Error" in df_matrix.columns:
+            return df_matrix
+        
+        if input.submitbutton() > 0:
+            row_select = input.row_select()
+            col_select = input.col_select()
+            row_idx = parameter_mapping[row_select] - 1 # Adjust for 0-based indexing
+            col_idx = parameter_mapping[col_select] - 1  # Adjust for 0-based indexing
+            try:
+                value = df_matrix.iloc[row_idx, col_idx]
+                selected_values = [int(val) for val in str(value).split(',')]
+                result = pd.DataFrame({
+                    " ": selected_values,
+                    "Các Nguyên Tắc Sáng Tạo": [creative_principles[val] for val in selected_values]
+                })
+                return result
+            except Exception as e:
+                return pd.DataFrame({"Error": [f"Error processing selection: {str(e)}"]})
+        
+        return pd.DataFrame(columns=[" ", "Các Nguyên Tắc Sáng Tạo"])
+
+    @output
+    @render.table
+    def selected_table():
+        return selected_value_calc()
+
+app = App(app_ui, server)
+
+
+```
