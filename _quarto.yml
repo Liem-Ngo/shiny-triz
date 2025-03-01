@@ -16,7 +16,8 @@ website:
         text: TRIZ-test         
       - href: 9w.qmd
         text: 9w-test         
-                
+      - href: 5whys.qmd
+        text: 5whys-test                   
 format:
   html:
     theme: cosmo
