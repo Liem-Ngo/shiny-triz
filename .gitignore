@@ -24,3 +24,4 @@ _quarto_publish.yml
 # Quarto rendering
 output/
 _site/
+/.quarto/
