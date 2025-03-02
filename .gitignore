@@ -1,2 +1,26 @@
-/.quarto/
-.Rproj.user
+# R specific
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+
+# Quarto specific
+*.html
+*.pdf
+*.docx
+*.odt
+*.pptx
+*.epub
+*.zip
+*.qmd
+
+# Quarto cache and log files
+.quarto/
+_quarto.yml
+
+# Quarto publishing
+_quarto_publish.yml
+
+# Quarto rendering
+output/
+_site/
