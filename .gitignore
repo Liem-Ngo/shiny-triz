@@ -5,7 +5,6 @@
 .Rproj.user/
 
 # Quarto specific
-*.html
 *.pdf
 *.docx
 *.odt
