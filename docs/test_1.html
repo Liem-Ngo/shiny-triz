@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRIZ Universal Principle: Realistic Animation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+            color: #333;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 5px;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            background-color: white;
+            width: 100%;
+            height: auto;
+            margin: 0 auto 15px auto;
+            display: block;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 4px;
+            touch-action: manipulation;
+        }
+        h1 {
+            color: #333;
+            margin: 10px 0 15px 0;
+            font-size: clamp(20px, 5vw, 28px);
+            line-height: 1.3;
+        }
+        .controls {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+        button {
+            padding: 15px 20px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 60px;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            -webkit-tap-highlight-color: transparent;
+        }
+        button:hover {
+            background-color: #1976D2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        button.active {
+            transform: scale(1.02);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
+        }
+        #phase1Btn {
+            background-color: #4CAF50;
+        }
+        #phase1Btn:hover {
+            background-color: #388E3C;
+        }
+        #phase2Btn {
+            background-color: #FFC107;
+        }
+        #phase2Btn:hover {
+            background-color: #FFA000;
+        }
+        .phase {
+            margin: 10px auto;
+            padding: 12px 20px;
+            font-weight: bold;
+            font-size: 16px;
+            display: inline-block;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            max-width: 90%;
+        }
+        .info {
+            margin: 15px auto 0 auto;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: left;
+            line-height: 1.5;
+            font-size: 15px;
+        }
+        .info ul {
+            padding-left: 20px;
+        }
+        .info li {
+            margin-bottom: 8px;
+        }
+        @media (min-width: 600px) {
+            .controls {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            button {
+                width: auto;
+                min-width: 180px;
+                min-height: 50px;
+            }
+            .phase {
+                font-size: 18px;
+            }
+            .info {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TRIZ Universal Principle: One Tool, Two Functions</h1>
+        
+        <div class="phase" id="phaseIndicator">Select a phase to begin</div>
+        
+        <canvas id="animationCanvas" width="700" height="400"></canvas>
+        
+        <div class="controls">
+            <button id="phase1Btn">Screwdriver Function</button>
+            <button id="phase2Btn">Electrical Tester Function</button>
+        </div>
+        
+        <div class="info">
+            <p>This animation demonstrates the TRIZ "Universal Principle" by showing a single tool performing two distinct functions:</p>
+            <ul>
+                <li><strong>Screwdriver Function:</strong> The tool drives a screw into a wooden surface.</li>
+                <li><strong>Electrical Tester Function:</strong> The same tool tests an electrical outlet, with the neon bulb lighting up when detecting voltage.</li>
+            </ul>
+            <p>This exemplifies the principle of enhancing an object to perform multiple tasks, reducing the need for separate tools.</p>
+        </div>
+    </div>
+    
+    <script>
+        // Get canvas and context
+        const canvas = document.getElementById('animationCanvas');
+        const ctx = canvas.getContext('2d');
+        const phaseIndicator = document.getElementById('phaseIndicator');
+        const phase1Btn = document.getElementById('phase1Btn');
+        const phase2Btn = document.getElementById('phase2Btn');
+        
+        // Detect if we're on a mobile device
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+        
+        // Set canvas dimensions
+        function setCanvasDimensions() {
+            // Set canvas display dimensions based on device
+            const containerWidth = canvas.parentElement.clientWidth;
+            const aspectRatio = 700 / 400; // original width/height
+            
+            // Set canvas internal dimensions - make it slightly smaller on mobile
+            canvas.width = Math.min(700, containerWidth - 10);
+            canvas.height = canvas.width / aspectRatio;
+            
+            // Update scale factor for drawing elements
+            scaleFactor = canvas.width / 700; // Base scale on canvas width
+            
+            // Set positions differently for mobile
+            if (isMobile) {
+                // Mobile-specific position adjustments
+                screwX = 150;
+                screwY = 220; // Move screw up on mobile
+                outletX = 450;
+                outletY = 210; // Move outlet up on mobile
+                woodY = 200 - woodThickness/2; // Adjust for thicker wood on mobile
+            } else {
+                // Desktop positions
+                screwX = 150;
+                screwY = 250;
+                outletX = 450;
+                outletY = 260;
+                woodY = 250 - woodThickness/2; // Adjust for thicker wood on desktop
+            }
+        }
+        
+        // Add global scale factor and positioning variables
+        let scaleFactor = 1;
+        let screwX = 150;
+        let screwY = 250;
+        let outletX = 450;
+        let outletY = 260;
+        let woodY = 250;
+        const woodThickness = 75; // Define wood thickness first
+        
+        // Call on initial load
+        setCanvasDimensions();
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            setCanvasDimensions();
+            // Redraw current state
+            if (currentPhase === 0) {
+                drawInitialState();
+            } else if (currentPhase === 1) {
+                drawScrewdriverPhase(animationProgress);
+            } else if (currentPhase === 2) {
+                drawTesterPhase(animationProgress);
+            }
+        });
+        
+        // Create an optimized version of the wood pattern
+        function createWoodPattern() {
+            const offscreenCanvas = document.createElement('canvas');
+            offscreenCanvas.width = 600;
+            offscreenCanvas.height = woodThickness;
+            const offCtx = offscreenCanvas.getContext('2d');
+            
+            // Light wood base color
+            const woodGradient = offCtx.createLinearGradient(0, 0, 0, woodThickness);
+            woodGradient.addColorStop(0, '#b07941');
+            woodGradient.addColorStop(0.5, '#986530');
+            woodGradient.addColorStop(1, '#8b5a2b');
+            
+            offCtx.fillStyle = woodGradient;
+            offCtx.fillRect(0, 0, 600, woodThickness);
+            
+            // Wood grain texture
+            offCtx.strokeStyle = 'rgba(60, 30, 0, 0.1)';
+            offCtx.lineWidth = 1;
+            
+            // Horizontal grain lines
+            for (let i = 0; i < 600; i += 15) {
+                offCtx.beginPath();
+                offCtx.moveTo(i, 0);
+                offCtx.lineTo(i, woodThickness);
+                offCtx.stroke();
+            }
+            
+            // Some knots in the wood (just a few for mobile)
+            for (let i = 0; i < 5; i++) {
+                const x = Math.random() * 600;
+                const y = Math.random() * woodThickness;
+                const radius = 2 + Math.random() * 5;
+                
+                const knotGradient = offCtx.createRadialGradient(x, y, 0, x, y, radius * 2);
+                knotGradient.addColorStop(0, '#704214');
+                knotGradient.addColorStop(0.7, '#7e4a16');
+                knotGradient.addColorStop(1, '#986530');
+                
+                offCtx.fillStyle = knotGradient;
+                offCtx.beginPath();
+                offCtx.ellipse(x, y, radius, radius * 0.8, 0, 0, Math.PI * 2);
+                offCtx.fill();
+            }
+            
+            // Add some horizontal grain lines for thicker wood
+            offCtx.strokeStyle = 'rgba(60, 30, 0, 0.15)';
+            for (let i = 0; i < woodThickness; i += 15) {
+                offCtx.beginPath();
+                offCtx.moveTo(0, i);
+                offCtx.lineTo(600, i);
+                offCtx.stroke();
+            }
+            
+            return offscreenCanvas;
+        }
+        
+        const woodPattern = createWoodPattern();
+        
+        // Animation variables
+        let currentPhase = 0; // 0 = none, 1 = screwdriver, 2 = tester
+        let animationStartTime = null;
+        let animationProgress = 0; // 0 to 1 for animation progress
+        let animationFrame = null;
+        let isGlowing = false;
+        
+        // Prevent double-taps from zooming
+        document.addEventListener('touchstart', function(event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Add touchstart listeners to buttons for faster mobile response
+        phase1Btn.addEventListener('touchstart', function() {
+            this.classList.add('active');
+        }, { passive: true });
+        
+        phase2Btn.addEventListener('touchstart', function() {
+            this.classList.add('active');
+        }, { passive: true });
+        
+        document.addEventListener('touchend', function() {
+            phase1Btn.classList.remove('active');
+            phase2Btn.classList.remove('active');
+        }, { passive: true });
+        
+        // Drawing functions
+        function drawScrewdriver(x, y, glowing) {
+            // Save context for transformations
+            ctx.save();
+            ctx.translate(x * scaleFactor, y * scaleFactor);
+            ctx.scale(scaleFactor, scaleFactor);
+            
+            // Shadows
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 10 * scaleFactor;
+            ctx.shadowOffsetX = 3 * scaleFactor;
+            ctx.shadowOffsetY = 3 * scaleFactor;
+            
+            // Handle (red, transparent with gradient)
+            const handleGradient = ctx.createLinearGradient(-18, -80, 18, -20);
+            handleGradient.addColorStop(0, '#d40000');
+            handleGradient.addColorStop(0.5, '#ff2222');
+            handleGradient.addColorStop(1, '#d40000');
+            
+            ctx.fillStyle = handleGradient;
+            ctx.beginPath();
+            ctx.roundRect(-18, -80, 36, 65, 8);
+            ctx.fill();
+            
+            // Cap at top of handle
+            ctx.fillStyle = '#aaa';
+            ctx.beginPath();
+            ctx.ellipse(0, -82, 18, 6, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Handle-shaft connection
+            ctx.fillStyle = '#aaa';
+            ctx.beginPath();
+            ctx.roundRect(-12, -20, 24, 10, 3);
+            ctx.fill();
+            
+            // Reset shadow for neon bulb
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            
+            // Neon bulb inside handle
+            if (glowing) {
+                // Glow effect
+                ctx.beginPath();
+                const glowGradient = ctx.createRadialGradient(0, -60, 0, 0, -60, 25);
+                glowGradient.addColorStop(0, 'rgba(255, 255, 0, 1)');
+                glowGradient.addColorStop(0.3, 'rgba(255, 165, 0, 0.8)');
+                glowGradient.addColorStop(1, 'rgba(255, 140, 0, 0)');
+                ctx.fillStyle = glowGradient;
+                ctx.arc(0, -60, 25, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Bright bulb when lit
+                ctx.fillStyle = '#ffffa0';
+            } else {
+                // Dark bulb when unlit
+                ctx.fillStyle = '#994400';
+            }
+            
+            // Draw the actual bulb
+            ctx.beginPath();
+            ctx.arc(0, -60, 6, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Glass reflection on bulb
+            if (glowing) {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.beginPath();
+                ctx.arc(-2, -62, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            // Restore shadow for shaft
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 6;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+            
+            // Shaft (metallic with gradient)
+            const shaftGradient = ctx.createLinearGradient(-8, -15, 8, 85);
+            shaftGradient.addColorStop(0, '#e0e0e0');
+            shaftGradient.addColorStop(0.3, '#cccccc');
+            shaftGradient.addColorStop(0.7, '#aaaaaa');
+            shaftGradient.addColorStop(1, '#999999');
+            
+            ctx.fillStyle = shaftGradient;
+            
+            // Draw shaft with slight taper
+            ctx.beginPath();
+            ctx.moveTo(-6, -15);
+            ctx.lineTo(6, -15);
+            ctx.lineTo(5, 85);
+            ctx.lineTo(-5, 85);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Tip (flathead)
+            const tipGradient = ctx.createLinearGradient(-11, 85, 11, 90);
+            tipGradient.addColorStop(0, '#b8b8b8');
+            tipGradient.addColorStop(0.5, '#e0e0e0');
+            tipGradient.addColorStop(1, '#b8b8b8');
+            
+            ctx.fillStyle = tipGradient;
+            ctx.beginPath();
+            ctx.roundRect(-11, 85, 22, 6, 1);
+            ctx.fill();
+            
+            // Metal highlight reflections
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.beginPath();
+            ctx.moveTo(-4, -15);
+            ctx.lineTo(-1, -15);
+            ctx.lineTo(-1, 80);
+            ctx.lineTo(-3, 80);
+            ctx.closePath();
+            ctx.fill();
+            
+            ctx.restore();
+        }
+        
+        function drawScrew(x, y, depth) {
+            ctx.save();
+            ctx.translate(x * scaleFactor, y * scaleFactor);
+            ctx.scale(scaleFactor, scaleFactor);
+            
+            // Add shadow
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetX = 1;
+            ctx.shadowOffsetY = 1;
+            
+            // No rotation for the screw
+            
+            // Screw head with gradient
+            const headGradient = ctx.createRadialGradient(0, depth, 0, 0, depth, 12);
+            headGradient.addColorStop(0, '#666666');
+            headGradient.addColorStop(0.7, '#444444');
+            headGradient.addColorStop(1, '#333333');
+            
+            ctx.fillStyle = headGradient;
+            ctx.beginPath();
+            ctx.arc(0, depth, 11, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Remove shadow for details
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            
+            // Screw slot - fixed orientation (no rotation)
+            ctx.strokeStyle = '#222';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(-7, depth);
+            ctx.lineTo(7, depth);
+            ctx.stroke();
+            
+            // Add slight metallic highlight to head
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.beginPath();
+            ctx.arc(-3, depth - 3, 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Screw body (visible part)
+            const visibleLength = 30 - depth; // Make the screw longer
+            if (visibleLength > 0) {
+                // Add shadow back for body
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                ctx.shadowBlur = 3;
+                
+                // Realistic metallic gradient
+                const bodyGradient = ctx.createLinearGradient(-5, 0, 5, 0);
+                bodyGradient.addColorStop(0, '#555555');
+                bodyGradient.addColorStop(0.5, '#777777');
+                bodyGradient.addColorStop(1, '#555555');
+                
+                ctx.fillStyle = bodyGradient;
+                ctx.beginPath();
+                
+                // Slightly tapered screw body
+                const topWidth = 5;
+                const bottomWidth = 3.5; // More taper
+                ctx.moveTo(-topWidth, depth);
+                ctx.lineTo(topWidth, depth);
+                ctx.lineTo(bottomWidth, depth + visibleLength);
+                ctx.lineTo(-bottomWidth, depth + visibleLength);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Simple horizontal thread lines (no spiral effect)
+                ctx.shadowBlur = 0;
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 0.8;
+                
+                for (let i = 0; i < visibleLength; i += 3) {
+                    const y = depth + i;
+                    const widthAtY = topWidth - (i / visibleLength) * (topWidth - bottomWidth);
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(-widthAtY, y);
+                    ctx.lineTo(widthAtY, y);
+                    ctx.stroke();
+                }
+            }
+            
+            ctx.restore();
+        }
+        
+        function drawWood() {
+            ctx.save();
+            
+            // Draw the pre-rendered wood texture - scaled and positioned for mobile
+            ctx.drawImage(woodPattern, 
+                          50 * scaleFactor, 
+                          woodY * scaleFactor, 
+                          600 * scaleFactor, 
+                          woodThickness * scaleFactor);
+            
+            // Add shadow under the wood
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 10 * scaleFactor;
+            ctx.shadowOffsetY = 8 * scaleFactor;
+            ctx.fillRect(50 * scaleFactor, 
+                        (woodY + woodThickness) * scaleFactor, 
+                        600 * scaleFactor, 
+                        2 * scaleFactor);
+            
+            ctx.restore();
+        }
+        
+        function drawOutlet(x, y) {
+            ctx.save();
+            ctx.translate(x * scaleFactor, y * scaleFactor);
+            ctx.scale(scaleFactor, scaleFactor);
+            
+            // Add shadow
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 4;
+            ctx.shadowOffsetY = 4;
+            
+            // Wall plate with gradient
+            const plateGradient = ctx.createLinearGradient(-45, -45, 45, 45);
+            plateGradient.addColorStop(0, '#f5f5f5');
+            plateGradient.addColorStop(0.5, '#e0e0e0');
+            plateGradient.addColorStop(1, '#d0d0d0');
+            
+            ctx.fillStyle = plateGradient;
+            ctx.beginPath();
+            ctx.roundRect(-45, -45, 90, 90, 4);
+            ctx.fill();
+            
+            // Plate border/outline
+            ctx.strokeStyle = '#bbb';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(-45, -45, 90, 90);
+            
+            // Remove shadow for details
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+            
+            // Outlet face slightly inset
+            const faceGradient = ctx.createLinearGradient(-35, -35, 35, 35);
+            faceGradient.addColorStop(0, '#e8e8e8');
+            faceGradient.addColorStop(1, '#dadada');
+            
+            ctx.fillStyle = faceGradient;
+            ctx.beginPath();
+            ctx.roundRect(-35, -35, 70, 70, 2);
+            ctx.fill();
+            
+            // Slots (with slight 3D effect)
+            ctx.fillStyle = '#222';
+            
+            // Left slot
+            ctx.beginPath();
+            ctx.roundRect(-18, -22, 8, 28, 1);
+            ctx.fill();
+            
+            // Right slot
+            ctx.beginPath();
+            ctx.roundRect(10, -22, 8, 28, 1);
+            ctx.fill();
+            
+            // Ground hole
+            ctx.beginPath();
+            ctx.arc(0, 18, 6, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Mounting screw at the center
+            ctx.fillStyle = '#999';
+            ctx.beginPath();
+            ctx.arc(0, -35, 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#999';
+            ctx.beginPath();
+            ctx.arc(0, 35, 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Slight highlights
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.beginPath();
+            ctx.roundRect(-40, -42, 80, 4, 1);
+            ctx.fill();
+            
+            ctx.restore();
+        }
+        
+        function drawBackground() {
+            // Light blue background gradient
+            const bgGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            bgGradient.addColorStop(0, '#e6f7ff');
+            bgGradient.addColorStop(1, '#f0f8ff');
+            
+            ctx.fillStyle = bgGradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Wall
+            const wallGradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            wallGradient.addColorStop(0, '#f0f0f0');
+            wallGradient.addColorStop(1, '#e6e6e6');
+            
+            ctx.fillStyle = wallGradient;
+            ctx.fillRect(0, 0, canvas.width, woodY * scaleFactor);
+            
+            // Wall and floor separation line
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, woodY * scaleFactor);
+            ctx.lineTo(canvas.width, woodY * scaleFactor);
+            ctx.stroke();
+        }
+        
+        // Main draw function for initial state
+        function drawInitialState() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background elements
+            drawBackground();
+            drawWood();
+            drawOutlet(outletX, outletY);
+            
+            // Adjust screw position to be in the middle of the wood thickness
+            const screwWoodOffset = woodThickness/4; // Position screw near top half of wood
+            
+            // Draw screw
+            drawScrew(screwX, screwY - screwWoodOffset, 0);
+            
+            // Draw screwdriver at starting position
+            drawScrewdriver(screwX, screwY - 110, false);
+        }
+        
+        // Draw function for screwdriver phase
+        function drawScrewdriverPhase(progress) {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background elements
+            drawBackground();
+            drawWood();
+            drawOutlet(outletX, outletY);
+            
+            // Adjust screw position to be in the middle of the wood thickness
+            const screwWoodOffset = woodThickness/4; // Position screw near top half of wood
+            
+            let screwdriverX = screwX;
+            let screwdriverY = screwY - 100; // Start position above screw
+            let screwDepth = 0;
+            
+            if (progress < 0.2) {
+                // Move down to screw with easing
+                const easing = Math.sin((progress / 0.2) * Math.PI/2);
+                screwdriverY = (screwY - 100) + easing * ((screwY - 80 - screwWoodOffset) - (screwY - 100));
+            } else if (progress < 0.9) {
+                // Push down to drive screw - no rotation
+                screwdriverY = screwY - 80 - screwWoodOffset;
+                
+                // Add slight pressure variation
+                const normalizedPhase = (progress - 0.2) / 0.7;
+                screwdriverY += Math.sin(normalizedPhase * Math.PI * 4) * 1;
+                
+                // Screw depth increases as screwdriver pushes
+                screwDepth = normalizedPhase * 30;
+            } else {
+                // Lift slightly with easing
+                const easing = Math.sin(((progress - 0.9) / 0.1) * Math.PI/2);
+                screwdriverY = (screwY - 80 - screwWoodOffset) - easing * 35;
+                screwDepth = 30;
+            }
+            
+            // Draw screw at current depth - no rotation
+            drawScrew(screwX, screwY - screwWoodOffset, screwDepth);
+            
+            // Draw screwdriver - no rotation
+            drawScrewdriver(screwdriverX, screwdriverY, false);
+        }
+        
+        // Draw function for electrical tester phase
+        function drawTesterPhase(progress) {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background elements
+            drawBackground();
+            drawWood();
+            drawOutlet(outletX, outletY);
+            
+            // Adjust screw position to be in the middle of the wood thickness
+            const screwWoodOffset = woodThickness/4; // Position screw near top half of wood
+            
+            // Draw fully inserted screw
+            drawScrew(screwX, screwY - screwWoodOffset, 30);
+            
+            let screwdriverX = screwX;
+            let screwdriverY = screwY - 115; // Start higher above the screw
+            let glowing = false;
+            
+            if (progress < 0.4) {
+                // Move horizontally to outlet with easing
+                const easing = Math.sin((progress / 0.4) * Math.PI/2);
+                screwdriverX = screwX + easing * (outletX + 14 - screwX);
+                
+                // Add a slight arc to the motion
+                const arcHeight = 20;
+                screwdriverY -= Math.sin(easing * Math.PI) * arcHeight;
+            } else if (progress < 0.6) {
+                // Move down to touch outlet with easing
+                screwdriverX = outletX + 14; // Position to right hole
+                const easing = Math.sin(((progress - 0.4) / 0.2) * Math.PI/2);
+                screwdriverY = (screwY - 115) + easing * ((outletY - 100) - (screwY - 115));
+            } else {
+                // Touch the middle of the right hole specifically
+                screwdriverX = outletX + 14;
+                screwdriverY = outletY - 100;
+                
+                // Add a slight "pressing" motion
+                const pressAmount = Math.sin((progress - 0.6) * 20) * 2;
+                screwdriverY += pressAmount;
+                
+                // Pulsate the glow slightly for realism
+                const now = Date.now();
+                const glowIntensity = 0.5 + Math.sin(now * 0.01) * 0.1;
+                glowing = glowIntensity > 0.45;
+            }
+            
+            // Draw screwdriver/tester
+            drawScrewdriver(screwdriverX, screwdriverY, glowing);
+        }
+        
+        // Initialize the buttons
+        function setActivePhase(phase) {
+            // Reset the UI
+            phase1Btn.classList.remove('active');
+            phase2Btn.classList.remove('active');
+            
+            // Cancel any running animation
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+            
+            // Clear the canvas first to avoid visual glitches
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            currentPhase = phase;
+            animationProgress = 0; // Reset progress
+            
+            if (phase === 1) {
+                // Screwdriver phase
+                phase1Btn.classList.add('active');
+                phaseIndicator.textContent = "Phase: Screwdriver Function";
+                phaseIndicator.style.backgroundColor = "#4CAF50";
+                
+                // Reset to initial state briefly to avoid strange transitions
+                drawInitialState();
+                
+                // Short delay before starting new animation for cleaner transition
+                setTimeout(() => {
+                    animationStartTime = Date.now();
+                    animatePhase1();
+                }, 50);
+            } else if (phase === 2) {
+                // Tester phase
+                phase2Btn.classList.add('active');
+                phaseIndicator.textContent = "Phase: Electrical Tester Function";
+                phaseIndicator.style.backgroundColor = "#FFC107";
+                
+                // Reset to initial state briefly to avoid strange transitions
+                drawInitialState();
+                
+                // Short delay before starting new animation for cleaner transition
+                setTimeout(() => {
+                    animationStartTime = Date.now();
+                    animatePhase2();
+                }, 50);
+            }
+        }
+        
+        // Animation functions
+        function animatePhase1() {
+            const now = Date.now();
+            const elapsed = now - animationStartTime;
+            const duration = 2000; // Faster animation for mobile (2 seconds)
+            
+            if (elapsed >= duration) {
+                // Animation complete
+                animationProgress = 1.0;
+                drawScrewdriverPhase(1.0);
+                return;
+            }
+            
+            animationProgress = elapsed / duration;
+            drawScrewdriverPhase(animationProgress);
+            
+            // Request next frame with throttling for mobile
+            animationFrame = requestAnimationFrame(animatePhase1);
+        }
+        
+        function animatePhase2() {
+            const now = Date.now();
+            const elapsed = now - animationStartTime;
+            const duration = 2000; // Faster animation for mobile (2 seconds)
+            
+            if (elapsed >= duration) {
+                // Animation complete, but keep updating for glowing effect
+                animationProgress = 1.0;
+                drawTesterPhase(1.0);
+                // Continue animation for glowing effect only, with reduced frame rate
+                setTimeout(() => {
+                    if (currentPhase === 2) { // Only continue if still in tester phase
+                        animationFrame = requestAnimationFrame(animatePhase2);
+                    }
+                }, 100); // Throttle to 10fps for the glowing effect to save battery
+                return;
+            }
+            
+            animationProgress = elapsed / duration;
+            drawTesterPhase(animationProgress);
+            
+            // Request next frame
+            animationFrame = requestAnimationFrame(animatePhase2);
+        }
+        
+        // Button event listeners
+        phase1Btn.addEventListener('click', function() {
+            setActivePhase(1);
+        });
+        
+        phase2Btn.addEventListener('click', function() {
+            setActivePhase(2);
+        });
+        
+        // Initialize mobile optimizations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set canvas dimensions and position variables
+            setCanvasDimensions();
+            
+            // Handle window resize to reposition elements
+            window.addEventListener('resize', function() {
+                setCanvasDimensions();
+                
+                // Redraw current state after resize
+                if (currentPhase === 1) {
+                    drawScrewdriverPhase(animationProgress);
+                } else if (currentPhase === 2) {
+                    drawTesterPhase(animationProgress);
+                } else {
+                    drawInitialState();
+                }
+            });
+            
+            // Focus handling for buttons
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(btn => {
+                btn.addEventListener('focus', function() {
+                    this.blur(); // Remove focus outline after clicking for cleaner mobile experience
+                });
+            });
+            
+            // Start with a clean initial state
+            drawInitialState();
+            
+            // Explicitly set first phase after a short delay
+            setTimeout(() => {
+                setActivePhase(1); // Start with screwdriver function
+            }, 100);
+        });
+    </script>
+</body>
+</html>

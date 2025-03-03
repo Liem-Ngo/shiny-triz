@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRIZ Counter-Weight Principle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            line-height: 1.6;
+            padding-bottom: 60px; /* Space for footer */
+            scroll-behavior: smooth;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        main {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        section {
+            margin-bottom: 30px;
+        }
+
+        h2, h3 {
+            color: #333;
+        }
+
+        #examples ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #examples ul li {
+            margin: 5px;
+        }
+
+        #examples ul li a {
+            display: block;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            background-color: #007BFF;
+            padding: 15px 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background-color 0.3s, transform 0.1s;
+            min-width: 120px;
+        }
+
+        #examples ul li a:hover, #examples ul li a:active {
+            background-color: #0056b3;
+            transform: translateY(1px);
+        }
+
+        .example-content {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .example-content.active {
+            display: block;
+        }
+
+        .visual {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            position: relative;
+            z-index: 100;
+            background-color: white;
+        }
+
+        .controls button {
+            padding: 15px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            touch-action: manipulation;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background-color 0.3s, transform 0.1s;
+            margin: 5px;
+            min-width: 120px;
+        }
+
+        .controls button:hover, .controls button:active {
+            background-color: #0056b3;
+            transform: translateY(1px);
+        }
+
+        #plane, #parachutist {
+            transition: top 2s ease-in-out;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 600px) {
+            svg {
+                max-width: 100%;
+                height: auto;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .controls button {
+                width: 100%;
+                max-width: 250px;
+                margin: 3px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>TRIZ Creativity Principle: Counter-Weight</h1>
+        <p>Compensating for disadvantages by combining with advantages.</p>
+    </header>
+    <main>
+        <section id="introduction">
+            <h2>What is the Counter-Weight Principle?</h2>
+            <p>The Counter-Weight Principle compensates for an object's "harmful weight" or disadvantage by combining it with another object or environmental force that provides a lifting or balancing effect. For example, a parachute slows a fall by using air resistance, or attractive packaging offsets low-quality goods. This principle encourages creative problem-solving by leveraging advantages to neutralize weaknesses.</p>
+        </section>
+        <section id="examples">
+            <h2>Examples</h2>
+            <ul>
+                <li><a href="#balance-scale" data-example="balance-scale">Balance Scale</a></li>
+                <li><a href="#parachute" data-example="parachute">Parachute</a></li>
+                <li><a href="#ice-cream" data-example="ice-cream">Nutritious Ice Cream</a></li>
+            </ul>
+            <!-- Example: Balance Scale (Interactive) -->
+            <div id="balance-scale" class="example-content">
+                <h3>Balance Scale</h3>
+                <div class="visual">
+                    <svg width="300" height="200" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid meet">
+                        <rect x="100" y="180" width="100" height="20" fill="brown" />
+                        <rect x="145" y="50" width="10" height="130" fill="gray" />
+                        <g id="arm" transform="rotate(0, 150, 50)">
+                            <rect x="50" y="45" width="200" height="10" fill="black" />
+                            <g id="left-pan">
+                                <line x1="60" y1="55" x2="60" y2="100" stroke="black" />
+                                <circle cx="60" cy="100" r="20" fill="yellow" />
+                            </g>
+                            <g id="right-pan">
+                                <line x1="240" y1="55" x2="240" y2="100" stroke="black" />
+                                <circle cx="240" cy="100" r="20" fill="yellow" />
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+                <div class="controls">
+                    <button onclick="addWeight('left')">Add to Left</button>
+                    <button onclick="removeWeight('left')">Remove from Left</button>
+                    <button onclick="addWeight('right')">Add to Right</button>
+                    <button onclick="removeWeight('right')">Remove from Right</button>
+                </div>
+                <p>Counterweights balance the scale, compensating for weight differences. Try adding weights to see how they affect the balance!</p>
+            </div>
+            <!-- Example: Airplane Wing - REMOVED as requested -->
+            <!-- Example: Parachute -->
+            <div id="parachute" class="example-content">
+                <h3>Parachute</h3>
+                <div class="visual" style="position: relative;">
+                    <div style="height: 450px; position: relative; border: 1px solid #e0e0e0; background: #57A0D3; margin-bottom: 10px; border-radius: 8px 8px 0 0; overflow: hidden;">
+                        <div id="parachutist" style="position: absolute; left: 0; right: 0; text-align: center; top: 20px; z-index: 5;">
+                            <svg width="300" height="420" viewBox="0 0 200 600" preserveAspectRatio="xMidYMid meet">
+                                <defs>
+                                    <marker id="arrowhead2" markerWidth="10" markerHeight="7" 
+                                    refX="0" refY="3.5" orient="auto">
+                                        <polygon points="0 0, 10 3.5, 0 7" fill="#f44336"/>
+                                    </marker>
+                                    <radialGradient id="parachuteGradient" cx="50%" cy="30%" r="70%" fx="50%" fy="30%">
+                                        <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#E65100;stop-opacity:1" />
+                                    </radialGradient>
+                                </defs>
+                                
+                                <!-- Parachute (larger, more realistic) -->
+                                <g id="para" style="display: none;">
+                                    <!-- Main canopy -->
+                                    <path d="M40,100 Q70,60 100,50 Q130,60 160,100" stroke="#E65100" stroke-width="2" fill="url(#parachuteGradient)" />
+                                    
+                                    <!-- Suspension lines -->
+                                    <line x1="45" y1="100" x2="90" y2="170" stroke="#444" stroke-width="0.7" />
+                                    <line x1="60" y1="90" x2="93" y2="170" stroke="#444" stroke-width="0.7" />
+                                    <line x1="80" y1="75" x2="96" y2="170" stroke="#444" stroke-width="0.7" />
+                                    <line x1="100" y1="70" x2="100" y2="170" stroke="#444" stroke-width="0.7" />
+                                    <line x1="120" y1="75" x2="104" y2="170" stroke="#444" stroke-width="0.7" />
+                                    <line x1="140" y1="90" x2="107" y2="170" stroke="#444" stroke-width="0.7" />
+                                    <line x1="155" y1="100" x2="110" y2="170" stroke="#444" stroke-width="0.7" />
+                                    
+                                    <!-- Air resistance indicators -->
+                                    <line x1="70" y1="70" x2="70" y2="50" stroke="#673ab7" stroke-width="2" stroke-dasharray="3,2" />
+                                    <line x1="100" y1="60" x2="100" y2="40" stroke="#673ab7" stroke-width="2" stroke-dasharray="3,2" />
+                                    <line x1="130" y1="70" x2="130" y2="50" stroke="#673ab7" stroke-width="2" stroke-dasharray="3,2" />
+                                    
+                                    <!-- Air resistance label -->
+                                    <text x="135" y="60" fill="#ffffff" font-size="10" font-weight="bold">Air Resistance</text>
+                                </g>
+                                
+                                <!-- Person (more detailed) -->
+                                <g id="person">
+                                    <!-- Harness -->
+                                    <path d="M90,170 L110,170 L105,190 L95,190 Z" fill="#795548" stroke="#5D4037" stroke-width="0.5" />
+                                    
+                                    <!-- Head -->
+                                    <circle cx="100" cy="160" r="8" fill="#FFCC80" stroke="#555" stroke-width="0.5" />
+                                    
+                                    <!-- Body -->
+                                    <path d="M95,168 L105,168 L108,190 L92,190 Z" fill="#1565C0" stroke="#0D47A1" stroke-width="0.5" />
+                                    
+                                    <!-- Arms -->
+                                    <line x1="95" y1="175" x2="85" y2="183" stroke="#FFCC80" stroke-width="3" stroke-linecap="round" />
+                                    <line x1="105" y1="175" x2="115" y2="183" stroke="#FFCC80" stroke-width="3" stroke-linecap="round" />
+                                    
+                                    <!-- Legs -->
+                                    <line x1="96" y1="190" x2="92" y2="210" stroke="#3F51B5" stroke-width="4" stroke-linecap="round" />
+                                    <line x1="104" y1="190" x2="108" y2="210" stroke="#3F51B5" stroke-width="4" stroke-linecap="round" />
+                                </g>
+                                
+                                <!-- Gravity arrow -->
+                                <line id="gravity-arrow" x1="130" y1="190" x2="130" y2="220" stroke="#f44336" stroke-width="3" marker-end="url(#arrowhead2)" />
+                                <!-- Gravity label -->
+                                <text x="135" y="205" fill="#ffffff" font-size="12" font-weight="bold">Gravity</text>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="controls" style="position: relative; z-index: 10; margin-top: 20px;">
+                        <button onclick="deployParachute()" style="background-color: #FF9800; font-size: 16px; padding: 12px 20px; border-radius: 8px;">Deploy Parachute</button>
+                        <button onclick="resetParachute()" style="background-color: #f44336; font-size: 16px; padding: 12px 20px; border-radius: 8px;">Reset</button>
+                    </div>
+                </div>
+                <p>A parachute uses air resistance to slow descent, countering gravity. The purple dashed lines represent air resistance that counteracts the downward force (red arrow).</p>
+            </div>
+            <!-- Example: Nutritious Ice Cream -->
+            <div id="ice-cream" class="example-content">
+                <h3>Nutritious Ice Cream</h3>
+                <div class="visual">
+                    <svg width="200" height="200" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                        <!-- Background -->
+                        <rect x="0" y="0" width="200" height="200" fill="#f5f5f5" />
+                        <!-- Ice cream -->
+                        <polygon points="80,160 120,160 100,80" fill="#f8bbd0" /> <!-- Cone -->
+                        <circle cx="100" cy="80" r="30" fill="#ffab91" /> <!-- Scoop -->
+                        <!-- Nutritional elements -->
+                        <g id="nutrients">
+                            <circle cx="90" cy="70" r="5" fill="#8bc34a" /> <!-- Vitamin -->
+                            <circle cx="110" cy="75" r="5" fill="#cddc39" /> <!-- Mineral -->
+                            <circle cx="100" cy="65" r="5" fill="#ff5722" /> <!-- Protein -->
+                            <circle cx="85" cy="85" r="5" fill="#9c27b0" /> <!-- Calcium -->
+                            <circle cx="115" cy="90" r="5" fill="#3f51b5" /> <!-- Fiber -->
+                        </g>
+                        <!-- Labels with arrows -->
+                        <line x1="70" y1="50" x2="85" y2="65" stroke="black" stroke-width="1" />
+                        <text x="20" y="50" font-size="12">Nutrients</text>
+                        <line x1="135" y1="55" x2="115" y2="75" stroke="black" stroke-width="1" />
+                        <text x="140" y="50" font-size="12">Appeal</text>
+                    </svg>
+                </div>
+                <p>Nutritious ice cream counterbalances a disadvantage (children's reluctance to eat healthy food) with an advantage (appealing dessert format). The ice cream becomes a vessel for delivering essential nutrients in a way that children enjoy.</p>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>Built to illustrate TRIZ principles.</p>
+    </footer>
+
+    <script>
+        // Show selected example
+        document.querySelectorAll('#examples ul a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const exampleId = this.getAttribute('data-example');
+                document.querySelectorAll('.example-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(exampleId).classList.add('active');
+            });
+        });
+
+        // Automatically show the parachute example on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('parachute').classList.add('active');
+        });
+
+        // Balance Scale Logic
+        let leftWeights = 0;
+        let rightWeights = 0;
+
+        function addWeight(side) {
+            const svg = document.querySelector('#balance-scale svg');
+            const pan = svg.querySelector(`#${side}-pan`);
+            const maxWeights = 3;
+            
+            if ((side === 'left' && leftWeights < maxWeights) || (side === 'right' && rightWeights < maxWeights)) {
+                const weight = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                const x = side === 'left' ? 60 : 240;
+                const y = 100 + (side === 'left' ? leftWeights * 15 : rightWeights * 15);
+                
+                weight.setAttribute('cx', x);
+                weight.setAttribute('cy', y);
+                weight.setAttribute('r', 10);
+                weight.setAttribute('fill', 'red');
+                weight.setAttribute('class', `${side}-weight`);
+                
+                pan.appendChild(weight);
+                side === 'left' ? leftWeights++ : rightWeights++;
+                updateBalance();
+            }
+        }
+
+        function removeWeight(side) {
+            const svg = document.querySelector('#balance-scale svg');
+            const pan = svg.querySelector(`#${side}-pan`);
+            const weights = pan.querySelectorAll(`.${side}-weight`);
+            
+            if ((side === 'left' && leftWeights > 0) || (side === 'right' && rightWeights > 0)) {
+                const lastWeight = weights[weights.length - 1] || pan.lastElementChild;
+                if (lastWeight && lastWeight.tagName === 'circle') {
+                    pan.removeChild(lastWeight);
+                    side === 'left' ? leftWeights-- : rightWeights--;
+                    updateBalance();
+                }
+            }
+        }
+
+        function updateBalance() {
+            const difference = rightWeights - leftWeights;
+            const angle = difference * 15; // 15 degrees per weight difference
+            const arm = document.querySelector('#arm');
+            arm.setAttribute('transform', `rotate(${angle}, 150, 50)`);
+        }
+
+        // Airplane Wing Logic
+        function takeOff() {
+            const plane = document.querySelector('#plane');
+            plane.style.transition = 'top 2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            plane.style.top = '10px'; // Move up with a nice bouncy effect
+        }
+        
+        function resetPlane() {
+            const plane = document.querySelector('#plane');
+            plane.style.transition = 'top 1s ease-in';
+            plane.style.top = '100px';
+        }
+
+        // Parachute Logic
+        let parachuteDeployed = false;
+        
+        function deployParachute() {
+            if (!parachuteDeployed) {
+                const parachutist = document.querySelector('#parachutist');
+                const parachute = document.querySelector('#para');
+                const gravityArrow = document.querySelector('#gravity-arrow');
+                
+                // Start falling rapidly
+                parachutist.style.transition = 'top 1s cubic-bezier(0.6, 0.1, 0.9, 0.2)';
+                parachutist.style.top = '150px';
+                
+                // After a delay, deploy parachute and slow down
+                setTimeout(() => {
+                    parachute.style.display = 'block';
+                    
+                    // Add animation to show parachute opening
+                    parachute.animate([
+                        { transform: 'scaleX(0.5) scaleY(0.2)', opacity: 0.7 },
+                        { transform: 'scaleX(1.1) scaleY(1.1)', opacity: 0.9 },
+                        { transform: 'scaleX(1) scaleY(1)', opacity: 1 }
+                    ], { 
+                        duration: 500,
+                        easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)' 
+                    });
+                    
+                    // Slow down the descent but continue falling off the blue background
+                    parachutist.style.transition = 'top 5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                    gravityArrow.setAttribute('stroke-width', '1');
+                    parachutist.style.top = '600px'; // Move completely out of the blue area
+                }, 500);
+                
+                parachuteDeployed = true;
+            }
+        }
+        
+        function resetParachute() {
+            const parachutist = document.querySelector('#parachutist');
+            const parachute = document.querySelector('#para');
+            const gravityArrow = document.querySelector('#gravity-arrow');
+            
+            parachute.style.display = 'none';
+            parachutist.style.transition = 'none';
+            parachutist.style.top = '20px';
+            gravityArrow.setAttribute('stroke-width', '3');
+            
+            parachuteDeployed = false;
+        }
+        
+        function resetParachute() {
+            const parachutist = document.querySelector('#parachutist');
+            const parachute = document.querySelector('#para');
+            const gravityArrow = document.querySelector('#gravity-arrow');
+            
+            parachute.style.display = 'none';
+            parachutist.style.transition = 'none';
+            parachutist.style.top = '0px';
+            gravityArrow.setAttribute('stroke-width', '3');
+            
+            parachuteDeployed = false;
+        }
+    </script>
+</body>
+</html>

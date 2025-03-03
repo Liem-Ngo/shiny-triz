@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRIZ Principle: Preliminary Stressing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 15px;
+            background-color: #f5f5f5;
+            overscroll-behavior: none; /* Prevent pull-to-refresh on mobile */
+        }
+        
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-top: 10px;
+        }
+        
+        p {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 15px auto;
+            line-height: 1.5;
+            color: #333;
+        }
+        
+        .svg-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px 0;
+            position: relative;
+        }
+        
+        svg {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            background: linear-gradient(to bottom, #87CEEB, #c5e8f7);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            touch-action: none; /* Prevent browser handling of touch events */
+        }
+        
+        #pouch {
+            transition: transform 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            cursor: grab;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+            r: 35; /* Increased radius for easier touch */
+        }
+        
+        #projectile {
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+        }
+        
+        #band-left, #band-right {
+            stroke: #ff4d4d;
+            stroke-width: 4;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+        }
+        
+        #ground {
+            fill: url(#groundGradient);
+        }
+        
+        #tree1, #tree2, #tree3 {
+            fill: #2e7d32;
+            filter: drop-shadow(2px 3px 2px rgba(0,0,0,0.3));
+        }
+        
+        #trunk1, #trunk2, #trunk3 {
+            fill: #5d4037;
+        }
+        
+        #reset-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 18px 30px;
+            margin-top: 15px;
+            border-radius: 12px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            -webkit-tap-highlight-color: transparent;
+            transition: all 0.2s ease;
+        }
+        
+        #reset-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        #force-meter {
+            height: 28px;
+            width: 100%;
+            max-width: 300px;
+            margin: 12px auto;
+            background: #e0e0e0;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 3px rgba(0,0,0,0.2);
+        }
+        
+        #force-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #4CAF50, #FFC107, #F44336);
+            transition: width 0.2s;
+        }
+        
+        #instructions {
+            display: block;
+            margin: 18px auto;
+            color: #333;
+            font-style: italic;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        #energy-label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            margin-top: 15px;
+            color: #333;
+            font-size: 18px;
+        }
+        
+        .touch-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            animation: pulse 2s infinite;
+            display: flex;
+            align-items: center;
+            pointer-events: none;
+            z-index: 10;
+            font-size: 18px;
+        }
+        
+        #hit-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(33, 150, 243, 0.9);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-size: 28px; /* Larger text */
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 0.9; }
+            100% { opacity: 0.7; }
+        }
+        
+        @keyframes targetHit {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 480px) {
+            h1 { font-size: 20px; }
+            p { font-size: 14px; }
+            #reset-btn { padding: 12px 24px; font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <h1>TRIZ Principle: Preliminary Stressing</h1>
+    <p>Pull back the blue pouch to store energy (preliminary stressing), then release to launch the projectile. The farther you pull, the more energy is stored, demonstrating how prestressing enables the desired outcome.</p>
+    
+    <div id="energy-label">Stored Energy:</div>
+    <div id="force-meter">
+        <div id="force-bar"></div>
+    </div>
+    <span id="instructions">Pull back the blue pouch</span>
+    
+    <div class="svg-container">
+        <div class="touch-hint">
+            <span>Pull back the blue pouch</span>
+        </div>
+        
+        <div id="hit-message">BULLS-EYE! 🎯</div>
+        
+        <svg id="game-canvas" viewBox="-300 -200 600 400">
+            <!-- Gradients and patterns -->
+            <defs>
+                <linearGradient id="skyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#64b5f6;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#bbdefb;stop-opacity:1" />
+                </linearGradient>
+                
+                <linearGradient id="groundGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#8bc34a;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#689f38;stop-opacity:1" />
+                </linearGradient>
+                
+                <linearGradient id="woodGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#a1887f;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#8d6e63;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#6d4c41;stop-opacity:1" />
+                </linearGradient>
+                
+                <radialGradient id="pouchGradient" cx="50%" cy="50%" r="50%" fx="25%" fy="25%">
+                    <stop offset="0%" style="stop-color:#64b5f6;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#1976d2;stop-opacity:1" />
+                </radialGradient>
+                
+                <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+                    <feOffset dx="2" dy="2" result="offsetblur" />
+                    <feComponentTransfer>
+                        <feFuncA type="linear" slope="0.5" />
+                    </feComponentTransfer>
+                    <feMerge>
+                        <feMergeNode />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+            </defs>
+            
+            <!-- Sky background -->
+            <rect x="-300" y="-200" width="600" height="350" fill="url(#skyGradient)" />
+            
+            <!-- Ground -->
+            <rect id="ground" x="-300" y="150" width="600" height="50" />
+            
+            <!-- Background scenery: hills -->
+            <path d="M-300,150 Q-200,90 -100,130 Q0,80 100,120 Q200,70 300,140 L300,150 L-300,150 Z" fill="#a5d6a7" filter="url(#dropShadow)" />
+            
+            <!-- Trees -->
+            <g id="trees">
+                <g transform="translate(-220, 140)">
+                    <rect id="trunk1" x="-5" y="-20" width="10" height="20" />
+                    <path id="tree1" d="M0,-70 L20,-30 L15,-30 L30,0 L-30,0 L-15,-30 L-20,-30 Z" />
+                </g>
+                <g transform="translate(180, 130)">
+                    <rect id="trunk2" x="-7" y="-25" width="14" height="25" />
+                    <path id="tree2" d="M0,-90 L25,-40 L20,-40 L40,-5 L-40,-5 L-20,-40 L-25,-40 Z" />
+                </g>
+                <g transform="translate(-130, 145)">
+                    <rect id="trunk3" x="-4" y="-15" width="8" height="15" />
+                    <path id="tree3" d="M0,-50 L15,-20 L12,-20 L22,0 L-22,0 L-12,-20 L-15,-20 Z" />
+                </g>
+            </g>
+            
+            <!-- Target -->
+            <g id="target" transform="translate(250, -120)" filter="url(#dropShadow)">
+                <circle cx="0" cy="0" r="30" fill="#f44336" stroke="#000" stroke-width="1" opacity="0.9"/>
+                <circle cx="0" cy="0" r="20" fill="#fff" stroke="#000" stroke-width="1"/>
+                <circle cx="0" cy="0" r="10" fill="#f44336" stroke="#000" stroke-width="1"/>
+            </g>
+            
+            <!-- Slingshot frame -->
+            <g id="slingshot-frame" filter="url(#dropShadow)">
+                <path d="M-100,-100 Q-105,-50 -100,0 L-100,100 Q-105,120 -80,140 L-50,150" 
+                     fill="none" stroke="url(#woodGradient)" stroke-width="15" stroke-linecap="round" />
+                <path d="M100,-100 Q105,-50 100,0 L100,100 Q105,120 80,140 L50,150" 
+                     fill="none" stroke="url(#woodGradient)" stroke-width="15" stroke-linecap="round" />
+            </g>
+            
+            <!-- Elastic bands -->
+            <line id="band-left" x1="-85" y1="0" x2="0" y2="0"/>
+            <line id="band-right" x1="85" y1="0" x2="0" y2="0"/>
+            
+            <!-- Pouch -->
+            <circle id="pouch" cx="0" cy="0" r="35" fill="url(#pouchGradient)" stroke="#0D47A1" stroke-width="3"/>
+            
+            <!-- Projectile -->
+            <circle id="projectile" cx="0" cy="0" r="15" fill="#43a047" stroke="#1B5E20" stroke-width="2"/>
+            
+            <!-- Hand pointer when active -->
+            <g id="hand-indicator" style="display: none;" filter="url(#dropShadow)">
+                <path d="M0,0 L15,15 L30,0 L40,10 L30,20 L15,30 L0,20 Z" fill="#FFF" opacity="0.7" />
+                <circle cx="15" cy="15" r="5" fill="#FFF" opacity="0.9" />
+            </g>
+        </svg>
+    </div>
+    
+    <button id="reset-btn">Reset Slingshot</button>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Game state
+            const gameState = {
+                isDragging: false,
+                pouchX: 0,
+                pouchY: 0,
+                restingX: 0,
+                restingY: 0,
+                maxPullBack: -180,
+                isFirstInteraction: true,
+                isAnimating: false,
+                targetX: 250,
+                targetY: -120,
+                targetRadius: 30
+            };
+            
+            // Get DOM elements
+            const canvas = document.getElementById('game-canvas');
+            const pouch = document.getElementById('pouch');
+            const projectile = document.getElementById('projectile');
+            const bandLeft = document.getElementById('band-left');
+            const bandRight = document.getElementById('band-right');
+            const resetBtn = document.getElementById('reset-btn');
+            const forceBar = document.getElementById('force-bar');
+            const instructions = document.getElementById('instructions');
+            const touchHint = document.querySelector('.touch-hint');
+            const handIndicator = document.getElementById('hand-indicator');
+            const target = document.getElementById('target');
+            const hitMessage = document.getElementById('hit-message');
+            
+            // Initialize slingshot
+            resetSlingshot();
+            
+            // Register mouse events
+            pouch.addEventListener('mousedown', handleMouseDown);
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
+            
+            // Register touch events for mobile
+            pouch.addEventListener('touchstart', handleTouchStart);
+            document.addEventListener('touchmove', handleTouchMove);
+            document.addEventListener('touchend', handleTouchEnd);
+            document.addEventListener('touchcancel', handleTouchCancel);
+            
+            // Reset button
+            resetBtn.addEventListener('click', resetSlingshot);
+            
+            // Mouse event handlers
+            function handleMouseDown(e) {
+                if (!gameState.isAnimating) {
+                    startDrag(e);
+                }
+            }
+            
+            function handleMouseMove(e) {
+                if (gameState.isDragging) {
+                    moveSlingshot(e.clientX, e.clientY);
+                }
+            }
+            
+            function handleMouseUp() {
+                if (gameState.isDragging) {
+                    releaseSlingshot();
+                }
+            }
+            
+            // Touch event handlers
+            function handleTouchStart(e) {
+                if (!gameState.isAnimating) {
+                    e.preventDefault();
+                    startDrag(e);
+                }
+            }
+            
+            function handleTouchMove(e) {
+                if (gameState.isDragging) {
+                    e.preventDefault();
+                    moveSlingshot(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }
+            
+            function handleTouchEnd() {
+                if (gameState.isDragging) {
+                    releaseSlingshot();
+                }
+            }
+            
+            function handleTouchCancel() {
+                gameState.isDragging = false;
+                resetSlingshot();
+            }
+            
+            // Start dragging the slingshot
+            function startDrag(e) {
+                gameState.isDragging = true;
+                instructions.textContent = "Release to launch!";
+                
+                // Hide the touch hint after first interaction
+                if (gameState.isFirstInteraction) {
+                    touchHint.style.display = 'none';
+                    gameState.isFirstInteraction = false;
+                }
+                
+                if (e.preventDefault) {
+                    e.preventDefault();
+                }
+            }
+            
+            // Move slingshot while dragging
+            function moveSlingshot(clientX, clientY) {
+                const svgRect = canvas.getBoundingClientRect();
+                
+                // Convert to SVG coordinates
+                const svgX = (clientX - svgRect.left) * (600 / svgRect.width) - 300;
+                const svgY = (clientY - svgRect.top) * (400 / svgRect.height) - 200;
+                
+                // Calculate distance and angle from resting position
+                const dx = svgX - gameState.restingX;
+                const dy = svgY - gameState.restingY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx);
+                
+                // Limit pull distance
+                const pullDistance = Math.min(distance, Math.abs(gameState.maxPullBack));
+                gameState.pouchX = gameState.restingX + pullDistance * Math.cos(angle);
+                gameState.pouchY = gameState.restingY + pullDistance * Math.sin(angle);
+                
+                // Update force meter
+                const forcePercent = (pullDistance / Math.abs(gameState.maxPullBack)) * 100;
+                forceBar.style.width = `${forcePercent}%`;
+                
+                // Show tension color
+                const tensionColor = calculateTensionColor(forcePercent);
+                bandLeft.setAttribute('stroke', tensionColor);
+                bandRight.setAttribute('stroke', tensionColor);
+                
+                // Update positions
+                updatePositions();
+            }
+            
+            // Release the slingshot to launch
+            function releaseSlingshot() {
+                gameState.isDragging = false;
+                gameState.isAnimating = true;
+                instructions.textContent = "Watch it fly!";
+                
+                // Calculate pull distance and angle
+                const dx = gameState.restingX - gameState.pouchX;
+                const dy = gameState.restingY - gameState.pouchY;
+                const pullDistance = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx);
+                
+                // Launch if pulled
+                if (pullDistance > 0) {
+                    launchProjectile(pullDistance, angle);
+                } else {
+                    gameState.isAnimating = false;
+                }
+            }
+            
+            // Calculate band color based on tension
+            function calculateTensionColor(forcePercent) {
+                // Red gets darker with more tension
+                const r = 255;
+                const g = Math.max(0, 77 - forcePercent * 0.77);
+                const b = Math.max(0, 77 - forcePercent * 0.77);
+                return `rgb(${r}, ${g}, ${b})`;
+            }
+            
+            // Update visual positions
+            function updatePositions() {
+                pouch.style.transform = `translate(${gameState.pouchX}px, ${gameState.pouchY}px)`;
+                projectile.style.transform = `translate(${gameState.pouchX}px, ${gameState.pouchY}px)`;
+                bandLeft.setAttribute('x2', gameState.pouchX);
+                bandLeft.setAttribute('y2', gameState.pouchY);
+                bandRight.setAttribute('x2', gameState.pouchX);
+                bandRight.setAttribute('y2', gameState.pouchY);
+            }
+            
+            // Reset slingshot to initial state
+            function resetSlingshot() {
+                gameState.isDragging = false;
+                gameState.isAnimating = false;
+                gameState.pouchX = gameState.restingX;
+                gameState.pouchY = gameState.restingY;
+                
+                pouch.style.transition = 'transform 0.3s ease';
+                projectile.style.transition = 'transform 0.3s ease';
+                
+                pouch.style.transform = `translate(${gameState.restingX}px, ${gameState.restingY}px)`;
+                projectile.style.transform = `translate(${gameState.restingX}px, ${gameState.restingY}px)`;
+                
+                bandLeft.setAttribute('x2', gameState.restingX);
+                bandLeft.setAttribute('y2', gameState.restingY);
+                bandRight.setAttribute('x2', gameState.restingX);
+                bandRight.setAttribute('y2', gameState.restingY);
+                bandLeft.setAttribute('stroke', '#ff4d4d');
+                bandRight.setAttribute('stroke', '#ff4d4d');
+                
+                forceBar.style.width = '0%';
+                instructions.textContent = "Pull back the blue pouch";
+                
+                // Show touch hint for first-time users
+                if (gameState.isFirstInteraction) {
+                    touchHint.style.display = 'flex';
+                }
+            }
+            
+            // Check if projectile hit the target
+            function checkTargetHit(projectileX, projectileY) {
+                const distance = Math.sqrt(
+                    Math.pow(projectileX - gameState.targetX, 2) + 
+                    Math.pow(projectileY - gameState.targetY, 2)
+                );
+                return distance < gameState.targetRadius + 15; // projectile radius is 15
+            }
+            
+            // Show hit message and animate target
+            function showHitMessage() {
+                // Animate target - don't change position
+                target.animate([
+                    { transform: `translate(${gameState.targetX}px, ${gameState.targetY}px) scale(1)` },
+                    { transform: `translate(${gameState.targetX}px, ${gameState.targetY}px) scale(1.2)`, offset: 0.5 },
+                    { transform: `translate(${gameState.targetX}px, ${gameState.targetY}px) scale(1)` }
+                ], {
+                    duration: 500,
+                    iterations: 1
+                });
+                
+                // Show message
+                hitMessage.style.opacity = '1';
+                setTimeout(() => {
+                    hitMessage.style.opacity = '0';
+                }, 2000);
+                
+                // Change instruction
+                instructions.textContent = "Great shot! Try again!";
+            }
+            
+            // Launch the projectile
+            function launchProjectile(pullDistance, angle) {
+                // Calculate the pull vector (from resting point to current pull position)
+                const pullVectorX = gameState.pouchX - gameState.restingX;
+                const pullVectorY = gameState.pouchY - gameState.restingY;
+                
+                // Base velocity directly proportional to pull distance
+                const baseVelocity = 15 * pullDistance;
+                
+                // Calculate unit direction vector (normalized)
+                let directionX = 0;
+                let directionY = 0;
+                
+                if (pullDistance > 0) {
+                    // Direction is opposite of pull
+                    directionX = -pullVectorX / pullDistance;
+                    directionY = -pullVectorY / pullDistance;
+                }
+                
+                // Calculate final velocities
+                const velocityX = directionX * baseVelocity;
+                const velocityY = directionY * baseVelocity;
+                
+                // For vertical pulls, give extra upward boost
+                let boostedVelocityY = velocityY;
+                if (pullVectorY > 0) { // If pulled down, boost upward velocity
+                    const boostFactor = 1.8;
+                    boostedVelocityY = velocityY * boostFactor;
+                }
+                
+                // Animate pouch back to resting position
+                pouch.style.transition = 'transform 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67)';
+                pouch.style.transform = `translate(${gameState.restingX}px, ${gameState.restingY}px)`;
+                
+                // Reset bands with animation
+                bandLeft.setAttribute('stroke', '#ff4d4d');
+                bandRight.setAttribute('stroke', '#ff4d4d');
+                
+                // Create "snap" vibration effect
+                const snapDuration = 200;
+                const snapSteps = 10;
+                const snapDistance = 3;
+                
+                for (let i = 0; i < snapSteps; i++) {
+                    setTimeout(() => {
+                        const offset = (i % 2 === 0) ? snapDistance : -snapDistance;
+                        const progress = i / snapSteps;
+                        const dampening = 1 - progress;
+                        
+                        bandLeft.setAttribute('x2', gameState.restingX + offset * dampening);
+                        bandLeft.setAttribute('y2', gameState.restingY);
+                        bandRight.setAttribute('x2', gameState.restingX + offset * dampening);
+                        bandRight.setAttribute('y2', gameState.restingY);
+                    }, (i * snapDuration) / snapSteps);
+                }
+                
+                // Reset bands after animation
+                setTimeout(() => {
+                    bandLeft.setAttribute('x2', gameState.restingX);
+                    bandLeft.setAttribute('y2', gameState.restingY);
+                    bandRight.setAttribute('x2', gameState.restingX);
+                    bandRight.setAttribute('y2', gameState.restingY);
+                }, snapDuration);
+                
+                // Prepare projectile for launch
+                projectile.style.transition = 'none';
+                projectile.style.transform = `translate(${gameState.pouchX}px, ${gameState.pouchY}px)`;
+                
+                // Launch with physics animation
+                requestAnimationFrame(() => {
+                    // Physics constants
+                    const gravity = 500;
+                    const airResistance = 0.001;
+                    
+                    // Starting position and velocity
+                    let posX = gameState.pouchX;
+                    let posY = gameState.pouchY;
+                    let currentVelocityX = velocityX;
+                    let currentVelocityY = boostedVelocityY;
+                    
+                    // Flight tracking
+                    let startTime = null;
+                    let lastTime = null;
+                    let hitDetected = false;
+                    let bounced = false;
+                    
+                    // Ground level for bouncing
+                    const groundLevel = 150; // Y coordinate of the ground
+                    const bounceFactor = 0.65; // How much energy is retained in a bounce
+                    
+                    // Simulate physics with proper time steps
+                    function animateProjectile(timestamp) {
+                        if (!startTime) {
+                            startTime = timestamp;
+                            lastTime = timestamp;
+                            requestAnimationFrame(animateProjectile);
+                            return;
+                        }
+                        
+                        // Calculate time step (delta time)
+                        const deltaTime = Math.min((timestamp - lastTime) / 1000, 0.02); // in seconds, capped for stability
+                        lastTime = timestamp;
+                        
+                        // Calculate air resistance (proportional to velocity squared)
+                        const speed = Math.sqrt(currentVelocityX * currentVelocityX + currentVelocityY * currentVelocityY);
+                        const dragForce = airResistance * speed * speed;
+                        
+                        // Apply drag in opposite direction of movement
+                        if (speed > 0) {
+                            const dragX = (dragForce * currentVelocityX) / speed;
+                            const dragY = (dragForce * currentVelocityY) / speed;
+                            currentVelocityX -= dragX * deltaTime;
+                            currentVelocityY -= dragY * deltaTime;
+                        }
+                        
+                        // Apply gravity
+                        currentVelocityY += gravity * deltaTime;
+                        
+                        // Update position
+                        posX += currentVelocityX * deltaTime;
+                        posY += currentVelocityY * deltaTime;
+                        
+                        // Check for ground bounce
+                        if (posY > groundLevel && currentVelocityY > 0) {
+                            // Bounce off the ground
+                            posY = groundLevel;
+                            currentVelocityY = -currentVelocityY * bounceFactor;
+                            currentVelocityX *= 0.8; // Reduce horizontal velocity due to friction
+                            bounced = true;
+                        }
+                        
+                        // Update projectile position
+                        projectile.style.transform = `translate(${posX}px, ${posY}px)`;
+                        
+                        // Check for target hit
+                        if (!hitDetected && checkTargetHit(posX, posY)) {
+                            hitDetected = true;
+                            showHitMessage();
+                        }
+                        
+                        // Continue animation if projectile is still moving significantly
+                        // or if it's within view bounds
+                        const isMoving = Math.abs(currentVelocityX) > 5 || Math.abs(currentVelocityY) > 5;
+                        const isVisible = 
+                            posX > -300 && posX < 300 && 
+                            posY > -200 && posY < 220;
+                        
+                        if ((isMoving && isVisible) && timestamp - startTime < 8000) {
+                            // Continue animation
+                            requestAnimationFrame(animateProjectile);
+                        } else {
+                            // Animation complete
+                            gameState.isAnimating = false;
+                            if (!hitDetected) {
+                                instructions.textContent = "Try again!";
+                            }
+                        }
+                    }
+                    
+                    // Start animation
+                    requestAnimationFrame(animateProjectile);
+                    
+                    // Reset force meter when animation ends
+                    setTimeout(() => {
+                        forceBar.style.width = '0%';
+                    }, 8000);
+                });
+            }
+            
+            // Auto-hide touch hint after 5 seconds
+            setTimeout(() => {
+                if (gameState.isFirstInteraction) {
+                    touchHint.style.opacity = '0';
+                    touchHint.style.transition = 'opacity 1s ease';
+                }
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

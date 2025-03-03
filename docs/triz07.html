@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contained Within Principle</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 16px;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-top: 0.5rem;
+        }
+        
+        h2 {
+            color: #3498db;
+            font-size: 1.4rem;
+            margin-top: 1.5rem;
+        }
+        
+        p {
+            line-height: 1.6;
+            margin: 16px 0;
+            font-size: 1rem;
+        }
+        
+        .folder-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding-left: 20px;
+            margin: 0;
+        }
+        
+        summary {
+            cursor: pointer;
+            padding: 10px 8px;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        summary:focus {
+            outline: none;
+        }
+        
+        summary:hover {
+            background-color: #f0f5ff;
+        }
+        
+        summary::before {
+            content: '📁';
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        li.file {
+            display: flex;
+            align-items: center;
+            padding: 10px 8px;
+            margin-left: 8px;
+        }
+        
+        li.file::before {
+            content: '📄';
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        details[open] > summary {
+            background-color: #e3f2fd;
+            margin-bottom: 8px;
+        }
+        
+        details[open] > summary::before {
+            content: '📂';
+        }
+        
+        details {
+            margin: 4px 0;
+        }
+        
+        .examples {
+            background-color: #ebf7fb;
+            border-left: 4px solid #3498db;
+            padding: 12px 16px;
+            border-radius: 0 4px 4px 0;
+            margin: 20px 0;
+        }
+        
+        .examples h3 {
+            margin-top: 0;
+            color: #2980b9;
+            font-size: 1.1rem;
+        }
+        
+        .examples ul {
+            padding-left: 16px;
+        }
+        
+        .examples li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .examples li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        /* Additional depth for nested folders */
+        details details {
+            margin-left: 8px;
+        }
+        
+        /* Depth indicators */
+        .depth-indicator {
+            display: inline-block;
+            margin-right: 10px;
+            color: #95a5a6;
+            font-size: 0.8rem;
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            h2 {
+                font-size: 1.3rem;
+            }
+            
+            li.file, summary {
+                padding: 12px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Illustration of the "Contained Within" Principle</h1>
+        
+        <p>The "Contained Within" principle, also known as the Matriôshka Principle, involves one object containing another object within it, which may contain yet another, and so on.</p>
+        
+        <p>This TRIZ creativity principle is inspired by Russian Matriôshka dolls, where each doll nests a smaller doll inside.</p>
+        
+        <h2>Interactive Example: Nested Folders</h2>
+        
+        <div class="folder-container">
+            <details>
+                <summary>Root</summary>
+                <ul>
+                    <li class="folder">
+                        <details>
+                            <summary>Folder A</summary>
+                            <ul>
+                                <li class="file">File 1</li>
+                                <li class="file">File 2</li>
+                                <li class="folder">
+                                    <details>
+                                        <summary>Subfolder A-1</summary>
+                                        <ul>
+                                            <li class="file">File A-1-1</li>
+                                            <li class="file">File A-1-2</li>
+                                        </ul>
+                                    </details>
+                                </li>
+                            </ul>
+                        </details>
+                    </li>
+                    <li class="folder">
+                        <details>
+                            <summary>Folder B</summary>
+                            <ul>
+                                <li class="file">File 3</li>
+                                <li class="folder">
+                                    <details>
+                                        <summary>Subfolder B-1</summary>
+                                        <ul>
+                                            <li class="file">File 4</li>
+                                            <li class="folder">
+                                                <details>
+                                                    <summary>Subfolder B-1-1</summary>
+                                                    <ul>
+                                                        <li class="file">File B-1-1-1</li>
+                                                        <li class="file">File B-1-1-2</li>
+                                                    </ul>
+                                                </details>
+                                            </li>
+                                        </ul>
+                                    </details>
+                                </li>
+                                <li class="file">File 5</li>
+                            </ul>
+                        </details>
+                    </li>
+                    <li class="folder">
+                        <details>
+                            <summary>Folder C</summary>
+                            <ul>
+                                <li class="file">File 6</li>
+                                <li class="file">File 7</li>
+                            </ul>
+                        </details>
+                    </li>
+                </ul>
+            </details>
+        </div>
+        
+        <p>Tap on the folders above to explore the nested structure. Each folder contains other folders or files within it, demonstrating the "Contained Within" principle.</p>
+        
+        <div class="examples">
+            <h3>Real-world Examples:</h3>
+            <ul>
+                <li>Telescopic antennas (tubes within tubes)</li>
+                <li>Collapsible camping cups</li>
+                <li>A hammer with nails stored in its hollow handle</li>
+                <li>Pocket-sized fishing rod that extends from a compact form</li>
+                <li>Nesting cookware sets where pots fit inside each other</li>
+                <li>Extendable selfie sticks</li>
+            </ul>
+        </div>
+        
+        <p>The concept can also apply to objects moving through others, like water through pipelines or trains through tunnels.</p>
+        
+        <footer>
+            Interactive demonstration of the TRIZ "Contained Within" Principle
+        </footer>
+    </div>
+
+    <script>
+        // Add depth indicators to each folder
+        document.addEventListener('DOMContentLoaded', function() {
+            const addDepthIndicators = (element, depth = 0) => {
+                const details = element.querySelectorAll(':scope > li > details');
+                
+                details.forEach(detail => {
+                    const summary = detail.querySelector('summary');
+                    const ul = detail.querySelector('ul');
+                    
+                    if (depth > 0) {
+                        const indicator = document.createElement('span');
+                        indicator.className = 'depth-indicator';
+                        indicator.textContent = `Level ${depth}`;
+                        summary.insertBefore(indicator, summary.firstChild);
+                    }
+                    
+                    if (ul) {
+                        addDepthIndicators(ul, depth + 1);
+                    }
+                });
+            };
+            
+            const rootUl = document.querySelector('details > ul');
+            if (rootUl) {
+                addDepthIndicators(rootUl, 1);
+            }
+            
+            // Add tap animation
+            const summaries = document.querySelectorAll('summary');
+            summaries.forEach(summary => {
+                summary.addEventListener('touchstart', function() {
+                    this.style.backgroundColor = '#d0e8f2';
+                });
+                
+                summary.addEventListener('touchend', function() {
+                    setTimeout(() => {
+                        if (!this.parentElement.open) {
+                            this.style.backgroundColor = '';
+                        } else {
+                            this.style.backgroundColor = '#e3f2fd';
+                        }
+                    }, 100);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

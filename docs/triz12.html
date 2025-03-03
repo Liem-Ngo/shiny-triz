@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TRIZ Equipotentiality Illustration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 10px;
+            margin: 0;
+            max-width: 100%;
+            background-color: #f0f0f0;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior: contain;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            margin: 8px 0;
+            color: #333;
+        }
+
+        p {
+            margin: 6px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            gap: 20px;
+        }
+
+        .scene {
+            margin: 5px 0;
+            width: 100%;
+            max-width: 400px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 10px;
+        }
+
+        .workspace {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 5px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+        }
+        
+        @media (min-height: 600px) {
+            .workspace {
+                height: 220px;
+            }
+        }
+
+        /* Shelving and structure */
+        .traditional-shelves {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 100%;
+        }
+
+        .traditional-shelf {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background-color: #8B4513;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .traditional-shelf:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 6px;
+            height: 3px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), transparent);
+        }
+
+        .equipotential-belt {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            height: 12px;
+            background: repeating-linear-gradient(
+                90deg,
+                #555,
+                #555 15px,
+                #444 15px,
+                #444 30px
+            );
+            transform: translateY(-50%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        
+        /* Add rollers to conveyor belt */
+        .equipotential-belt:before,
+        .equipotential-belt:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            left: 0;
+        }
+        
+        .equipotential-belt:before {
+            top: -4px;
+            background-color: #777;
+            border-radius: 2px 2px 0 0;
+        }
+        
+        .equipotential-belt:after {
+            bottom: -4px;
+            background-color: #777;
+            border-radius: 0 0 2px 2px;
+        }
+
+        /* Tools */
+        .tool {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(3px 3px 4px rgba(0,0,0,0.4));
+        }
+        
+        @media (max-width: 400px) {
+            .tool {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        .tool-pen {
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 40'%3E%3Cdefs%3E%3ClinearGradient id='penBody' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23666666;stop-opacity:1' /%3E%3Cstop offset='50%25' style='stop-color:%23555555;stop-opacity:1' /%3E%3Cstop offset='90%25' style='stop-color:%23444444;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23666666;stop-opacity:1' /%3E%3C/linearGradient%3E%3ClinearGradient id='penTip' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23999999;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23666666;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M10,20 L90,20 C95,20 100,17 100,14 L100,26 C100,23 95,20 90,20 L10,20 Z' fill='url(%23penBody)' stroke='%23444444' stroke-width='0.5'/%3E%3Cpath d='M10,20 C5,20 4,14 10,14 L90,14 C95,14 100,17 100,20 C100,23 95,26 90,26 L10,26 C4,26 5,20 10,20 Z' fill='url(%23penBody)' stroke='%23444444' stroke-width='0.5'/%3E%3Cpath d='M5,20 L10,20 C5,20 4,14 10,14 L5,14 C2,14 2,20 5,20 Z' fill='url(%23penTip)' stroke='%23444444' stroke-width='0.5'/%3E%3Crect x='32' y='15' width='8' height='10' rx='2' ry='2' fill='%23777777' stroke='%23444444' stroke-width='0.5'/%3E%3Crect x='45' y='15' width='8' height='10' rx='2' ry='2' fill='%23777777' stroke='%23444444' stroke-width='0.5'/%3E%3Crect x='58' y='15' width='8' height='10' rx='2' ry='2' fill='%23777777' stroke='%23444444' stroke-width='0.5'/%3E%3Cpath d='M80,18 L87,18 M80,22 L87,22' stroke='%23777777' stroke-width='1'/%3E%3C/svg%3E") no-repeat center center;
+            background-size: contain;
+        }
+
+        .tool-hammer {
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 60'%3E%3Cdefs%3E%3ClinearGradient id='hammerHead' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23aaaaaa;stop-opacity:1' /%3E%3Cstop offset='50%25' style='stop-color:%23888888;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23777777;stop-opacity:1' /%3E%3C/linearGradient%3E%3ClinearGradient id='hammerHandle' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23999999;stop-opacity:1' /%3E%3Cstop offset='50%25' style='stop-color:%23888888;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23777777;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M80,10 L80,50 L110,50 L110,10 Z' fill='url(%23hammerHead)' stroke='%23555555' stroke-width='1.5'/%3E%3Cpath d='M10,30 L80,30 C80,20 80,40 80,30 Z' fill='url(%23hammerHandle)' stroke='%23555555' stroke-width='1.5'/%3E%3Crect x='10' y='22' width='70' height='16' rx='8' ry='8' fill='url(%23hammerHandle)' stroke='%23555555' stroke-width='1.5'/%3E%3Cpath d='M30,22 L40,22 C38,19 32,19 30,22 Z' fill='%23777777' stroke='%23555555' stroke-width='0.5'/%3E%3Cpath d='M50,22 L60,22 C58,19 52,19 50,22 Z' fill='%23777777' stroke='%23555555' stroke-width='0.5'/%3E%3Cpath d='M30,38 L40,38 C38,41 32,41 30,38 Z' fill='%23777777' stroke='%23555555' stroke-width='0.5'/%3E%3Cpath d='M50,38 L60,38 C58,41 52,41 50,38 Z' fill='%23777777' stroke='%23555555' stroke-width='0.5'/%3E%3Cpath d='M95,10 L95,50' stroke='%23999999' stroke-width='1'/%3E%3C/svg%3E") no-repeat center center;
+            background-size: contain;
+        }
+
+        .tool-pliers {
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 40'%3E%3Cdefs%3E%3ClinearGradient id='plierJaws' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23cccccc;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23a0a0a0;stop-opacity:1' /%3E%3C/linearGradient%3E%3ClinearGradient id='plierRedHandle' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23ff4b52;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23e02d35;stop-opacity:1' /%3E%3C/linearGradient%3E%3ClinearGradient id='plierBlackHandle' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23777777;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23555555;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M35,20 C35,15 40,8 50,8 L65,12 L95,5 L105,12 L80,18 L65,16 L55,18 C45,18 35,25 35,20 Z' fill='url(%23plierJaws)' stroke='%23777' stroke-width='1'/%3E%3Cpath d='M35,20 C35,25 40,32 50,32 L65,28 L95,35 L105,28 L80,22 L65,24 L55,22 C45,22 35,15 35,20 Z' fill='url(%23plierJaws)' stroke='%23777' stroke-width='1'/%3E%3Cpath d='M10,12 L50,12 C50,12 55,16 55,20 C55,16 50,12 15,12 Z' fill='url(%23plierRedHandle)' stroke='%23777' stroke-width='1'/%3E%3Cpath d='M10,28 L50,28 C50,28 55,24 55,20 C55,24 50,28 15,28 Z' fill='url(%23plierRedHandle)' stroke='%23777' stroke-width='1'/%3E%3Cpath d='M10,8 L50,8 C50,8 58,12 58,20 C58,12 50,8 10,8 Z' fill='url(%23plierBlackHandle)' stroke='%23777' stroke-width='1'/%3E%3Cpath d='M10,32 L50,32 C50,32 58,28 58,20 C58,28 50,32 10,32 Z' fill='url(%23plierBlackHandle)' stroke='%23777' stroke-width='1'/%3E%3Ccircle cx='35' cy='20' r='5' fill='%23999' stroke='%23777' stroke-width='1'/%3E%3Ccircle cx='35' cy='20' r='2' fill='%23777' stroke='%23666' stroke-width='0.5'/%3E%3C/svg%3E") no-repeat center center;
+            background-size: contain;
+        }
+
+        /* Worker */
+        .worker {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='bodyGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%230066cc;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23004499;stop-opacity:1' /%3E%3C/linearGradient%3E%3ClinearGradient id='faceGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23ffdbac;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23f1c27d;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='30' r='20' fill='url(%23faceGrad)' stroke='%23333' stroke-width='1.5'/%3E%3Cpath d='M50,50 L50,90 Q30,90 25,75 L25,50 Z' fill='url(%23bodyGrad)' stroke='%23333' stroke-width='1.5'/%3E%3Cpath d='M50,50 L50,90 Q70,90 75,75 L75,50 Z' fill='url(%23bodyGrad)' stroke='%23333' stroke-width='1.5'/%3E%3Ccircle cx='43' cy='25' r='3' fill='%23333'/%3E%3Ccircle cx='57' cy='25' r='3' fill='%23333'/%3E%3Cpath d='M40,35 Q50,42 60,35' fill='none' stroke='%23333' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat center center;
+            background-size: contain;
+            z-index: 2;
+            transform: translate(-50%, -50%);
+            transition: left 0.8s ease-in-out, top 0.8s ease-in-out;
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
+        }
+
+        .working {
+            animation: working 0.5s ease-in-out;
+        }
+
+        @keyframes working {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .stats {
+            padding: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat {
+            flex: 1;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .distance-bar {
+            height: 8px;
+            width: 100%;
+            background-color: #e9e9e9;
+            border-radius: 4px;
+            margin-top: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .distance-fill {
+            height: 100%;
+            background-color: #007bff;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            margin: 5px;
+            padding: 16px 24px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            touch-action: manipulation;
+            min-width: 140px;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:active {
+            background-color: #004085;
+            transform: translateY(3px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            color: #666666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        #reset-button {
+            background-color: #dc3545;
+        }
+
+        #reset-button:hover {
+            background-color: #c82333;
+        }
+        
+        #reset-button:active {
+            background-color: #a71d2a;
+        }
+
+        .explanation {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: left;
+        }
+
+        /* For larger screens */
+        @media (min-width: 768px) {
+            .container {
+                flex-direction: row;
+                justify-content: center;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .scene {
+                margin: 10px;
+                width: 45%;
+                min-width: 350px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+            
+            p {
+                font-size: 16px;
+            }
+            
+            .workspace {
+                height: 250px;
+            }
+            
+            .tool {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .worker {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>TRIZ Principle: Equipotentiality</h1>
+    <p>Save energy by keeping items at the same height to avoid lifting against gravity.</p>
+    
+    <div class="container">
+        <!-- Traditional Setup -->
+        <div class="scene" id="traditional">
+            <h2>Traditional Setup</h2>
+            <div class="workspace">
+                <!-- Shelving structure -->
+                <div class="traditional-shelves">
+                    <div class="traditional-shelf" style="top: 25%;"></div>
+                    <div class="traditional-shelf" style="top: 50%;"></div>
+                    <div class="traditional-shelf" style="top: 75%;"></div>
+                </div>
+                <!-- Tools on different heights -->
+                <div class="tool tool-pen" id="trad-tool-1" style="left: 25%; top: 25%;"></div>
+                <div class="tool tool-hammer" id="trad-tool-2" style="left: 50%; top: 75%;"></div>
+                <div class="tool tool-pliers" id="trad-tool-3" style="left: 75%; top: 50%;"></div>
+                <div id="worker-traditional" class="worker"></div>
+            </div>
+            <div class="stats">
+                <div class="stat">
+                    <div>Vertical Distance:</div>
+                    <div class="stat-value"><span id="total-traditional">0</span> units</div>
+                    <div class="distance-bar">
+                        <div id="distance-bar-traditional" class="distance-fill"></div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div>Energy Used:</div>
+                    <div class="stat-value"><span id="energy-traditional">0</span> units</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Equipotential Setup -->
+        <div class="scene" id="equipotential">
+            <h2>Equipotential Setup</h2>
+            <div class="workspace">
+                <!-- Conveyor belt at consistent height -->
+                <div class="equipotential-belt"></div>
+                <!-- Tools all at the same height -->
+                <div class="tool tool-pen" id="equi-tool-1" style="left: 25%; top: 50%;"></div>
+                <div class="tool tool-hammer" id="equi-tool-2" style="left: 50%; top: 50%;"></div>
+                <div class="tool tool-pliers" id="equi-tool-3" style="left: 75%; top: 50%;"></div>
+                <div id="worker-equipotential" class="worker"></div>
+            </div>
+            <div class="stats">
+                <div class="stat">
+                    <div>Vertical Distance:</div>
+                    <div class="stat-value"><span id="total-equipotential">0</span> units</div>
+                    <div class="distance-bar">
+                        <div id="distance-bar-equipotential" class="distance-fill"></div>
+                    </div>
+                </div>
+                <div class="stat">
+                    <div>Energy Used:</div>
+                    <div class="stat-value"><span id="energy-equipotential">0</span> units</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button id="start-button" onclick="startAnimation()">Start Animation</button>
+        <button id="reset-button" onclick="resetAnimationForce()">Reset</button>
+    </div>
+
+    <div class="explanation">
+        <h3>About Equipotentiality</h3>
+        <p>The TRIZ principle of <strong>Equipotentiality</strong> focuses on changing operating conditions to eliminate the need to raise or lower objects in a gravity field.</p>
+        <p>In the traditional setup, a worker has to move up and down to reach tools at different heights, which requires additional energy to overcome gravity.</p>
+        <p>In the equipotential setup, all tools are arranged at the same height (like on a conveyor belt), eliminating vertical movement and conserving energy.</p>
+        <p><strong>Real-world examples:</strong> Assembly line conveyors, canal locks, tool delivery systems, and ergonomic workstations.</p>
+    </div>
+
+    <script>
+        // Animation state tracking
+        let animationRunning = false;
+        let animationPromises = [];
+        const MAX_DISTANCE = 200; // For scaling the progress bar
+        
+        // Tool positions for both setups
+        const traditionalTools = [
+            { id: "trad-tool-1", left: "25%", top: "25%" },
+            { id: "trad-tool-2", left: "50%", top: "75%" },
+            { id: "trad-tool-3", left: "75%", top: "50%" }
+        ];
+
+        const equipotentialTools = [
+            { id: "equi-tool-1", left: "25%", top: "50%" },
+            { id: "equi-tool-2", left: "50%", top: "50%" },
+            { id: "equi-tool-3", left: "75%", top: "50%" }
+        ];
+
+        // Function to animate a tool being used
+        function animateToolUsage(toolId) {
+            return new Promise(resolve => {
+                const tool = document.getElementById(toolId);
+                tool.style.transform = "translate(-50%, -50%) scale(1.2)";
+                
+                setTimeout(() => {
+                    tool.style.transform = "translate(-50%, -50%) scale(1)";
+                    resolve();
+                }, 500);
+            });
+        }
+
+        // Function to move worker horizontally
+        function moveHorizontally(worker, left) {
+            return new Promise(resolve => {
+                if (worker.animationCancelled) {
+                    resolve();
+                    return;
+                }
+                
+                worker.style.left = left;
+                
+                const handleTransitionEnd = (e) => {
+                    if (e.propertyName === 'left') {
+                        worker.removeEventListener('transitionend', handleTransitionEnd);
+                        if (!worker.animationCancelled) {
+                            resolve();
+                        }
+                    }
+                };
+                
+                worker.addEventListener('transitionend', handleTransitionEnd);
+                
+                // Safety timeout in case transition doesn't fire
+                setTimeout(() => {
+                    worker.removeEventListener('transitionend', handleTransitionEnd);
+                    if (!worker.animationCancelled) {
+                        resolve();
+                    }
+                }, 1000);
+            });
+        }
+
+        // Function to move worker vertically and update distance
+        function moveVertically(worker, top, statsData) {
+            return new Promise(resolve => {
+                if (worker.animationCancelled) {
+                    resolve();
+                    return;
+                }
+                
+                const workerRect = worker.getBoundingClientRect();
+                const workspaceRect = worker.parentElement.getBoundingClientRect();
+                const currentTop = (workerRect.top + workerRect.height/2) - workspaceRect.top;
+                
+                // Parse the current top percentage to pixels
+                const workspaceHeight = workspaceRect.height;
+                const targetTopPx = workspaceHeight * (parseFloat(top) / 100);
+                const currentTopPx = currentTop;
+                
+                // Calculate the distance moved
+                const distance = Math.abs(targetTopPx - currentTopPx);
+                
+                // Update the energy calculation
+                const energy = distance * 1.5; // Simple energy model: Energy = Force * Distance
+                
+                // Move the worker
+                worker.style.top = top;
+                
+                const handleTransitionEnd = (e) => {
+                    if (e.propertyName === 'top') {
+                        worker.removeEventListener('transitionend', handleTransitionEnd);
+                        
+                        if (!worker.animationCancelled) {
+                            // Update the stats
+                            const currentDistance = parseFloat(statsData.distanceElement.textContent);
+                            const newDistance = currentDistance + distance;
+                            statsData.distanceElement.textContent = newDistance.toFixed(0);
+                            
+                            const currentEnergy = parseFloat(statsData.energyElement.textContent);
+                            const newEnergy = currentEnergy + energy;
+                            statsData.energyElement.textContent = newEnergy.toFixed(0);
+                            
+                            // Update the progress bar
+                            const percentFill = Math.min(100, (newDistance / MAX_DISTANCE) * 100);
+                            statsData.barElement.style.width = percentFill + '%';
+                            
+                            resolve();
+                        }
+                    }
+                };
+                
+                worker.addEventListener('transitionend', handleTransitionEnd);
+                
+                // Safety timeout in case transition doesn't fire
+                setTimeout(() => {
+                    worker.removeEventListener('transitionend', handleTransitionEnd);
+                    if (!worker.animationCancelled) {
+                        // Still update stats even if transition event didn't fire
+                        const currentDistance = parseFloat(statsData.distanceElement.textContent);
+                        const newDistance = currentDistance + distance;
+                        statsData.distanceElement.textContent = newDistance.toFixed(0);
+                        
+                        const currentEnergy = parseFloat(statsData.energyElement.textContent);
+                        const newEnergy = currentEnergy + energy;
+                        statsData.energyElement.textContent = newEnergy.toFixed(0);
+                        
+                        // Update the progress bar
+                        const percentFill = Math.min(100, (newDistance / MAX_DISTANCE) * 100);
+                        statsData.barElement.style.width = percentFill + '%';
+                        
+                        resolve();
+                    }
+                }, 1000);
+            });
+        }
+
+        // Function to work with a tool
+        function workWithTool(worker, toolId) {
+            return new Promise(resolve => {
+                if (worker.animationCancelled) {
+                    resolve();
+                    return;
+                }
+                
+                worker.classList.add('working');
+                
+                // Find the tool and animate it
+                const tool = document.getElementById(toolId);
+                tool.style.transform = "translate(-50%, -50%) scale(1.2)";
+                
+                setTimeout(() => {
+                    worker.classList.remove('working');
+                    tool.style.transform = "translate(-50%, -50%) scale(1)";
+                    if (!worker.animationCancelled) {
+                        resolve();
+                    }
+                }, 1000);
+            });
+        }
+
+        // Function to animate a scene
+        async function animateScene(workerId, tools, statsData) {
+            const worker = document.getElementById(workerId);
+            worker.animationCancelled = false;
+            
+            // Reset stats
+            statsData.distanceElement.textContent = '0';
+            statsData.energyElement.textContent = '0';
+            statsData.barElement.style.width = '0%';
+
+            // Set initial position
+            worker.style.left = '12.5%';
+            worker.style.top = '50%';
+
+            for (const tool of tools) {
+                if (worker.animationCancelled) break;
+                
+                // Move to the tool
+                await moveHorizontally(worker, tool.left);
+                if (worker.animationCancelled) break;
+                
+                await moveVertically(worker, tool.top, statsData);
+                if (worker.animationCancelled) break;
+                
+                // Use the tool
+                await workWithTool(worker, tool.id);
+            }
+            
+            // Return to starting position if not cancelled
+            if (!worker.animationCancelled) {
+                await moveHorizontally(worker, '12.5%');
+            }
+        }
+
+        // Start animations for both scenes
+        async function startAnimation() {
+            if (animationRunning) return;
+            
+            // Disable start button, enable reset button
+            document.getElementById('start-button').disabled = true;
+            document.getElementById('reset-button').disabled = false;
+            
+            animationRunning = true;
+            
+            // Vibrate on mobile devices when animation starts
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+            
+            // Create stats data objects
+            const traditionalStats = {
+                distanceElement: document.getElementById('total-traditional'),
+                energyElement: document.getElementById('energy-traditional'),
+                barElement: document.getElementById('distance-bar-traditional')
+            };
+            
+            const equipotentialStats = {
+                distanceElement: document.getElementById('total-equipotential'),
+                energyElement: document.getElementById('energy-equipotential'),
+                barElement: document.getElementById('distance-bar-equipotential')
+            };
+            
+            // Run both animations
+            const traditionalPromise = animateScene('worker-traditional', traditionalTools, traditionalStats);
+            const equipotentialPromise = animateScene('worker-equipotential', equipotentialTools, equipotentialStats);
+            
+            animationPromises = [traditionalPromise, equipotentialPromise];
+            
+            try {
+                await Promise.all(animationPromises);
+            } catch (error) {
+                console.error("Animation error:", error);
+            } finally {
+                // Only re-enable the start button if we haven't been force-canceled
+                if (!document.getElementById('worker-traditional').animationCancelled) {
+                    document.getElementById('start-button').disabled = false;
+                }
+                animationRunning = false;
+            }
+        }
+        
+        // Reset animation with force option
+        function resetAnimationForce() {
+            // Give haptic feedback on mobile
+            if (navigator.vibrate) {
+                navigator.vibrate(100);
+            }
+            
+            // Display feedback to show reset is working
+            document.getElementById('reset-button').textContent = "Resetting...";
+            
+            // Cancel any running animations
+            const workerTraditional = document.getElementById('worker-traditional');
+            const workerEquipotential = document.getElementById('worker-equipotential');
+            
+            workerTraditional.animationCancelled = true;
+            workerEquipotential.animationCancelled = true;
+            
+            // Remove any transition temporarily for immediate reset
+            workerTraditional.style.transition = 'none';
+            workerEquipotential.style.transition = 'none';
+            
+            // Reset positions
+            workerTraditional.style.left = '12.5%';
+            workerTraditional.style.top = '50%';
+            workerEquipotential.style.left = '12.5%';
+            workerEquipotential.style.top = '50%';
+            
+            // Reset any active tool animations
+            document.querySelectorAll('.tool').forEach(tool => {
+                tool.style.transform = 'translate(-50%, -50%)';
+            });
+            
+            // Force reflow
+            void workerTraditional.offsetWidth;
+            void workerEquipotential.offsetWidth;
+            
+            // Reset stats
+            document.getElementById('total-traditional').textContent = '0';
+            document.getElementById('energy-traditional').textContent = '0';
+            document.getElementById('distance-bar-traditional').style.width = '0%';
+            
+            document.getElementById('total-equipotential').textContent = '0';
+            document.getElementById('energy-equipotential').textContent = '0';
+            document.getElementById('distance-bar-equipotential').style.width = '0%';
+            
+            // Reset animation state
+            animationRunning = false;
+            
+            // Temporarily disable buttons during reset to prevent double-clicks
+            document.getElementById('start-button').disabled = true;
+            document.getElementById('reset-button').disabled = true;
+            
+            // Remove any working classes
+            workerTraditional.classList.remove('working');
+            workerEquipotential.classList.remove('working');
+            
+            // Complete reset with small delay to ensure UI updates properly
+            setTimeout(() => {
+                // Restore transitions
+                workerTraditional.style.transition = 'left 0.8s ease-in-out, top 0.8s ease-in-out';
+                workerEquipotential.style.transition = 'left 0.8s ease-in-out, top 0.8s ease-in-out';
+                
+                // Re-enable buttons
+                document.getElementById('start-button').disabled = false;
+                document.getElementById('reset-button').disabled = false;
+                document.getElementById('reset-button').textContent = "Reset";
+            }, 300);
+        }
+
+        // Add event listeners specifically targeted for mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the animation on page load
+            resetAnimationForce();
+            
+            // Make buttons more responsive on mobile
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                // Add touch event listeners
+                button.addEventListener('touchstart', function(e) {
+                    // Prevent default to avoid double-click issues on some mobile browsers
+                    e.preventDefault();
+                    if (!this.disabled) {
+                        this.classList.add('active');
+                    }
+                }, { passive: false });
+                
+                button.addEventListener('touchend', function() {
+                    this.classList.remove('active');
+                    if (!this.disabled && this.id === 'start-button') {
+                        startAnimation();
+                    } else if (!this.disabled && this.id === 'reset-button') {
+                        resetAnimationForce();
+                    }
+                });
+                
+                // Handle touch cancellation
+                button.addEventListener('touchcancel', function() {
+                    this.classList.remove('active');
+                });
+            });
+        });
+        
+        // Prevent scrolling when interacting with workspaces
+        document.querySelectorAll('.workspace').forEach(workspace => {
+            workspace.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+        });
+    </script>
+</body>
+</html>

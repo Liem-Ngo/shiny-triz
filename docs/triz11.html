@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beforehand Cushioning - TRIZ Principle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin: 10px 0;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin: 15px 0;
+        }
+
+        main {
+            padding: 0 15px;
+        }
+
+        .room {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 180px;
+            background-color: #333;
+            margin: 20px auto;
+            width: 90%;
+            border-radius: 8px;
+        }
+
+        .light-container {
+            text-align: center;
+            color: white;
+        }
+
+        .light {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 10px auto;
+            transition: all 0.5s ease;
+        }
+
+        .on {
+            background: radial-gradient(circle, yellow, white);
+            box-shadow: 0 0 20px yellow;
+        }
+
+        .off {
+            background: #666;
+            box-shadow: none;
+        }
+
+        button {
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            margin: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        button:active {
+            background-color: #3e8e41;
+            transform: translateY(2px);
+        }
+
+        #explanation {
+            margin: 20px;
+            font-size: 1.1rem;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        section {
+            margin: 20px;
+            text-align: left;
+            padding: 0 10px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 480px) {
+            .light {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .room {
+                height: 150px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            button {
+                width: 80%;
+                margin: 10px auto;
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Beforehand Cushioning - TRIZ Principle</h1>
+    </header>
+    <main>
+        <p>Tap the button to simulate a power outage and see how the emergency lighting system responds.</p>
+        <div class="room">
+            <div class="light-container">
+                <div class="light" id="main-light"></div>
+                <p>Main Light</p>
+            </div>
+            <div class="light-container">
+                <div class="light" id="emergency-light"></div>
+                <p>Emergency Light</p>
+            </div>
+        </div>
+        <button id="toggle-button">Simulate Power Outage</button>
+        <div id="explanation">Everything is functioning normally.</div>
+    </main>
+    <section>
+        <h2>About the Principle</h2>
+        <p>The TRIZ principle of "Beforehand Cushioning" involves preparing emergency means in advance to compensate for the relatively low reliability of an object. In this simulation, the emergency lighting system acts as a backup to ensure illumination during a power outage, demonstrating the importance of having safety measures ready beforehand.</p>
+        <p>Other examples include:</p>
+        <ul>
+            <li>Magnetic strip on photographic film to compensate for poor exposure</li>
+            <li>Back-up parachute for skydivers</li>
+            <li>Alternate air system for aircraft instruments</li>
+            <li>Fire alarms and firefighting equipment</li>
+            <li>Lifebuoys and lifeboats on ships</li>
+        </ul>
+    </section>
+    <script>
+        let isOutage = false;
+        const toggleButton = document.getElementById('toggle-button');
+        const explanation = document.getElementById('explanation');
+        const mainLight = document.getElementById('main-light');
+        const emergencyLight = document.getElementById('emergency-light');
+
+        function setNormal() {
+            mainLight.classList.add('on');
+            mainLight.classList.remove('off');
+            emergencyLight.classList.add('off');
+            emergencyLight.classList.remove('on');
+            explanation.textContent = 'Everything is functioning normally.';
+            toggleButton.textContent = 'Simulate Power Outage';
+            isOutage = false;
+        }
+
+        function setOutage() {
+            mainLight.classList.add('off');
+            mainLight.classList.remove('on');
+            emergencyLight.classList.add('on');
+            emergencyLight.classList.remove('off');
+            explanation.textContent = 'Power outage detected. Emergency lighting activated.';
+            toggleButton.textContent = 'Reset';
+            isOutage = true;
+        }
+
+        // Initially set to normal
+        setNormal();
+
+        toggleButton.addEventListener('click', () => {
+            if (isOutage) {
+                setNormal();
+            } else {
+                setOutage();
+            }
+        });
+    </script>
+</body>
+</html>

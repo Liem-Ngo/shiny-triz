@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRIZ Principle: Preliminary Implementation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 10px;
+            padding: 0;
+            max-width: 100%;
+            overscroll-behavior: none;
+        }
+        h1 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-top: 10px;
+        }
+        p {
+            font-size: 0.9rem;
+            max-width: 100%;
+            margin: 10px auto;
+            padding: 0 15px;
+        }
+        .simulation-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        .basket {
+            width: 90%;
+            max-width: 320px;
+            height: 180px;
+            border: 3px solid #8B4513;
+            border-radius: 8px;
+            margin: 15px auto;
+            position: relative;
+            background-color: #f0e6d9;
+            display: flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            justify-content: center;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .basket::before {
+            content: "Picnic Basket";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 0 10px;
+            font-size: 0.8rem;
+            color: #8B4513;
+        }
+        .item {
+            width: 80px;
+            height: 40px;
+            background-color: #AED6F1;
+            margin: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s, background-color 0.2s;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .item.active {
+            background-color: #5DADE2;
+            transform: scale(1.05);
+        }
+        .item.in-basket {
+            background-color: #D5F5E3;
+        }
+        .items {
+            width: 90%;
+            max-width: 320px;
+            margin: 10px auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .controls {
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        button {
+            margin: 5px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 6px;
+            background-color: #3498DB;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background-color 0.2s;
+            width: 90%;
+            max-width: 320px;
+        }
+        button:active {
+            background-color: #2980B9;
+            transform: translateY(1px);
+        }
+        .timer {
+            margin: 10px 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: #D5F5E3;
+            color: #333;
+            max-width: 320px;
+            width: 90%;
+            font-size: 0.9rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>TRIZ Principle: Preliminary Implementation</h1>
+    <p>This simulation demonstrates the TRIZ principle of Preliminary Implementation. Prepare a picnic basket by tapping items to place them in the basket. In Preliminary Implementation Mode, some items are already in the basket, saving time.</p>
+    
+    <div class="simulation-area">
+        <div class="controls">
+            <button id="standard-btn">Start Standard Mode</button>
+            <button id="preliminary-btn">Start Preliminary Implementation Mode</button>
+        </div>
+        
+        <div class="timer" id="timer">Time: 0.0s</div>
+        
+        <div class="basket" id="basket"></div>
+        <div class="items" id="items-container"></div>
+        
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        const basket = document.getElementById('basket');
+        const itemsContainer = document.getElementById('items-container');
+        const timerElement = document.getElementById('timer');
+        const messageElement = document.getElementById('message');
+        const standardBtn = document.getElementById('standard-btn');
+        const preliminaryBtn = document.getElementById('preliminary-btn');
+        
+        let mode = 'standard';
+        const requiredItems = ['Blanket', 'Sandwiches', 'Drinks', 'Plates', 'Utensils'];
+        const prePlacedItems = ['Blanket', 'Plates', 'Utensils'];
+        let inBasket = [];
+        let startTime;
+        let timerRunning = false;
+        let timerInterval;
+
+        // Initialize
+        standardBtn.addEventListener('click', () => startSimulation('standard'));
+        preliminaryBtn.addEventListener('click', () => startSimulation('preliminary'));
+
+        // Start simulation
+        function startSimulation(selectedMode) {
+            mode = selectedMode;
+            basket.innerHTML = '';
+            itemsContainer.innerHTML = '';
+            inBasket = [];
+            stopTimer();
+            timerRunning = false;
+            timerElement.textContent = 'Time: 0.0s';
+            messageElement.style.display = 'none';
+
+            // Create all items in items container
+            requiredItems.forEach(itemName => {
+                if (mode === 'preliminary' && prePlacedItems.includes(itemName)) {
+                    // Create pre-placed items directly in the basket
+                    const item = createItem(itemName);
+                    item.classList.add('in-basket');
+                    basket.appendChild(item);
+                    inBasket.push(itemName.toLowerCase());
+                } else {
+                    // Create draggable items
+                    const item = createItem(itemName);
+                    itemsContainer.appendChild(item);
+                }
+            });
+
+            // Show message based on mode
+            if (mode === 'preliminary') {
+                showMessage("Preliminary Implementation Mode: Some items are pre-placed in the basket.");
+            } else {
+                showMessage("Standard Mode: Place all items in the basket.");
+            }
+        }
+
+        function createItem(itemName) {
+            const item = document.createElement('div');
+            item.className = 'item';
+            item.id = itemName.toLowerCase();
+            item.textContent = itemName;
+            
+            // For mobile, use click/tap instead of drag
+            item.addEventListener('click', () => {
+                if (!inBasket.includes(itemName.toLowerCase())) {
+                    moveItemToBasket(item, itemName);
+                }
+            });
+            
+            // Add touch feedback
+            item.addEventListener('touchstart', () => {
+                item.classList.add('active');
+            });
+            
+            item.addEventListener('touchend', () => {
+                item.classList.remove('active');
+            });
+            
+            return item;
+        }
+
+        function moveItemToBasket(item, itemName) {
+            if (!timerRunning) {
+                startTimer();
+            }
+            
+            const itemId = itemName.toLowerCase();
+            if (!inBasket.includes(itemId)) {
+                // Visual feedback during transition
+                item.classList.add('active');
+                
+                // Move to basket
+                basket.appendChild(item);
+                item.classList.remove('active');
+                item.classList.add('in-basket');
+                inBasket.push(itemId);
+                
+                // Check if complete
+                checkCompletion();
+            }
+        }
+
+        function startTimer() {
+            startTime = performance.now();
+            timerRunning = true;
+            timerInterval = setInterval(updateTimer, 100);
+        }
+
+        function updateTimer() {
+            if (timerRunning) {
+                const currentTime = performance.now();
+                const elapsed = (currentTime - startTime) / 1000;
+                timerElement.textContent = `Time: ${elapsed.toFixed(1)}s`;
+            }
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function checkCompletion() {
+            const allIn = requiredItems.every(item => 
+                inBasket.includes(item.toLowerCase())
+            );
+            
+            if (allIn) {
+                const endTime = performance.now();
+                const timeTaken = (endTime - startTime) / 1000;
+                stopTimer();
+                timerRunning = false;
+                
+                // Update the message instead of using alert
+                showMessage(`All items are in the basket! Time taken: ${timeTaken.toFixed(2)} seconds. Try the other mode to compare!`, true);
+            }
+        }
+
+        function showMessage(text, isSuccess = false) {
+            messageElement.textContent = text;
+            messageElement.style.display = 'block';
+            messageElement.style.backgroundColor = isSuccess ? '#D5F5E3' : '#F9E79F';
+        }
+
+        // Start with standard mode
+        startSimulation('standard');
+    </script>
+</body>
+</html>
