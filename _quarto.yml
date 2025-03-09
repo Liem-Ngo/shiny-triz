@@ -6,14 +6,16 @@ website:
   title: "test_shiny_python"
   navbar:
     left:
+      - href: index.qmd
+        text: TRIZ-Intro
       - href: triz_39_45/index.html
-        text: TRIZ      
-      - href: test.qmd
-        text: TRIZ-test         
-      - href: 9w.qmd
-        text: 9w-test         
-      - href: 5whys.qmd
-        text: 5whys-test                   
+        text: TRIZ-Matrix    
+      - href: triz_39_45/system_drawing.html
+        text: System-Drawing        
+      - href: triz_39_45/nine_w.html
+        text: 9-Windows         
+      - href: triz_39_45/five_whys.html
+        text: 5-Whys                   
 format:
   html:
     theme: cosmo
