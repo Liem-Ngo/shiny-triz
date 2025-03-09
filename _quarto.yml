@@ -6,12 +6,8 @@ website:
   title: "test_shiny_python"
   navbar:
     left:
-      - href: index.qmd
-        text: TRIZ-39
-      - href: about.qmd
-        text: TRIZ-45
-      - href: 50.qmd
-        text: TRIZ-50        
+      - href: triz_39_45/index.html
+        text: TRIZ      
       - href: test.qmd
         text: TRIZ-test         
       - href: 9w.qmd
