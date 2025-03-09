@@ -26,7 +26,7 @@
             </p>
             
             <!-- Matrix Size Selection -->
-            <div class="mt-4">
+            <div class="mb-3">
                 <label for="matrix-size" class="form-label">
                     <i class="fa-solid fa-table-cells"></i> Matrix Size
                 </label>
@@ -36,6 +36,17 @@
                     <option value="50">Full (50×50)</option>
                 </select>
                 <div class="form-text">Select the size of the TRIZ contradiction matrix to use.</div>
+            </div>
+            
+            <!-- Industry Selection -->
+            <div class="mt-4">
+                <label for="industry-select" class="form-label">
+                    <i class="fa-solid fa-industry"></i> Industry Examples
+                </label>
+                <select class="form-select" id="industry-select">
+                    <!-- Will be populated by JavaScript -->
+                </select>
+                <div class="form-text">Choose the industry domain for specialized examples.</div>
             </div>
         </div>
     </div>
@@ -88,11 +99,12 @@
             <p>Entering these values in the tool, one can browse the TRIZ Matrix to discover innovation Principles that can solve the said problem.</p>
             <div class="mt-4">
                 <div class="alert alert-info">
-                    <strong>Tip:</strong> You can switch between different matrix sizes using the dropdown in the left panel. 
+                    <strong>New Feature:</strong> You can now select different industries to view domain-specific examples for TRIZ principles!
                     <ul>
-                        <li><strong>Standard (39×39):</strong> The original Altshuller matrix</li>
-                        <li><strong>Extended (45×45):</strong> Extended version with additional features</li>
-                        <li><strong>Full (50×50):</strong> Complete matrix with all modern features</li>
+                        <li><strong>General:</strong> Classic TRIZ examples</li>
+                        <li><strong>Software Engineering:</strong> Examples tailored for software development</li>
+                        <li><strong>Education:</strong> Examples for educational contexts</li>
+                        <li><strong>Design:</strong> Examples for Design contexts</li>
                     </ul>
                 </div>
             </div>

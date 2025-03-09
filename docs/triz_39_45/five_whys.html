@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>5 WHYS Analysis Tool</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Custom color palette */
+        :root {
+            --primary: #2b2d42;
+            --primary-light: #3a3d57;
+            --secondary: #8d99ae;
+            --accent: #d90429;
+            --accent-light: #ef233c;
+            --light: #edf2f4;
+            --light-alt: #f8f9fa;
+            --dark: #2b2d42;
+            --text: #2b2d42;
+            --text-light: #8d99ae;
+            --border: rgba(43, 45, 66, 0.1);
+            --shadow: rgba(43, 45, 66, 0.05);
+            --hover: rgba(43, 45, 66, 0.03);
+            --gradient-primary: linear-gradient(135deg, #2b2d42 0%, #3a3d57 100%);
+            --gradient-accent: linear-gradient(135deg, #d90429 0%, #ef233c 100%);
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+        
+        * {
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+        
+        body { 
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--text);
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+            position: relative;
+        }
+        
+        /* Header styling */
+        .header {
+            background: var(--gradient-primary);
+            padding: 50px 0 60px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(239, 35, 60, 0.1) 0%, rgba(43, 45, 66, 0) 70%);
+            z-index: 1;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        .header h1 {
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 3.2rem;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header p {
+            color: var(--light);
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        /* Main content area */
+        .main-content {
+            padding: 0 20px 60px;
+            position: relative;
+        }
+        
+        /* Content containers */
+        .content-container {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px var(--shadow);
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 40px;
+            padding: 30px;
+            border: 1px solid var(--border);
+        }
+        
+        .content-header {
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .content-header h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.8rem;
+            margin: 0;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .content-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--gradient-accent);
+            border-radius: 3px;
+        }
+        
+        .content-header p {
+            color: var(--text-light);
+            margin-top: 20px;
+            font-size: 1rem;
+        }
+        
+        /* Form controls */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--text);
+            position: relative;
+            font-size: 1rem;
+        }
+        
+        .form-label .label-icon {
+            margin-right: 8px;
+            color: var(--accent);
+        }
+        
+        textarea.form-control {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            resize: vertical;
+            transition: all 0.3s;
+            background-color: var(--light-alt);
+        }
+        
+        textarea.form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(239, 35, 60, 0.1);
+            background-color: white;
+        }
+        
+        textarea.form-control::placeholder {
+            color: var(--text-light);
+            opacity: 0.7;
+        }
+        
+        /* Button styles */
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 35px 0 20px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s;
+            border: none;
+            min-height: 50px;
+            min-width: 160px;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%, -50%);
+            transform-origin: 50% 50%;
+        }
+        
+        .btn:active::after {
+            animation: ripple 1s ease-out;
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(50, 50);
+                opacity: 0;
+            }
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #3a3d57 0%, #4a4d67 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-accent {
+            background: var(--gradient-accent);
+            color: white;
+        }
+        
+        .btn-accent:hover {
+            background: linear-gradient(135deg, #ef233c 0%, #ff304c 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-light {
+            background-color: white;
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-light:hover {
+            background-color: var(--light);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-icon {
+            font-size: 1.1rem;
+        }
+        
+        /* Why inputs */
+        .why-container {
+            margin-top: 30px;
+        }
+        
+        .why-input {
+            margin-bottom: 30px;
+            background-color: var(--light-alt);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 3px 10px var(--shadow);
+            border: 1px solid var(--border);
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .why-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: var(--gradient-accent);
+            color: white;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .why-label {
+            font-weight: 500;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .why-label .label-icon {
+            color: var(--accent);
+        }
+        
+        /* Progress indicator */
+        .progress-container {
+            margin: 30px 0;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .progress-label span {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .progress-bar-container {
+            height: 8px;
+            background-color: var(--light);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--gradient-accent);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        /* Diagram styling */
+        .diagram-container {
+            margin-top: 40px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        .diagram-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .diagram-header h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .diagram-header p {
+            color: var(--text-light);
+            margin: 0;
+        }
+        
+        .diagram-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--gradient-accent);
+            border-radius: 3px;
+        }
+        
+        .timestamp {
+            text-align: right;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 20px;
+            font-style: italic;
+        }
+        
+        .diagram-box {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .cause-box {
+            border: 2px solid var(--primary);
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 50px;
+            border-radius: 12px;
+            position: relative;
+            font-size: 1rem;
+            min-height: 70px;
+            text-align: center;
+            word-wrap: break-word;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.5;
+        }
+        
+        .problem-box {
+            border: 3px solid var(--primary);
+            background: linear-gradient(to bottom, #f8f9fa, white);
+            font-weight: 500;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .cause-box::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            background-color: var(--light);
+            padding: 2px 10px;
+            border-radius: 10px;
+            z-index: 1;
+        }
+        
+        .problem-box::before {
+            content: 'Problem';
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .arrow-down {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 15px solid var(--primary);
+            filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
+        }
+        
+        .why-spacer {
+            height: 30px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .why-text {
+            font-size: 0.9rem;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            padding: 5px 15px;
+            background: var(--gradient-accent);
+            border-radius: 20px;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+        }
+        
+        /* Download container */
+        #download-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            background: var(--gradient-accent);
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .download-btn:hover {
+            background: linear-gradient(135deg, #ef233c 0%, #ff304c 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Loading indicator */
+        .loading-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            color: var(--primary);
+            background-color: var(--light-alt);
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            font-weight: 500;
+        }
+        
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(239, 35, 60, 0.1);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Hints container */
+        .hints-container {
+            background-color: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 40px;
+            box-shadow: 0 10px 30px var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        .hints-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .hints-title i {
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+        
+        .hints-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .hint-card {
+            padding: 20px;
+            background-color: var(--light-alt);
+            border-radius: 12px;
+            border-left: 3px solid var(--accent);
+            box-shadow: 0 4px 10px var(--shadow);
+        }
+        
+        .hint-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .hint-title i {
+            color: var(--accent);
+        }
+        
+        .hint-content {
+            color: var(--text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        /* Example diagram */
+        .example-container {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: var(--light-alt);
+            border-radius: 12px;
+            border: 1px dashed var(--border);
+        }
+        
+        .example-title {
+            font-weight: 500;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+        
+        .example-title i {
+            color: var(--accent);
+        }
+        
+        .example-diagram {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        .example-box {
+            padding: 15px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            position: relative;
+        }
+        
+        .example-box::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 20px;
+            background-color: var(--secondary);
+        }
+        
+        .example-box:last-child::after {
+            display: none;
+        }
+        
+        .example-box-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .example-box-text {
+            color: var(--text-light);
+            font-size: 0.8rem;
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--gradient-primary);
+            color: var(--secondary);
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 60px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(239, 35, 60, 0.1) 0%, rgba(43, 45, 66, 0) 70%);
+            z-index: 1;
+        }
+        
+        .footer p {
+            margin: 0;
+            opacity: 0.8;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .footer-logo i {
+            color: var(--accent-light);
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 992px) {
+            .header {
+                padding: 40px 0 50px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .content-container, .diagram-container, .hints-container {
+                padding: 25px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .button-container {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .content-container, .diagram-container, .hints-container {
+                padding: 20px;
+            }
+            
+            .hints-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Dark mode support - uncomment to enable
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --light: #333;
+                --light-alt: #444;
+                --text: #eee;
+                --text-light: #aaa;
+                --border: rgba(255, 255, 255, 0.1);
+                --shadow: rgba(0, 0, 0, 0.2);
+            }
+            
+            body {
+                background-color: #222;
+            }
+            
+            .content-container, .diagram-container, .hints-container {
+                background-color: #2a2a2a;
+            }
+            
+            textarea.form-control {
+                background-color: #333;
+                color: #eee;
+            }
+            
+            .btn-light {
+                background-color: #444;
+                color: #eee;
+            }
+            
+            .example-box, .hint-card {
+                background-color: #333;
+            }
+        }
+        */
+        
+        /* Empty state styling */
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-light);
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            opacity: 0.7;
+        }
+        
+        .empty-state-text {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state-subtext {
+            font-size: 0.9rem;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-content">
+                <h1>5 WHYS Analysis Tool</h1>
+                <p>Discover the root cause of problems by systematically asking "Why?" five times</p>
+            </div>
+        </header>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Input Section -->
+            <div class="content-container">
+                <div class="content-header">
+                    <h2>Problem Analysis</h2>
+                    <p>Start by defining your problem, then dig deeper with each "Why?" to uncover the root cause</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="problem" class="form-label">
+                        <i class="fas fa-exclamation-circle label-icon"></i>
+                        Problem Statement
+                    </label>
+                    <textarea id="problem" class="form-control" placeholder="Define the initial problem here (e.g., 'Our website conversion rate has dropped by 15% this month')"></textarea>
+                </div>
+                
+                <div id="whys-container" class="why-container">
+                    <!-- Why inputs will be added here dynamically -->
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Analysis Progress</span>
+                        <span id="progress-percentage">0%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+                
+                <div class="button-container">
+                    <button id="add-why" class="btn btn-primary">
+                        <i class="fas fa-plus btn-icon"></i> Add Why
+                    </button>
+                    <button id="export-png" class="btn btn-accent">
+                        <i class="fas fa-download btn-icon"></i> Export as PNG
+                    </button>
+                    <button id="reset" class="btn btn-light">
+                        <i class="fas fa-undo btn-icon"></i> Reset
+                    </button>
+                </div>
+                
+                <div id="download-container"></div>
+            </div>
+            
+            <!-- Diagram Section (will be captured for PNG export) -->
+            <div id="capture-area" class="diagram-container">
+                <div class="diagram-header">
+                    <h3>5 WHYS Analysis</h3>
+                    <p>Root Cause Chain Diagram</p>
+                </div>
+                
+                <div id="diagram-box" class="diagram-box">
+                    <!-- Diagram will be generated here -->
+                </div>
+                
+                <div class="timestamp">
+                    Generated: <span id="timestamp-display"></span>
+                </div>
+            </div>
+            
+            <!-- Hints Section -->
+            <div class="hints-container">
+                <div class="hints-title">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>How to Use the 5 WHYS Technique Effectively</span>
+                </div>
+                
+                <div class="hints-grid">
+                    <div class="hint-card">
+                        <div class="hint-title">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Define the Problem</span>
+                        </div>
+                        <div class="hint-content">
+                            Start with a clear, specific statement of the problem you're trying to solve. Be factual and focus on what happened, not who is to blame.
+                        </div>
+                    </div>
+                    
+                    <div class="hint-card">
+                        <div class="hint-title">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Ask "Why?"</span>
+                        </div>
+                        <div class="hint-content">
+                            Ask why the problem occurred and document the answer based on facts. Keep responses concise and focused on a single cause.
+                        </div>
+                    </div>
+                    
+                    <div class="hint-card">
+                        <div class="hint-title">
+                            <i class="fas fa-search"></i>
+                            <span>Dig Deeper</span>
+                        </div>
+                        <div class="hint-content">
+                            For each answer, ask "Why?" again. Continue this process five times to get beyond symptoms to the underlying root cause.
+                        </div>
+                    </div>
+                    
+                    <div class="hint-card">
+                        <div class="hint-title">
+                            <i class="fas fa-bullseye"></i>
+                            <span>Be Specific</span>
+                        </div>
+                        <div class="hint-content">
+                            Avoid vague statements. Each answer should be precise and based on evidence rather than assumptions or opinions.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="example-container">
+                    <div class="example-title">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>Example: Manufacturing Defect Analysis</span>
+                    </div>
+                    <div class="example-diagram">
+                        <div class="example-box">
+                            <div class="example-box-title">Problem Statement</div>
+                            <div class="example-box-text">Customer received a product with a broken component</div>
+                        </div>
+                        <div class="example-box">
+                            <div class="example-box-title">Why #1</div>
+                            <div class="example-box-text">The component fractured during shipping</div>
+                        </div>
+                        <div class="example-box">
+                            <div class="example-box-title">Why #2</div>
+                            <div class="example-box-text">The component was too brittle</div>
+                        </div>
+                        <div class="example-box">
+                            <div class="example-box-title">Why #3</div>
+                            <div class="example-box-text">The wrong material was used in manufacturing</div>
+                        </div>
+                        <div class="example-box">
+                            <div class="example-box-title">Why #4</div>
+                            <div class="example-box-text">The material specification was changed without updating QA protocols</div>
+                        </div>
+                        <div class="example-box">
+                            <div class="example-box-title">Why #5 (Root Cause)</div>
+                            <div class="example-box-text">There's no change management process to ensure updates are communicated across teams</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-sitemap"></i>
+                    <span>5 WHYS Analysis Tool</span>
+                </div>
+                <p>A systematic technique for discovering the root cause of problems and implementing lasting solutions</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Variables
+            const MAX_WHYS = 5;
+            let whyCount = 0;
+            
+            // DOM Elements
+            const problemInput = document.getElementById('problem');
+            const whysContainer = document.getElementById('whys-container');
+            const addWhyBtn = document.getElementById('add-why');
+            const resetBtn = document.getElementById('reset');
+            const exportPngBtn = document.getElementById('export-png');
+            const diagramBox = document.getElementById('diagram-box');
+            const downloadContainer = document.getElementById('download-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressPercentage = document.getElementById('progress-percentage');
+            const timestampDisplay = document.getElementById('timestamp-display');
+            
+            // Set current timestamp
+            updateTimestamp();
+            
+            // Initialize
+            updateDiagram();
+            updateProgress();
+            
+            // Event Listeners
+            addWhyBtn.addEventListener('click', addWhy);
+            resetBtn.addEventListener('click', resetForm);
+            exportPngBtn.addEventListener('click', exportAsPng);
+            problemInput.addEventListener('input', function() {
+                updateDiagram();
+                updateProgress();
+            });
+            
+            // Functions
+            function addWhy() {
+                if (whyCount >= MAX_WHYS) {
+                    showNotification('Maximum of 5 "Why?" questions reached', 'warning');
+                    return;
+                }
+                
+                whyCount++;
+                
+                const whyDiv = document.createElement('div');
+                whyDiv.className = 'why-input';
+                whyDiv.innerHTML = `
+                    <div class="why-number">${whyCount}</div>
+                    <div class="why-label">
+                        <i class="fas fa-question-circle label-icon"></i>
+                        Why? (Level ${whyCount})
+                    </div>
+                    <textarea id="why${whyCount}" class="form-control" placeholder="Why did this happen? Be specific about the cause..."></textarea>
+                `;
+                
+                whysContainer.appendChild(whyDiv);
+                
+                // Add event listener to the new textarea
+                document.getElementById(`why${whyCount}`).addEventListener('input', function() {
+                    updateDiagram();
+                    updateProgress();
+                });
+                
+                // Update UI state
+                updateButtonState();
+                updateDiagram();
+                updateProgress();
+                
+                // Scroll to the new input
+                setTimeout(() => {
+                    whyDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    document.getElementById(`why${whyCount}`).focus();
+                }, 100);
+            }
+            
+            function resetForm() {
+                if (confirm('Are you sure you want to reset the analysis? All entries will be cleared.')) {
+                    problemInput.value = '';
+                    whysContainer.innerHTML = '';
+                    whyCount = 0;
+                    updateButtonState();
+                    updateDiagram();
+                    updateProgress();
+                    updateTimestamp();
+                    problemInput.focus();
+                }
+            }
+            
+            function updateButtonState() {
+                addWhyBtn.disabled = (whyCount >= MAX_WHYS);
+                if (addWhyBtn.disabled) {
+                    addWhyBtn.classList.add('btn-light');
+                    addWhyBtn.classList.remove('btn-primary');
+                } else {
+                    addWhyBtn.classList.add('btn-primary');
+                    addWhyBtn.classList.remove('btn-light');
+                }
+            }
+            
+            function updateProgress() {
+                // Count filled inputs
+                let filledInputs = 0;
+                let totalInputs = 1 + whyCount; // Problem + why questions
+                
+                if (problemInput.value.trim()) filledInputs++;
+                
+                for (let i = 1; i <= whyCount; i++) {
+                    const whyInput = document.getElementById(`why${i}`);
+                    if (whyInput && whyInput.value.trim()) filledInputs++;
+                }
+                
+                // Calculate percentage
+                const percentage = Math.round((filledInputs / totalInputs) * 100);
+                progressBar.style.width = `${percentage}%`;
+                progressPercentage.textContent = `${percentage}%`;
+                
+                // Change color based on progress
+                if (percentage < 30) {
+                    progressBar.style.background = 'linear-gradient(135deg, #ff9999 0%, #ff6666 100%)';
+                } else if (percentage < 70) {
+                    progressBar.style.background = 'linear-gradient(135deg, #ffcc66 0%, #ff9933 100%)';
+                } else {
+                    progressBar.style.background = 'linear-gradient(135deg, #66cc99 0%, #33aa66 100%)';
+                }
+            }
+            
+            function updateDiagram() {
+                diagramBox.innerHTML = '';
+                
+                // Create entries array
+                const entries = [];
+                
+                // Add problem statement
+                const problemText = problemInput.value.trim() || 'Problem Statement';
+                entries.push({text: problemText, type: 'problem'});
+                
+                // Add why entries
+                for (let i = 1; i <= whyCount; i++) {
+                    const whyInput = document.getElementById(`why${i}`);
+                    if (whyInput) {
+                        const whyText = whyInput.value.trim() || `Cause ${i}`;
+                        entries.push({
+                            text: whyText, 
+                            type: i === whyCount ? 'root' : 'cause',
+                            level: i
+                        });
+                    }
+                }
+                
+                // If no entries, show empty state
+                if (entries.length === 1 && !problemInput.value.trim()) {
+                    showEmptyState();
+                    return;
+                }
+                
+                // Build diagram
+                entries.forEach((entry, index) => {
+                    const isLast = index === entries.length - 1;
+                    const isProblem = index === 0;
+                    const isRoot = entry.type === 'root';
+                    
+                    // Create box with appropriate classes
+                    const boxDiv = document.createElement('div');
+                    boxDiv.className = 'cause-box';
+                    
+                    if (isProblem) {
+                        boxDiv.classList.add('problem-box');
+                    } else if (isRoot) {
+                        boxDiv.style.borderColor = '#d90429';
+                        boxDiv.style.backgroundColor = '#fff8f8';
+                    }
+                    
+                    // Add label for non-problem boxes
+                    if (!isProblem) {
+                        boxDiv.style.setProperty('--label-content', `'Why ${entry.level}'`);
+                        boxDiv.setAttribute('data-level', entry.level);
+                        boxDiv.style.borderLeftWidth = '4px';
+                    }
+                    
+                    boxDiv.textContent = entry.text;
+                    
+                    diagramBox.appendChild(boxDiv);
+                    
+                    // Add arrow and "Why?" between boxes (except after the last one)
+                    if (!isLast) {
+                        const arrowDiv = document.createElement('div');
+                        arrowDiv.className = 'why-spacer';
+                        
+                        const arrow = document.createElement('div');
+                        arrow.className = 'arrow-down';
+                        
+                        const whyTextDiv = document.createElement('div');
+                        whyTextDiv.className = 'why-text';
+                        whyTextDiv.textContent = 'Why?';
+                        
+                        arrowDiv.appendChild(arrow);
+                        arrowDiv.appendChild(whyTextDiv);
+                        
+                        diagramBox.appendChild(arrowDiv);
+                    }
+                });
+            }
+            
+            function showEmptyState() {
+                diagramBox.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="empty-state-text">Begin your root cause analysis</div>
+                        <div class="empty-state-subtext">
+                            Start by defining your problem statement, then add "Why?" questions to dig deeper into the causes.
+                        </div>
+                    </div>
+                `;
+            }
+            
+            function exportAsPng() {
+                // Validate if there's content to export
+                if (!problemInput.value.trim() && whyCount === 0) {
+                    showNotification('Please add a problem statement before exporting', 'warning');
+                    problemInput.focus();
+                    return;
+                }
+                
+                // Update timestamp before export
+                updateTimestamp();
+                
+                // Show loading indicator
+                downloadContainer.innerHTML = `
+                    <div class="loading-indicator">
+                        <div class="spinner"></div>
+                        <span>Generating diagram image...</span>
+                    </div>
+                `;
+                
+                // Use html2canvas to capture the diagram
+                html2canvas(document.getElementById('capture-area'), {
+                    scale: 2, // Higher quality
+                    useCORS: true,
+                    backgroundColor: "#ffffff",
+                    logging: false,
+                    allowTaint: true
+                }).then(function(canvas) {
+                    // Convert canvas to data URL
+                    const dataURL = canvas.toDataURL("image/png");
+                    
+                    // Generate filename with timestamp
+                    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+                    const filename = "5whys_analysis_" + timestamp + ".png";
+                    
+                    // Create download link
+                    const downloadLink = document.createElement("a");
+                    downloadLink.href = dataURL;
+                    downloadLink.download = filename;
+                    downloadLink.innerHTML = '<i class="fas fa-download"></i> Download Diagram PNG';
+                    downloadLink.className = "download-btn";
+                    
+                    // Clear loading and add the download link
+                    downloadContainer.innerHTML = '';
+                    downloadContainer.appendChild(downloadLink);
+                    
+                    // For mobile devices, trigger download automatically
+                    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                        setTimeout(function() {
+                            downloadLink.click();
+                        }, 100);
+                    }
+                    
+                    showNotification('Diagram generated successfully!', 'success');
+                }).catch(function(error) {
+                    // Handle errors
+                    downloadContainer.innerHTML = '';
+                    showNotification('Error generating diagram. Please try again.', 'error');
+                    console.error("Error generating PNG:", error);
+                });
+            }
+            
+            function updateTimestamp() {
+                const now = new Date();
+                const options = { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit', 
+                    minute: '2-digit'
+                };
+                timestampDisplay.textContent = now.toLocaleDateString(undefined, options);
+            }
+            
+            function showNotification(message, type = 'info') {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.style.position = 'fixed';
+                notification.style.bottom = '20px';
+                notification.style.right = '20px';
+                notification.style.padding = '15px 25px';
+                notification.style.borderRadius = '8px';
+                notification.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+                notification.style.fontFamily = 'Poppins, sans-serif';
+                notification.style.fontWeight = '500';
+                notification.style.zIndex = '9999';
+                notification.style.display = 'flex';
+                notification.style.alignItems = 'center';
+                notification.style.gap = '10px';
+                notification.style.maxWidth = '350px';
+                notification.style.animation = 'slideIn 0.3s ease forwards';
+                
+                // Set styles based on type
+                switch(type) {
+                    case 'success':
+                        notification.style.backgroundColor = '#4CAF50';
+                        notification.style.color = 'white';
+                        notification.innerHTML = '<i class="fas fa-check-circle"></i> ' + message;
+                        break;
+                    case 'warning':
+                        notification.style.backgroundColor = '#FF9800';
+                        notification.style.color = 'white';
+                        notification.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + message;
+                        break;
+                    case 'error':
+                        notification.style.backgroundColor = '#F44336';
+                        notification.style.color = 'white';
+                        notification.innerHTML = '<i class="fas fa-times-circle"></i> ' + message;
+                        break;
+                    default:
+                        notification.style.backgroundColor = '#2196F3';
+                        notification.style.color = 'white';
+                        notification.innerHTML = '<i class="fas fa-info-circle"></i> ' + message;
+                }
+                
+                // Add animation keyframes
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes fadeOut {
+                        from { opacity: 1; }
+                        to { opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                // Add to document
+                document.body.appendChild(notification);
+                
+                // Remove after 4 seconds
+                setTimeout(() => {
+                    notification.style.animation = 'fadeOut 0.5s ease forwards';
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 500);
+                }, 4000);
+            }
+            
+            // Add initial Why input if problem is entered
+            problemInput.addEventListener('blur', function() {
+                if (problemInput.value.trim() && whyCount === 0) {
+                    addWhy();
+                }
+            });
+            
+            // Handle keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Ctrl/Cmd + Shift + A to add Why
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'A') {
+                    e.preventDefault();
+                    addWhy();
+                }
+                
+                // Ctrl/Cmd + Shift + E to export
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'E') {
+                    e.preventDefault();
+                    exportAsPng();
+                }
+                
+                // Ctrl/Cmd + Shift + R to reset
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R') {
+                    e.preventDefault();
+                    resetForm();
+                }
+            });
+            
+            // Add jQuery support for older browsers if needed
+            if (typeof jQuery !== 'undefined') {
+                $(function() {
+                    // Store cursor positions
+                    var lastFocusedId = '';
+                    var cursorPositions = {};
+                    
+                    // Fix cursor position issues in all textareas
+                    function setupTextareas() {
+                        $('textarea').each(function() {
+                            $(this).off('input.cursorFix').on('input.cursorFix', function() {
+                                var id = $(this).attr('id');
+                                var pos = this.selectionStart;
+                                cursorPositions[id] = pos;
+                                lastFocusedId = id;
+                            });
+                            
+                            $(this).off('focus.cursorFix').on('focus.cursorFix', function() {
+                                lastFocusedId = $(this).attr('id');
+                            });
+                        });
+                    }
+                    
+                    // Run initially
+                    setupTextareas();
+                    
+                    // Observe DOM changes to apply to new elements
+                    var observer = new MutationObserver(function(mutations) {
+                        setupTextareas();
+                    });
+                    
+                    observer.observe(document.getElementById('whys-container'), {
+                        childList: true,
+                        subtree: true
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

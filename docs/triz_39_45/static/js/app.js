@@ -9,10 +9,13 @@
 let trizFeatures = [];
 let trizPrinciples = [];
 let trizMatrix = [];
+let industryPrinciples = {}; // Store industry-specific principles
 let currentMatrixSize = 39; // Default matrix size
+let currentIndustry = 'general'; // Default industry
 
 // DOM Elements
 const matrixSizeSelect = document.getElementById('matrix-size');
+const industrySelect = document.getElementById('industry-select');
 const featureToImproveSelect = document.getElementById('feature-to-improve');
 const featureToPreserveSelect = document.getElementById('feature-to-preserve');
 const browseMatrixBtn = document.getElementById('browse-matrix-btn');
@@ -21,14 +24,54 @@ const loadingSpinner = document.getElementById('loading-spinner');
 const introductionText = document.getElementById('introduction-text');
 const examplesContainer = document.getElementById('examples-container');
 
+// Available industries
+const INDUSTRIES = [
+    { id: 'general', name: 'General' },
+    { id: 'software', name: 'Software Engineering' },
+    { id: 'education', name: 'Education' },
+    { id: 'design', name: 'Design' },
+    { id: 'business', name: 'Bussiness' },
+    { id: 'finance', name: 'Finance' },
+    { id: 'chemical', name: 'Chemical Engineering' },
+    { id: 'social', name: 'Social' },
+    { id: 'human', name: 'Human Factors and Ergonomics' },
+    { id: 'microelectronics', name: 'Microelectronics' },
+    { id: 'customer', name: 'Customer Satisfaction Enhancement' }
+
+
+
+
+
+    // Add more industries as they become available
+    // { id: 'chemical', name: 'Chemical Engineering' },
+];
+
 // Load data when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize with default matrix size
+    // Populate industry select dropdown
+    populateIndustrySelect();
+    
+    // Initialize with default matrix size and industry
     loadDataForMatrixSize(currentMatrixSize);
     
     // Setup event listeners
     setupEventListeners();
 });
+
+// Populate industry select dropdown
+function populateIndustrySelect() {
+    industrySelect.innerHTML = '';
+    
+    INDUSTRIES.forEach(industry => {
+        const option = document.createElement('option');
+        option.value = industry.id;
+        option.textContent = industry.name;
+        industrySelect.appendChild(option);
+    });
+    
+    // Set default industry
+    industrySelect.value = currentIndustry;
+}
 
 // Load data for specific matrix size
 function loadDataForMatrixSize(size) {
@@ -43,7 +86,7 @@ function loadDataForMatrixSize(size) {
     // Load data from JSON files
     Promise.all([
         fetch(`data/features${featuresSuffix}.json`).then(response => response.json()),
-        fetch(`data/principles.json`).then(response => response.json()), // Principles are the same for all matrices
+        fetch(`data/principles.json`).then(response => response.json()), // Base principles
         fetch(`data/matrix${matrixSuffix}.json`).then(response => response.json())
     ]).then(([features, principles, matrix]) => {
         trizFeatures = features;
@@ -53,6 +96,9 @@ function loadDataForMatrixSize(size) {
         
         // Initialize the dropdowns
         populateFeatureDropdowns();
+        
+        // Load industry-specific principles
+        loadIndustryPrinciples();
         
         // Hide loading spinner
         loadingSpinner.style.display = 'none';
@@ -68,6 +114,42 @@ function loadDataForMatrixSize(size) {
     });
 }
 
+// Load industry-specific principles
+function loadIndustryPrinciples() {
+    // Load principles for each industry
+    const industryPromises = INDUSTRIES.filter(industry => industry.id !== 'general').map(industry => {
+        return fetch(`data/principles_${industry.id}.json`)
+            .then(response => response.json())
+            .then(data => {
+                industryPrinciples[industry.id] = data;
+            })
+            .catch(error => {
+                console.error(`Error loading ${industry.id} principles:`, error);
+                // If loading fails, set to empty to avoid errors later
+                industryPrinciples[industry.id] = { principles: [] };
+            });
+    });
+    
+    // Wait for all industry principles to load
+    Promise.all(industryPromises).then(() => {
+        console.log('All industry principles loaded');
+    });
+}
+
+// Change industry
+function changeIndustry(industryId) {
+    currentIndustry = industryId;
+    
+    // If principles are currently displayed, update them with new industry examples
+    const improveId = parseInt(featureToImproveSelect.value);
+    const preserveId = parseInt(featureToPreserveSelect.value);
+    
+    if (improveId > 0 && preserveId > 0 && improveId !== preserveId) {
+        const principles = getMatrixPrinciples(improveId, preserveId);
+        renderPrinciples(principles, improveId, preserveId);
+    }
+}
+
 // Set up event listeners
 function setupEventListeners() {
     // Matrix size selection change
@@ -76,6 +158,11 @@ function setupEventListeners() {
         if (newSize !== currentMatrixSize) {
             loadDataForMatrixSize(newSize);
         }
+    });
+    
+    // Industry selection change
+    industrySelect.addEventListener('change', function() {
+        changeIndustry(this.value);
     });
     
     // Browse Matrix button click
@@ -138,9 +225,28 @@ function getMatrixPrinciples(improveId, preserveId) {
     return [];
 }
 
-// Find principle by ID
+// Find principle by ID from the general principles
 function getPrincipleById(id) {
     return trizPrinciples.find(principle => principle.id === id);
+}
+
+// Get industry-specific examples for a principle if available
+function getIndustryExamples(principleId) {
+    // If current industry is 'general', return null to use general examples
+    if (currentIndustry === 'general') {
+        return null;
+    }
+    
+    // Check if we have data for the selected industry
+    if (!industryPrinciples[currentIndustry]) {
+        return null;
+    }
+    
+    // Find the principle in the industry data
+    const industryPrinciple = industryPrinciples[currentIndustry].principles.find(p => p.id === principleId);
+    
+    // Return examples if found, otherwise null to fall back to general examples
+    return industryPrinciple ? industryPrinciple.examples : null;
 }
 
 // Render principles
@@ -165,7 +271,10 @@ function renderPrinciples(principles, improveFeature, preserveFeature) {
             <div class="solution-card-header">
                 <h3>Suggested TRIZ Principles</h3>
                 <p>For improving <strong>${trizFeatures[improveFeature-1]}</strong> while preserving <strong>${trizFeatures[preserveFeature-1]}</strong></p>
-                <div class="small text-light">Using ${currentMatrixSize}×${currentMatrixSize} matrix</div>
+                <div class="small text-light">
+                    Using ${currentMatrixSize}×${currentMatrixSize} matrix | 
+                    Industry: ${INDUSTRIES.find(i => i.id === currentIndustry).name}
+                </div>
             </div>
             <div class="solution-card-body">
     `;
@@ -181,26 +290,50 @@ function renderPrinciples(principles, improveFeature, preserveFeature) {
                     </div>
             `;
             
-            // Add descriptions and examples
-            principle.descriptions.forEach(description => {
+            // Get industry-specific examples if available
+            const industryExamples = getIndustryExamples(principle.id);
+            
+            if (industryExamples) {
+                // Use industry-specific examples
                 html += `
-                    <div class="principle-explanation">
-                        ${description.text}
+                    <div class="industry-badge">
+                        <span class="badge bg-primary">${INDUSTRIES.find(i => i.id === currentIndustry).name} Examples</span>
                     </div>
                 `;
                 
-                if (description.examples && description.examples.length > 0) {
+                // Add industry examples
+                industryExamples.forEach(exampleGroup => {
                     html += `
                         <div class="principle-examples">
-                            <strong>Examples:</strong>
                             <ul>
-                                ${description.examples.map(example => 
+                                ${exampleGroup.map(example => 
                                     `<li class="principle-example">${example}</li>`).join('')}
                             </ul>
                         </div>
                     `;
-                }
-            });
+                });
+            } else {
+                // Use general descriptions and examples
+                principle.descriptions.forEach(description => {
+                    html += `
+                        <div class="principle-explanation">
+                            ${description.text}
+                        </div>
+                    `;
+                    
+                    if (description.examples && description.examples.length > 0) {
+                        html += `
+                            <div class="principle-examples">
+                                <strong>Examples:</strong>
+                                <ul>
+                                    ${description.examples.map(example => 
+                                        `<li class="principle-example">${example}</li>`).join('')}
+                                </ul>
+                            </div>
+                        `;
+                    }
+                });
+            }
             
             html += `</div>`;
         } else {
@@ -279,25 +412,50 @@ function showPrincipleDetails(principleId) {
         <div class="principle-full-details">
     `;
     
-    principle.descriptions.forEach(description => {
+    // Get industry-specific examples if available
+    const industryExamples = getIndustryExamples(principle.id);
+    
+    if (industryExamples) {
+        // Use industry-specific examples
         html += `
-            <div class="principle-explanation">
-                <p>${description.text}</p>
+            <div class="industry-badge mb-3">
+                <span class="badge bg-primary">${INDUSTRIES.find(i => i.id === currentIndustry).name} Examples</span>
             </div>
         `;
         
-        if (description.examples && description.examples.length > 0) {
+        // Add industry examples
+        industryExamples.forEach(exampleGroup => {
             html += `
                 <div class="principle-examples">
-                    <h4>Examples:</h4>
                     <ul>
-                        ${description.examples.map(example => 
+                        ${exampleGroup.map(example => 
                             `<li class="principle-example">${example}</li>`).join('')}
                     </ul>
                 </div>
             `;
-        }
-    });
+        });
+    } else {
+        // Use general descriptions and examples
+        principle.descriptions.forEach(description => {
+            html += `
+                <div class="principle-explanation">
+                    <p>${description.text}</p>
+                </div>
+            `;
+            
+            if (description.examples && description.examples.length > 0) {
+                html += `
+                    <div class="principle-examples">
+                        <h4>Examples:</h4>
+                        <ul>
+                            ${description.examples.map(example => 
+                                `<li class="principle-example">${example}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+        });
+    }
     
     html += `</div>`;
     exampleText.innerHTML = html;
@@ -331,7 +489,9 @@ function resetTool() {
 // For debugging: Display the matrix data structure
 function debugDisplayMatrix() {
     console.log(`Current Matrix Size: ${currentMatrixSize}×${currentMatrixSize}`);
+    console.log(`Current Industry: ${currentIndustry}`);
     console.log('TRIZ Features:', trizFeatures);
     console.log('TRIZ Principles:', trizPrinciples);
     console.log('TRIZ Matrix:', trizMatrix);
+    console.log('Industry Principles:', industryPrinciples);
 }

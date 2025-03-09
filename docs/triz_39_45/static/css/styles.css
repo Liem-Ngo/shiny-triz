@@ -157,10 +157,47 @@ select.form-select {
 
 .principle-examples {
     padding-left: 2rem;
+    background-color: rgba(240, 240, 240, 0.5);
+    border-radius: 0.25rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .principle-example {
     margin-bottom: 0.5rem;
+}
+
+/* Industry-specific styling */
+.industry-badge {
+    margin-bottom: 0.5rem;
+}
+
+.industry-badge .badge {
+    font-size: 0.85rem;
+    padding: 0.35rem 0.65rem;
+}
+
+/* Different color for different industries */
+.industry-software .badge {
+    background-color: #0d6efd;
+}
+
+.industry-education .badge {
+    background-color: #198754;
+}
+
+.industry-chemical .badge {
+    background-color: #dc3545;
+}
+
+/* Animation for industry changes */
+#principles-container {
+    transition: opacity 0.3s ease;
+}
+
+/* Industry icon in dropdown */
+.industry-icon {
+    margin-right: 0.5rem;
 }
 
 /* Responsive adjustments */
@@ -171,5 +208,9 @@ select.form-select {
     
     .step-card {
         margin-bottom: 1.5rem;
+    }
+
+    .principle-examples {
+        padding-left: 1rem;
     }
 }

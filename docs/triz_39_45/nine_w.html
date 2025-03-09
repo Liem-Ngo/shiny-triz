@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Analysis Matrix</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Custom color palette */
+        :root {
+            --primary: #2b2d42;
+            --secondary: #8d99ae;
+            --accent: #ef233c;
+            --accent-light: #ff758f;
+            --light: #edf2f4;
+            --dark: #2b2d42;
+            --text: #2b2d42;
+            --text-light: #8d99ae;
+            --border: rgba(43, 45, 66, 0.1);
+            --shadow: rgba(43, 45, 66, 0.05);
+            --hover: rgba(43, 45, 66, 0.03);
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Roboto:wght@300;400;500&display=swap');
+        
+        * {
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        
+        body { 
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--light);
+            color: var(--text);
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0;
+            position: relative;
+        }
+        
+        /* Header styling */
+        .header {
+            background-color: var(--primary);
+            padding: 30px 0;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(239, 35, 60, 0.1) 0%, rgba(43, 45, 66, 0) 70%);
+            z-index: 1;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        .header h1 {
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        
+        .header p {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+        
+        /* Main content area */
+        .main-content {
+            padding: 0 20px 60px;
+        }
+        
+        /* Matrix styling */
+        .matrix-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px var(--shadow);
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 40px;
+        }
+        
+        .matrix-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .matrix-header h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin: 0;
+            color: var(--primary);
+        }
+        
+        .matrix-header .controls {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .view-toggle {
+            display: flex;
+            background-color: var(--light);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        
+        .view-toggle button {
+            background: none;
+            border: none;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .view-toggle button.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: 150px 1fr 1fr 1fr;
+            grid-template-rows: auto auto auto auto;
+            gap: 0;
+            width: 100%;
+        }
+        
+        .grid-header {
+            grid-column: span 1;
+            text-align: center;
+            padding: 20px 10px;
+            font-weight: 600;
+            background-color: var(--light);
+            border-bottom: 3px solid var(--primary);
+            position: relative;
+        }
+        
+        .grid-header h4 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--primary);
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .grid-row-header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 20px;
+            height: 100%;
+            background-color: var(--light);
+            border-right: 3px solid var(--primary);
+            position: relative;
+        }
+        
+        .grid-row-header h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+        
+        .grid-cell {
+            position: relative;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .grid-cell:hover {
+            z-index: 5;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .cell-content {
+            position: relative;
+            height: 100%;
+        }
+        
+        .cell-label {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-weight: 500;
+            background-color: var(--light);
+            padding: 3px 8px;
+            border-radius: 3px;
+            z-index: 2;
+            opacity: 0.8;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 100%;
+            min-height: 250px;
+            border: none;
+            padding: 40px 15px 15px;
+            resize: none;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: transparent;
+            z-index: 1;
+            position: relative;
+        }
+        
+        textarea:focus {
+            outline: none;
+            background-color: var(--hover);
+        }
+        
+        textarea::placeholder {
+            color: var(--text-light);
+            opacity: 0.6;
+        }
+        
+        .word-count {
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            font-size: 0.7rem;
+            color: var(--text-light);
+            background-color: var(--light);
+            padding: 2px 5px;
+            border-radius: 3px;
+            z-index: 2;
+        }
+        
+        /* Action buttons */
+        .actions-container {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%, -50%);
+            transform-origin: 50% 50%;
+        }
+        
+        .action-btn:focus {
+            outline: none;
+        }
+        
+        .action-btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(50, 50);
+                opacity: 0;
+            }
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-accent {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-accent:hover {
+            background-color: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-light {
+            background-color: white;
+            color: var(--primary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-light:hover {
+            background-color: var(--light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-icon {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Download container */
+        #download-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            background-color: var(--accent);
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            background-color: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Loading indicator */
+        .loading-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            color: var(--primary);
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--light);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Error message */
+        .error-message {
+            background-color: #fff1f1;
+            border-left: 4px solid var(--accent);
+            color: var(--accent);
+            padding: 15px 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Template button */
+        .template-btn {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            background-color: var(--light);
+            border: none;
+            color: var(--text-light);
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+        
+        .template-btn:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        /* Progress bar */
+        .progress-container {
+            margin-top: 30px;
+            padding: 0 20px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: var(--light);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-light), var(--accent));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        /* Hints container */
+        .hints-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .hints-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .hints-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .hint-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .hint-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .hint-icon {
+            color: var(--accent);
+            margin-top: 3px;
+        }
+        
+        .hint-text {
+            font-size: 0.9rem;
+            color: var(--text);
+            line-height: 1.5;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--primary);
+            color: var(--secondary);
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 40px;
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 992px) {
+            .matrix-grid {
+                grid-template-columns: 120px 1fr 1fr 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .matrix-grid {
+                grid-template-columns: 100px 1fr 1fr 1fr;
+            }
+            
+            .grid-row-header {
+                padding-right: 10px;
+            }
+            
+            .grid-row-header h4 {
+                font-size: 0.9rem;
+            }
+            
+            textarea {
+                padding: 35px 10px 15px;
+                font-size: 0.85rem;
+            }
+            
+            .action-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .matrix-grid {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .matrix-row {
+                display: flex;
+            }
+            
+            .grid-header, .grid-row-header {
+                min-width: 100px;
+            }
+            
+            .grid-cell {
+                min-width: 200px;
+            }
+            
+            .actions-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        /* Focus mode */
+        .focus-mode .grid-cell:not(.focused) {
+            opacity: 0.5;
+        }
+        
+        .focus-mode .grid-cell.focused {
+            box-shadow: 0 0 0 3px var(--accent);
+            opacity: 1;
+            z-index: 10;
+        }
+        
+        /* Dark mode */
+        .dark-mode {
+            --primary: #121212;
+            --secondary: #8d99ae;
+            --accent: #ef233c;
+            --accent-light: #ff758f;
+            --light: #222222;
+            --dark: #121212;
+            --text: #edf2f4;
+            --text-light: #8d99ae;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: rgba(0, 0, 0, 0.2);
+            --hover: rgba(255, 255, 255, 0.05);
+            background-color: #1a1a1a;
+        }
+        
+        .dark-mode .matrix-container,
+        .dark-mode textarea,
+        .dark-mode .hints-container {
+            background-color: var(--primary);
+            color: var(--text);
+        }
+        
+        .dark-mode .btn-light {
+            background-color: #333;
+            color: var(--text);
+        }
+        
+        .dark-mode .loading-indicator {
+            background-color: var(--primary);
+            color: var(--text);
+        }
+        
+        .dark-mode textarea::placeholder {
+            color: var(--secondary);
+        }
+        
+        /* Print styles for better exports */
+        @media print {
+            body {
+                background-color: white;
+            }
+            
+            .header, .actions-container, .footer, .hints-container, .progress-container {
+                display: none;
+            }
+            
+            .matrix-container {
+                box-shadow: none;
+                margin: 0;
+            }
+            
+            .cell-content {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-content">
+                <h1>System Analysis Matrix</h1>
+                <p>Strategically analyze systems across dimensions and time to predict development and identify patterns</p>
+            </div>
+        </header>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Matrix Container -->
+            <div class="matrix-container">
+                <div class="matrix-header">
+                    <h2>Analysis Framework</h2>
+                    <div class="controls">
+                        <div class="view-toggle">
+                            <button id="standard-view" class="active">Standard</button>
+                            <button id="focus-view">Focus Mode</button>
+                            <button id="dark-mode-toggle">Dark Mode</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Matrix Grid -->
+                <div class="matrix-grid" id="matrix">
+                    <!-- Grid Headers -->
+                    <div class="grid-header"></div>  <!-- Empty corner cell -->
+                    <div class="grid-header"><h4>Past</h4></div>
+                    <div class="grid-header"><h4>Present</h4></div>
+                    <div class="grid-header"><h4>Future</h4></div>
+                    
+                    <!-- Super System Row -->
+                    <div class="grid-row-header"><h4>Super System</h4></div>
+                    <div class="grid-cell" data-cell="super_past">
+                        <div class="cell-content">
+                            <div class="cell-label">Super System / Past</div>
+                            <button class="template-btn" data-cell="super_past">
+                                <i class="fas fa-lightbulb"></i> Template
+                            </button>
+                            <textarea id="past_super" placeholder="Describe the broader ecosystem in the past..."></textarea>
+                            <div class="word-count">0 words</div>
+                        </div>
+                    </div>
+                    <div class="grid-cell" data-cell="super_present">
+                        <div class="cell-content">
+                            <div class="cell-label">Super System / Present</div>
+                            <button class="template-btn" data-cell="super_present">
+                                <i class="fas fa-lightbulb"></i> Template
+                            </button>
+                            <textarea id="present_super" placeholder="Describe the current broader ecosystem..."></textarea>
+                            <div class="word-count">0 words</div>
+                        </div>
+                    </div>
+                    <div class="grid-cell" data-cell="super_future">
+                        <div class="cell-content">
+                            <div class="cell-label">Super System / Future</div>
+                            <button class="template-btn" data-cell="super_future">
+                                <i class="fas fa-lightbulb"></i> Template
+                            </button>
+                            <textarea id="future_super" placeholder="Project how the broader ecosystem might evolve..."></textarea>
+                            <div class="word-count">0 words</div>
+                        </div>
+                    </div>
+                    
+                    <!-- System Row -->
+                    <div class="grid-row-header"><h4>System</h4></div>
+                    <div class="grid-cell" data-cell="system_past">
+                        <div class="cell-content">
+                            <div class="cell-label">System / Past</div>
+                            <button class="template-btn" data-cell="system_past">
+                                <i class="fas fa-lightbulb"></i> Template
+                            </button>
+                            <textarea id="past_system" placeholder="Describe how the system functioned historically..."></textarea>
+                            <div class="word-count">0 words</div>
+                        </div>
+                    </div>
+                    <div class="grid-cell" data-cell="system_present">
+                        <div class="cell-content">
+                            <div class="cell-label">System / Present</div>
+                            <button class="template-btn" data-cell="system_present">
+                                <i class="fas fa-lightbulb"></i> Template
+                            </button>
+                            <textarea id="present_system" placeholder="Describe the current state of the system..."></textarea>
+                            <div class="word-count">0 words</div>
+                        </div>
+                    </div>
+                    <div class="grid-cell" data-cell="system_future">
+                        <div class="cell-content">
+                            <div class="cell-label">System / Future</div>
+                            <button class="template-btn" data-cell="system_future">
+                                <i class="fas fa-lightbulb"></i> Template
+                            </button>
+                            <textarea id="future_system" placeholder="Project how the system might evolve in the future..."></textarea>
+                            <div class="word-count">0 words</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Subsystem Row -->
+                    <div class="grid-row-header"><h4>Subsystem</h4></div>
+                    <div class="grid-cell" data-cell="subsystem_past">
+                        <div class="cell-content">
+                            <div class="cell-label">Subsystem / Past</div>
+                            <button class="template-btn" data-cell="subsystem_past">
+                                <i class="fas fa-lightbulb"></i> Template
+                            </button>
+                            <textarea id="past_subsystem" placeholder="Describe the components/elements in the past..."></textarea>
+                            <div class="word-count">0 words</div>
+                        </div>
+                    </div>
+                    <div class="grid-cell" data-cell="subsystem_present">
+                        <div class="cell-content">
+                            <div class="cell-label">Subsystem / Present</div>
+                            <button class="template-btn" data-cell="subsystem_present">
+                                <i class="fas fa-lightbulb"></i> Template
+                            </button>
+                            <textarea id="present_subsystem" placeholder="Describe the current components/elements..."></textarea>
+                            <div class="word-count">0 words</div>
+                        </div>
+                    </div>
+                    <div class="grid-cell" data-cell="subsystem_future">
+                        <div class="cell-content">
+                            <div class="cell-label">Subsystem / Future</div>
+                            <button class="template-btn" data-cell="subsystem_future">
+                                <i class="fas fa-lightbulb"></i> Template
+                            </button>
+                            <textarea id="future_subsystem" placeholder="Project how components might evolve..."></textarea>
+                            <div class="word-count">0 words</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span>Completion Progress</span>
+                    <span id="completion-percentage">0%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="actions-container">
+                <button id="export_png_btn" class="action-btn btn-accent">
+                    <div class="btn-icon"><i class="fas fa-download"></i></div>
+                    <span>Export as PNG</span>
+                </button>
+                <button id="clear_btn" class="action-btn btn-light">
+                    <div class="btn-icon"><i class="fas fa-eraser"></i></div>
+                    <span>Clear All</span>
+                </button>
+            </div>
+            
+            <div id="download-container"></div>
+            <div id="error-container" style="display: none;"></div>
+            
+            <!-- Hints Section -->
+            <div class="hints-container">
+                <div class="hints-title">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Thinking Framework Guidelines</span>
+                </div>
+                <ul class="hints-list">
+                    <li class="hint-item">
+                        <div class="hint-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="hint-text"><strong>Super System:</strong> Focus on the broader environment, market trends, regulatory factors, or societal changes that affect your system.</div>
+                    </li>
+                    <li class="hint-item">
+                        <div class="hint-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="hint-text"><strong>System:</strong> Analyze the main subject of interest - could be a product, organization, process, or technology.</div>
+                    </li>
+                    <li class="hint-item">
+                        <div class="hint-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="hint-text"><strong>Subsystem:</strong> Examine the components, features, or elements that make up the system.</div>
+                    </li>
+                    <li class="hint-item">
+                        <div class="hint-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="hint-text"><strong>Past → Present → Future:</strong> Identify patterns of evolution to make informed predictions about future developments.</div>
+                    </li>
+                    <li class="hint-item">
+                        <div class="hint-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="hint-text"><strong>Template button:</strong> Click the template button in each cell for guidance on what information to include.</div>
+                    </li>
+                </ul>
+            </div>
+        </main>
+        
+        <footer class="footer">
+            <p>System Analysis Matrix Tool © 2025 • Created to enable strategic thinking across dimensions and time</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Template content by cell
+            const templateContent = {
+                super_past: "• Major industry trends in the past\n• Regulatory environment\n• Economic factors\n• Social/cultural context\n• Key external stakeholders\n• Related fields and industries",
+                super_present: "• Current industry landscape\n• Present regulatory requirements\n• Economic situation today\n• Current social/cultural factors\n• Today's stakeholder ecosystem\n• Adjacent fields and technologies",
+                super_future: "• Predicted industry evolution\n• Expected regulatory changes\n• Future economic trends\n• Evolving social attitudes\n• Stakeholder development\n• Convergence with other fields",
+                system_past: "• Original purpose and goals\n• Previous iterations\n• Historical challenges\n• Key turning points\n• Previous capabilities\n• Earlier configurations",
+                system_present: "• Current purpose and goals\n• Present functionality\n• Ongoing challenges\n• Key strengths/weaknesses\n• Current capabilities\n• Present configuration",
+                system_future: "• Evolving purpose\n• Potential new functionality\n• Anticipated challenges\n• Future opportunities\n• Expanding capabilities\n• Potential configurations",
+                subsystem_past: "• Original components\n• Previous technologies used\n• Former interfaces\n• Initial processes\n• Earlier resource requirements\n• Past internal relationships",
+                subsystem_present: "• Current components\n• Technologies in use\n• Present interfaces\n• Active processes\n• Current resource usage\n• Internal relationships today",
+                subsystem_future: "• Potential new components\n• Emerging technologies\n• Future interfaces\n• Evolving processes\n• Changing resource needs\n• Future internal dynamics"
+            };
+            
+            // Cell element references
+            const cells = {
+                past_super: document.getElementById("past_super"),
+                present_super: document.getElementById("present_super"),
+                future_super: document.getElementById("future_super"),
+                past_system: document.getElementById("past_system"),
+                present_system: document.getElementById("present_system"),
+                future_system: document.getElementById("future_system"),
+                past_subsystem: document.getElementById("past_subsystem"),
+                present_subsystem: document.getElementById("present_subsystem"),
+                future_subsystem: document.getElementById("future_subsystem")
+            };
+            
+            // Check if required libraries are available
+            if (typeof html2canvas === 'undefined') {
+                showError('<i class="fas fa-exclamation-triangle"></i> Error: Required libraries could not be loaded. Please check your internet connection.');
+                return;
+            }
+            
+            // Word counter functionality
+            function updateWordCount(textarea) {
+                const text = textarea.value.trim();
+                const wordCount = text ? text.split(/\s+/).length : 0;
+                
+                // Find the associated word count element
+                const wordCountElement = textarea.parentElement.querySelector('.word-count');
+                if (wordCountElement) {
+                    wordCountElement.textContent = wordCount + ' words';
+                }
+                
+                updateProgressBar();
+            }
+            
+            // Attach word counter to all textareas
+            document.querySelectorAll('textarea').forEach(textarea => {
+                textarea.addEventListener('input', function() {
+                    updateWordCount(this);
+                });
+                
+                // Initial word count
+                updateWordCount(textarea);
+            });
+            
+            // Update progress bar
+            function updateProgressBar() {
+                const textareas = document.querySelectorAll('textarea');
+                let filledCount = 0;
+                
+                textareas.forEach(textarea => {
+                    if (textarea.value.trim().length > 0) {
+                        filledCount++;
+                    }
+                });
+                
+                const percentage = Math.round((filledCount / textareas.length) * 100);
+                document.getElementById('progress-bar').style.width = percentage + '%';
+                document.getElementById('completion-percentage').textContent = percentage + '%';
+            }
+            
+            // Initial progress update
+            updateProgressBar();
+            
+            // Template buttons
+            document.querySelectorAll('.template-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const cellType = this.getAttribute('data-cell');
+                    const textarea = this.parentElement.querySelector('textarea');
+                    
+                    if (textarea && templateContent[cellType]) {
+                        if (textarea.value.trim() !== '') {
+                            if (confirm("This will replace your current text. Continue?")) {
+                                textarea.value = templateContent[cellType];
+                                updateWordCount(textarea);
+                            }
+                        } else {
+                            textarea.value = templateContent[cellType];
+                            updateWordCount(textarea);
+                        }
+                    }
+                });
+            });
+            
+            // Focus mode toggle
+            document.getElementById('focus-view').addEventListener('click', function() {
+                document.getElementById('standard-view').classList.remove('active');
+                this.classList.add('active');
+                document.getElementById('matrix').classList.add('focus-mode');
+            });
+            
+            document.getElementById('standard-view').addEventListener('click', function() {
+                document.getElementById('focus-view').classList.remove('active');
+                this.classList.add('active');
+                document.getElementById('matrix').classList.remove('focus-mode');
+            });
+            
+            // Set focused class for focus mode
+            document.querySelectorAll('.grid-cell').forEach(cell => {
+                cell.addEventListener('click', function() {
+                    document.querySelectorAll('.grid-cell').forEach(c => {
+                        c.classList.remove('focused');
+                    });
+                    this.classList.add('focused');
+                });
+            });
+            
+            // Dark mode toggle
+            document.getElementById('dark-mode-toggle').addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                if (document.body.classList.contains('dark-mode')) {
+                    this.textContent = 'Light Mode';
+                } else {
+                    this.textContent = 'Dark Mode';
+                }
+            });
+            
+            // Handle Clear All button
+            document.getElementById("clear_btn").addEventListener("click", function() {
+                if (confirm("Are you sure you want to clear all entries? This cannot be undone.")) {
+                    document.querySelectorAll('textarea').forEach(textarea => {
+                        textarea.value = "";
+                        updateWordCount(textarea);
+                    });
+                }
+            });
+            
+            // Export as PNG functionality
+            document.getElementById("export_png_btn").addEventListener("click", function() {
+                exportMatrix();
+            });
+            
+            // PDF export functionality has been removed
+            
+            // Function to export the matrix as PNG
+            function exportMatrix() {
+                try {
+                    // Show loading indicator
+                    const downloadContainer = document.getElementById("download-container");
+                    downloadContainer.innerHTML = `
+                        <div class="loading-indicator">
+                            <div class="spinner"></div>
+                            <span>Generating PNG...</span>
+                        </div>
+                    `;
+                    
+                    // Create a temporary div with professional styling for export
+                    const tempDiv = document.createElement('div');
+                    tempDiv.id = 'export-container';
+                    tempDiv.style.backgroundColor = 'white';
+                    tempDiv.style.padding = '40px';
+                    tempDiv.style.maxWidth = '1200px';
+                    tempDiv.style.position = 'absolute';
+                    tempDiv.style.left = '-9999px';
+                    tempDiv.style.top = '-9999px';
+                    document.body.appendChild(tempDiv);
+                    
+                    // Add title and description
+                    const header = document.createElement('div');
+                    header.innerHTML = `
+                        <h1 style="text-align: center; color: #2b2d42; font-family: Arial, sans-serif; margin-bottom: 5px;">System Analysis Matrix</h1>
+                        <p style="text-align: center; color: #8d99ae; font-family: Arial, sans-serif; margin-bottom: 30px;">Strategic analysis across dimensions and time</p>
+                    `;
+                    tempDiv.appendChild(header);
+                    
+                    // Create a professionally styled table
+                    const table = document.createElement('table');
+                    table.style.width = '100%';
+                    table.style.borderCollapse = 'collapse';
+                    table.style.fontFamily = 'Arial, sans-serif';
+                    table.style.marginBottom = '30px';
+                    
+                    // Create header row
+                    const headerRow = document.createElement('tr');
+                    
+                    // Empty cell for the corner
+                    const cornerCell = document.createElement('th');
+                    cornerCell.style.width = '150px';
+                    cornerCell.style.backgroundColor = '#f8f9fa';
+                    cornerCell.style.border = '1px solid #dee2e6';
+                    cornerCell.style.padding = '15px';
+                    headerRow.appendChild(cornerCell);
+                    
+                    // Add column headers (Past, Present, Future)
+                    ['Past', 'Present', 'Future'].forEach(header => {
+                        const th = document.createElement('th');
+                        th.textContent = header;
+                        th.style.backgroundColor = '#2b2d42';
+                        th.style.color = 'white';
+                        th.style.padding = '15px';
+                        th.style.border = '1px solid #dee2e6';
+                        th.style.textAlign = 'center';
+                        th.style.fontWeight = 'bold';
+                        headerRow.appendChild(th);
+                    });
+                    
+                    table.appendChild(headerRow);
+                    
+                    // Add rows for each system level
+                    const rowLabels = ['Super System', 'System', 'Subsystem'];
+                    const cellIds = [
+                        ['past_super', 'present_super', 'future_super'],
+                        ['past_system', 'present_system', 'future_system'],
+                        ['past_subsystem', 'present_subsystem', 'future_subsystem']
+                    ];
+                    
+                    rowLabels.forEach((label, rowIndex) => {
+                        const tr = document.createElement('tr');
+                        
+                        // Row header
+                        const th = document.createElement('th');
+                        th.textContent = label;
+                        th.style.backgroundColor = '#f8f9fa';
+                        th.style.border = '1px solid #dee2e6';
+                        th.style.padding = '15px';
+                        th.style.textAlign = 'right';
+                        th.style.fontWeight = 'bold';
+                        th.style.color = '#2b2d42';
+                        tr.appendChild(th);
+                        
+                        // Data cells
+                        cellIds[rowIndex].forEach((id, colIndex) => {
+                            const td = document.createElement('td');
+                            td.style.border = '1px solid #dee2e6';
+                            td.style.padding = '15px';
+                            td.style.verticalAlign = 'top';
+                            td.style.backgroundColor = 'white';
+                            
+                            // Alternate row shading for better readability
+                            if (rowIndex % 2 === 1) {
+                                td.style.backgroundColor = '#f8f9fa';
+                            }
+                            
+                            // Add cell content with formatting
+                            const content = document.getElementById(id).value || '';
+                            const formattedContent = content.replace(/\n/g, '<br>');
+                            td.innerHTML = formattedContent;
+                            
+                            tr.appendChild(td);
+                        });
+                        
+                        table.appendChild(tr);
+                    });
+                    
+                    tempDiv.appendChild(table);
+                    
+                    // Add timestamp and footer
+                    const footer = document.createElement('div');
+                    footer.innerHTML = `
+                        <p style="text-align: right; color: #8d99ae; font-family: Arial, sans-serif; font-size: 12px;">Generated on: ${new Date().toLocaleString()}</p>
+                    `;
+                    tempDiv.appendChild(footer);
+                    
+                    // Use html2canvas to create image
+                    html2canvas(tempDiv, {
+                        scale: 2,
+                        useCORS: true,
+                        backgroundColor: "#ffffff",
+                        logging: false
+                    }).then(canvas => {
+                        // Remove the temporary div
+                        document.body.removeChild(tempDiv);
+                        
+                        // Convert canvas to PNG
+                        const dataURL = canvas.toDataURL("image/png");
+                        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+                        
+                        // Create download link
+                        const downloadLink = document.createElement("a");
+                        downloadLink.href = dataURL;
+                        downloadLink.download = "system_analysis_" + timestamp + ".png";
+                        downloadLink.innerHTML = '<i class="fas fa-download"></i> Download PNG';
+                        downloadLink.className = "download-btn";
+                        
+                        // Clear loading and add download link
+                        downloadContainer.innerHTML = '';
+                        downloadContainer.appendChild(downloadLink);
+                    }).catch(error => {
+                        showError('<i class="fas fa-exclamation-triangle"></i> Error generating export: ' + error.message);
+                    });
+                } catch (error) {
+                    showError('<i class="fas fa-exclamation-triangle"></i> Error: ' + error.message);
+                }
+            }
+            
+            // Function to show error messages
+            function showError(message) {
+                const errorContainer = document.getElementById('error-container');
+                errorContainer.innerHTML = message;
+                errorContainer.style.display = 'block';
+                
+                // Hide the error message after 5 seconds
+                setTimeout(() => {
+                    errorContainer.style.display = 'none';
+                }, 5000);
+            }
+            
+            // Note: Auto-save functionality is disabled in this environment
+            // Add temporary notification about this limitation
+            const saveNote = document.createElement('div');
+            saveNote.className = 'alert alert-info mt-3 text-center';
+            saveNote.style.backgroundColor = '#edf2f4';
+            saveNote.style.color = '#2b2d42';
+            saveNote.style.border = '1px solid rgba(43, 45, 66, 0.1)';
+            saveNote.style.borderRadius = '8px';
+            saveNote.style.padding = '10px';
+            saveNote.style.marginBottom = '20px';
+            saveNote.innerHTML = '<i class="fas fa-info-circle"></i> Note: Changes are not saved between sessions in this environment.';
+            
+            // Insert after the download container
+            const downloadContainer = document.getElementById('download-container');
+            downloadContainer.parentNode.insertBefore(saveNote, downloadContainer.nextSibling);
+            
+            // Keyboard shortcuts are disabled in this environment to avoid conflicts with browser functions
+        });
+    </script>
+</body>
+</html>
