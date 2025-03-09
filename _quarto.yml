@@ -8,6 +8,8 @@ website:
     left:
       - href: index.qmd
         text: TRIZ-Intro
+      - href: triz_39_45/triz40.html
+        text: TRIZ-Principles          
       - href: triz_39_45/index.html
         text: TRIZ-Matrix    
       - href: triz_39_45/system_drawing.html

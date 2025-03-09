@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRIZ Principles Explorer</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>    
+    <!-- Main Content -->
+    <div class="container">
+        <h2 class="subline mb-4">TRIZ Principles Explorer</h2>
+
+        <div class="row g-4 mb-5">
+            <!-- Principle Selection Section -->
+            <div class="col-md-6">
+                <div class="step-card bg-light">
+                    <h4 class="mb-3">Select TRIZ Principle</h4>
+                    <p>
+                        Choose any of the 40 TRIZ principles from the dropdown below
+                    </p>
+                    
+                    <!-- Principle Selection Dropdown -->
+                    <div class="mb-3">
+                        <label for="principle-select" class="form-label">
+                            <i class="fa-solid fa-lightbulb"></i> Principle
+                        </label>
+                        <select class="form-select" id="principle-select">
+                            <option value="" selected disabled>Select a principle (1-40)</option>
+                            <!-- Will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <!-- Industry Selection -->
+                    <div class="mt-4">
+                        <label for="industry-select" class="form-label">
+                            <i class="fa-solid fa-industry"></i> Industry Examples
+                        </label>
+                        <select class="form-select" id="industry-select" disabled>
+                            <option value="general" selected>General</option>
+                            <!-- Will be populated by JavaScript -->
+                        </select>
+                        <div class="form-text">Choose the industry domain for specialized examples.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Principles Info -->
+            <div class="col-md-6">
+                <div class="step-card">
+                    <h4 class="mb-3">About TRIZ Principles</h4>
+                    <p>
+                        The 40 TRIZ principles are problem-solving strategies derived from the Theory of Inventive Problem Solving (TRIZ).
+                    </p>
+                    <p>
+                        These principles represent patterns of innovation that can be applied across industries to solve technical contradictions.
+                    </p>
+                    <p>
+                        <strong>How to use:</strong>
+                    </p>
+                    <ol>
+                        <li>Select a principle from the dropdown menu</li>
+                        <li>View the general description and examples</li>
+                        <li>Choose an industry to see specialized examples</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Introduction -->
+        <div id="introduction-text" class="mb-5">
+            <div class="card">
+                <div class="card-body">
+                    <p>TRIZ (the Theory of Inventive Problem Solving) is a systematic approach to innovation that helps identify and solve technical contradictions.</p>
+                    <p>At the heart of TRIZ are 40 inventive principles that represent patterns observed across thousands of patents and innovations.</p>
+                    <p>This tool allows you to explore these principles and see how they can be applied in different industries and contexts.</p>
+                    <div class="mt-4">
+                        <div class="alert alert-info">
+                            <strong>Multi-Industry Examples:</strong> You can now view domain-specific examples for TRIZ principles!
+                            <ul>
+                                <li><strong>Software Engineering:</strong> Examples tailored for software development</li>
+                                <li><strong>Business:</strong> Examples for organizational and business contexts</li>
+                                <li><strong>Design:</strong> Examples for product and industrial design</li>
+                                <li><strong>Education:</strong> Examples for educational contexts</li>
+                                <li><strong>And many more...</strong> Finance, Chemical Engineering, Human Factors, etc.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Spinner -->
+        <div id="loading-spinner" class="text-center my-5" style="display:none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading principle information...</p>
+        </div>
+
+        <!-- No Results Message -->
+        <div id="no-results" class="text-center my-5 alert alert-warning" style="display:none;">
+            <i class="fa-solid fa-magnifying-glass fa-2x mb-3"></i>
+            <h4>No principles found</h4>
+            <p>Try selecting a different principle</p>
+        </div>
+
+        <!-- Principle Information Container -->
+        <div id="principle-container" class="mb-5" style="display:none;">
+            <div class="solution-card">
+                <div class="solution-card-header">
+                    <h3 id="principle-title"></h3>
+                    <div class="small text-light" id="principle-industry-label">
+                        Examples for: <span id="current-industry">General</span>
+                    </div>
+                </div>
+                <div class="solution-card-body" id="principle-content">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <div id="back-to-top" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- App Logic -->
+    <script src="apptriz40.js"></script>
+</body>
+</html>
