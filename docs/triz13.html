@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRIZ Principle: Invert the Action</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        #container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+        
+        .description {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        #simulation-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        #display-area {
+            width: 350px;
+            height: 350px;
+            border-radius: 8px;
+            background: #eaeaea;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+        
+        /* Cross-section container */
+        #cross-section {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Nut (outer part) */
+        #nut {
+            width: 180px;
+            height: 90px;
+            background: linear-gradient(145deg, #7a7a7a, #919191);
+            border-radius: 10px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            transform-style: preserve-3d;
+            transition: all 0.5s ease;
+            border: 2px solid #666;
+        }
+        
+        /* Inner hole of the nut */
+        #nut:after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: #5a5a5a;
+            border-radius: 8px;
+            z-index: 5;
+        }
+        
+        /* Bolt (inner part) */
+        #bolt {
+            width: 55px;
+            height: 130px;
+            background: linear-gradient(145deg, #666666, #7d7d7d);
+            position: absolute;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            z-index: 10;
+            transition: all 0.5s ease;
+            border: 1px solid #555;
+        }
+        
+        /* Bolt head */
+        #bolt:before {
+            content: '';
+            position: absolute;
+            width: 75px;
+            height: 20px;
+            background: linear-gradient(145deg, #5a5a5a, #707070);
+            top: -20px;
+            left: -10px;
+            border-radius: 5px 5px 0 0;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.2);
+        }
+        
+        /* Thread lines on bolt */
+        .thread {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #555;
+            left: 0;
+        }
+        
+        /* Heat effect */
+        .heat-effect {
+            position: absolute;
+            width: 200px;
+            height: 110px;
+            border-radius: 10px;
+            background: radial-gradient(ellipse at center, rgba(255,100,50,0.3) 0%, rgba(255,100,50,0) 70%);
+            filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 5;
+        }
+        
+        /* Cool effect */
+        .cool-effect {
+            position: absolute;
+            width: 75px;
+            height: 150px;
+            border-radius: 8px;
+            background: radial-gradient(ellipse at center, rgba(100,200,255,0.3) 0%, rgba(100,200,255,0) 70%);
+            filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 5;
+        }
+        
+        /* Temperature indicators */
+        .temp-indicator {
+            position: absolute;
+            background-color: rgba(255,255,255,0.8);
+            border-radius: 5px;
+            padding: 5px;
+            font-size: 12px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 20;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        #nut-temp {
+            right: 50px;
+            top: 100px;
+        }
+        
+        #bolt-temp {
+            left: 50px;
+            top: 200px;
+        }
+        
+        /* Gap effect to show loosening */
+        #gap {
+            position: absolute;
+            width: 60px;
+            height: 10px;
+            background: transparent;
+            top: 165px;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        /* Controls */
+        #controls {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 15px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        #reset-btn {
+            background-color: #7f8c8d;
+        }
+        
+        #heat-nut {
+            background-color: #e74c3c;
+        }
+        
+        #cool-bolt {
+            background-color: #3498db;
+        }
+        
+        /* Animation classes */
+        .heating #nut {
+            transform: scale(1.02);
+        }
+        
+        .heating .heat-effect {
+            opacity: 1;
+        }
+        
+        .cooling #bolt {
+            transform: scale(0.98);
+        }
+        
+        .cooling .cool-effect {
+            opacity: 1;
+        }
+        
+        .loosened #bolt {
+            transform: translateY(20px);
+        }
+        
+        .loosened #gap {
+            opacity: 1;
+        }
+        
+        /* Message box */
+        #message {
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 4px 4px 0;
+            font-size: 16px;
+            line-height: 1.5;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        /* Icons for buttons */
+        .icon {
+            width: 18px;
+            height: 18px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            display: inline-block;
+        }
+        
+        .heat-icon {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M11.9999 17.7499C14.0539 17.7499 15.7249 16.0789 15.7249 14.0249C15.7249 13.0999 15.3418 12.2191 14.6846 11.5618C14.0273 10.9046 12.9 9.9499 11.9999 8.9999C11.0999 9.9499 9.97257 10.9046 9.31531 11.5618C8.65805 12.2191 8.27495 13.0999 8.27495 14.0249C8.27495 16.0789 9.94595 17.7499 11.9999 17.7499ZM11.9999 23.9999C9.19995 23.9999 6.97795 22.0099 6.17395 20.1449C6.11395 20.1449 6.05395 20.1509 5.99395 20.1509C2.68695 20.1509 -0.000976562 17.4629 -0.000976562 14.1559C-0.000976562 11.5679 1.55195 9.29395 3.91095 8.42595C3.79095 7.87295 3.72495 7.30195 3.72495 6.71895C3.72495 3.00495 6.74195 -0.0000488281 10.4559 -0.0000488281C12.9039 -0.0000488281 15.0859 1.24995 16.3309 3.23895C16.4849 3.22495 16.6419 3.21695 16.7999 3.21695C20.7329 3.21695 23.9999 6.48395 23.9999 10.4169C23.9999 13.5349 21.9609 16.1809 19.1259 17.2479C18.5009 21.0359 15.5549 23.9999 11.9999 23.9999Z"/></svg>');
+        }
+        
+        .cool-icon {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2C10.9 2 10 2.9 10 4V8H14V4C14 2.9 13.1 2 12 2M14 8V12L16.2 17.3C16.6 18.3 16.1 19.4 15 19.8C14 20.2 12.9 19.7 12.5 18.6L12 17.5L11.5 18.6C11.1 19.7 9.9 20.2 9 19.8C7.9 19.4 7.4 18.3 7.8 17.3L10 12V8H14M12 22C17.5 22 22 17.5 22 12C22 8.02 19.72 4.62 16.5 3.09C16.82 3.6 17 4.2 17 4.79V5.59L16.5 5.5C15.9 5.42 15.37 5.44 14.9 5.56C14.96 5.71 15 5.85 15 6V6.5L14.5 6.74C14 6.97 13.71 7.5 13.71 8.09V8.58L13.24 8.35C12.77 8.12 12.22 8 11.65 8H10.36C9.78 8 9.23 8.12 8.76 8.35L8.3 8.58V8.09C8.3 7.5 8 6.97 7.5 6.74L7 6.5V6C7 5.85 7.04 5.71 7.1 5.56C6.63 5.44 6.1 5.42 5.5 5.5L5 5.59V4.79C5 4.2 5.18 3.6 5.5 3.09C2.28 4.62 0 8.02 0 12C0 17.5 4.5 22 10 22H12Z"/></svg>');
+        }
+        
+        .reset-icon {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"/></svg>');
+        }
+        
+        .remove-icon {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/></svg>');
+        }
+        
+        #remove-bolt {
+            background-color: #9b59b6;
+        }
+        
+        #remove-bolt:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            opacity: 0.7;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Bolt removal animation */
+        .removed-bolt #bolt {
+            transform: translateY(200px);
+            transition: transform 1.5s ease-out;
+        }
+
+        /* Temperature scale */
+        #temperature-scale {
+            display: flex;
+            width: 300px;
+            margin: 20px auto;
+            background: linear-gradient(to right, rgb(0, 0, 255), rgb(255, 0, 0));
+            height: 20px;
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        #temperature-scale:before {
+            content: "Cold";
+            position: absolute;
+            left: 0;
+            bottom: -25px;
+            color: blue;
+            font-weight: bold;
+        }
+        
+        #temperature-scale:after {
+            content: "Hot";
+            position: absolute;
+            right: 0;
+            bottom: -25px;
+            color: red;
+            font-weight: bold;
+        }
+        
+        /* Cross-section label */
+        .cross-section-label {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>TRIZ Principle: Invert the Action</h1>
+        
+        <div class="description">
+            <p>The "Invert the Action" principle suggests performing the opposite action to solve a problem. In mechanical engineering, a common problem is loosening stuck components.</p>
+            <p><strong>Scenario:</strong> A bolt is stuck inside a nut. Traditional approach is to heat the outer part (nut) to expand it, but an alternative solution is to cool the inner part (bolt) to contract it.</p>
+        </div>
+        
+        <div id="simulation-area">
+            <div id="display-area">
+                <div class="cross-section-label">Cross-Section View</div>
+                <div id="cross-section">
+                    <!-- Nut (outer part) -->
+                    <div id="nut"></div>
+                    
+                    <!-- Bolt (inner part) -->
+                    <div id="bolt">
+                        <!-- Thread lines -->
+                        <div class="thread" style="top: 20px;"></div>
+                        <div class="thread" style="top: 35px;"></div>
+                        <div class="thread" style="top: 50px;"></div>
+                        <div class="thread" style="top: 65px;"></div>
+                        <div class="thread" style="top: 80px;"></div>
+                        <div class="thread" style="top: 95px;"></div>
+                        <div class="thread" style="top: 110px;"></div>
+                    </div>
+                    
+                    <!-- Visual effects -->
+                    <div class="heat-effect"></div>
+                    <div class="cool-effect"></div>
+                    <div id="gap"></div>
+                    
+                    <!-- Temperature indicators -->
+                    <div id="nut-temp" class="temp-indicator">Nut: 25°C</div>
+                    <div id="bolt-temp" class="temp-indicator">Bolt: 25°C</div>
+                </div>
+            </div>
+            
+            <div id="temperature-scale"></div>
+            
+            <div id="controls">
+                <button id="heat-nut"><span class="icon heat-icon"></span> Heat the Nut</button>
+                <button id="cool-bolt"><span class="icon cool-icon"></span> Cool the Bolt</button>
+                <button id="remove-bolt" disabled><span class="icon remove-icon"></span> Remove Bolt</button>
+                <button id="reset-btn"><span class="icon reset-icon"></span> Reset</button>
+            </div>
+            
+            <div id="message">The bolt is currently stuck. Choose an action to try loosening it.</div>
+        </div>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const heatNutBtn = document.getElementById('heat-nut');
+        const coolBoltBtn = document.getElementById('cool-bolt');
+        const resetBtn = document.getElementById('reset-btn');
+        const crossSection = document.getElementById('cross-section');
+        const message = document.getElementById('message');
+        const nutTemp = document.getElementById('nut-temp');
+        const boltTemp = document.getElementById('bolt-temp');
+        
+        // Initialize temperatures
+        let nutTemperature = 25;
+        let boltTemperature = 25;
+        
+        // Heat the nut (traditional approach)
+        heatNutBtn.addEventListener('click', () => {
+            // Reset to starting position
+            crossSection.className = '';
+            
+            // Apply heating effect
+            crossSection.classList.add('heating');
+            
+            // Animate temperature increase
+            let heatingInterval = setInterval(() => {
+                nutTemperature += 5;
+                if (nutTemperature >= 90) {
+                    clearInterval(heatingInterval);
+                    
+                    // Show the result after heating completes
+                    setTimeout(() => {
+                        message.innerHTML = '<strong>Result:</strong> Heating the nut expands it, but due to equal expansion, the bolt remains stuck. <strong>This approach is ineffective in this scenario.</strong>';
+                    }, 1000);
+                }
+                
+                // Update temperature display
+                nutTemp.textContent = `Nut: ${nutTemperature}°C`;
+                nutTemp.style.opacity = '1';
+                nutTemp.style.color = nutTemperature > 50 ? '#e74c3c' : '#333';
+            }, 200);
+        });
+        
+        // Cool the bolt (inverted approach)
+        coolBoltBtn.addEventListener('click', () => {
+            // Reset to starting position
+            crossSection.className = '';
+            
+            // Apply cooling effect
+            crossSection.classList.add('cooling');
+            
+            // Animate temperature decrease
+            let coolingInterval = setInterval(() => {
+                boltTemperature -= 5;
+                if (boltTemperature <= -40) {
+                    clearInterval(coolingInterval);
+                    
+                    // Show the bolt loosening after cooling completes
+                    setTimeout(() => {
+                        crossSection.classList.add('loosened');
+                        message.innerHTML = '<strong>Success!</strong> Cooling the bolt causes it to contract, creating clearance between the bolt and nut. <strong>This "inverted action" effectively loosens the stuck components.</strong> <em>You can now remove the bolt.</em>';
+                        
+                        // Enable the remove bolt button
+                        document.getElementById('remove-bolt').disabled = false;
+                    }, 1000);
+                }
+                
+                // Update temperature display
+                boltTemp.textContent = `Bolt: ${boltTemperature}°C`;
+                boltTemp.style.opacity = '1';
+                boltTemp.style.color = boltTemperature < 0 ? '#3498db' : '#333';
+            }, 200);
+        });
+        
+        // Remove Bolt
+        const removeBoltBtn = document.getElementById('remove-bolt');
+        
+        removeBoltBtn.addEventListener('click', () => {
+            // Apply removal animation
+            crossSection.classList.add('removed-bolt');
+            
+            // Update message
+            message.innerHTML = '<strong>Success!</strong> The bolt has been completely removed. This demonstrates the full process: <ol><li>Cool the inner part (bolt) to contract it</li><li>Create clearance between components</li><li>Remove the loosened bolt</li></ol>';
+            
+            // Disable remove button after use
+            removeBoltBtn.disabled = true;
+        });
+        
+        // Reset simulation
+        resetBtn.addEventListener('click', () => {
+            // Reset classes
+            crossSection.className = '';
+            
+            // Reset temperatures
+            nutTemperature = 25;
+            boltTemperature = 25;
+            
+            // Update temperature displays
+            nutTemp.textContent = `Nut: ${nutTemperature}°C`;
+            boltTemp.textContent = `Bolt: ${boltTemperature}°C`;
+            
+            // Hide temperature indicators
+            nutTemp.style.opacity = '0';
+            boltTemp.style.opacity = '0';
+            
+            // Disable remove button
+            removeBoltBtn.disabled = true;
+            
+            // Reset message
+            message.innerHTML = 'The bolt is currently stuck. Choose an action to try loosening it.';
+        });
+    </script>
+</body>
+</html>

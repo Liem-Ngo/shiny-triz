@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trial and Error Problem Solving Method</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #EF7B45;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .svg-container {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        .legend {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .legend h2 {
+            margin-top: 0;
+            color: #2D3142;
+            font-size: 1.2em;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .color-box {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 3px;
+        }
+        .red-arrow {
+            background-color: #FF595E;
+        }
+        .green-arrow {
+            background-color: #36B37E;
+        }
+        .blue-arrow {
+            background-color: #4EA8DE;
+        }
+        .gray-arrow {
+            background-color: #BFC0C0;
+        }
+        .problem-circle {
+            background: linear-gradient(#656F9F, #535F8D);
+        }
+        .solution-circle {
+            background: linear-gradient(#6BD6D4, #5BC0BE);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Trial and Error Problem Solving Method</h1>
+        
+        <div class="svg-container">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+              <!-- Background -->
+              <rect width="800" height="600" fill="#2D3142" />
+              
+              <!-- Definitions for arrowheads and gradients -->
+              <defs>
+                <!-- Arrowheads -->
+                <marker id="redArrow" markerWidth="10" markerHeight="10" refX="0" refY="5" orient="auto">
+                  <path d="M0,0 L0,10 L10,5 z" fill="#FF595E" />
+                </marker>
+                
+                <marker id="greenArrow" markerWidth="10" markerHeight="10" refX="0" refY="5" orient="auto">
+                  <path d="M0,0 L0,10 L10,5 z" fill="#36B37E" />
+                </marker>
+                
+                <marker id="blueArrow" markerWidth="10" markerHeight="10" refX="0" refY="5" orient="auto">
+                  <path d="M0,0 L0,10 L10,5 z" fill="#4EA8DE" />
+                </marker>
+                
+                <marker id="grayArrow" markerWidth="10" markerHeight="10" refX="0" refY="5" orient="auto">
+                  <path d="M0,0 L0,10 L10,5 z" fill="#BFC0C0" />
+                </marker>
+                
+                <!-- Gradients -->
+                <radialGradient id="problemGradient" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#656F9F" />
+                  <stop offset="100%" stop-color="#535F8D" />
+                </radialGradient>
+                
+                <radialGradient id="solutionGradient" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#6BD6D4" />
+                  <stop offset="100%" stop-color="#5BC0BE" />
+                </radialGradient>
+                
+                <!-- Glow for solution -->
+                <filter id="solutionGlow">
+                  <feGaussianBlur stdDeviation="4" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+              </defs>
+              
+              <!-- Main circles -->
+              <circle cx="400" cy="300" r="100" fill="url(#problemGradient)" stroke="#4C5980" stroke-width="3" />
+              <circle cx="700" cy="300" r="50" fill="url(#solutionGradient)" stroke="#45A29E" stroke-width="3" filter="url(#solutionGlow)" />
+              
+              <!-- Red arrows (unsuccessful trials) -->
+              <g id="unsuccessfulTrials">
+                <!-- Trial 1 -->
+                <line x1="400" y1="300" x2="530" y2="430" stroke="#FF595E" stroke-width="4" marker-end="url(#redArrow)" />
+                <text x="510" y="390" font-size="18" fill="#FF595E" font-weight="bold">1</text>
+                
+                <!-- Trial 2 -->
+                <line x1="400" y1="300" x2="400" y2="480" stroke="#FF595E" stroke-width="4" marker-end="url(#redArrow)" />
+                <text x="410" y="410" font-size="18" fill="#FF595E" font-weight="bold">2</text>
+                
+                <!-- Trial 3 -->
+                <line x1="400" y1="300" x2="270" y2="430" stroke="#FF595E" stroke-width="4" marker-end="url(#redArrow)" />
+                <text x="330" y="395" font-size="18" fill="#FF595E" font-weight="bold">3</text>
+                
+                <!-- Trial 4 -->
+                <line x1="400" y1="300" x2="270" y2="170" stroke="#FF595E" stroke-width="4" marker-end="url(#redArrow)" />
+                <text x="330" y="220" font-size="18" fill="#FF595E" font-weight="bold">4</text>
+                
+                <!-- Trial 5 -->
+                <line x1="400" y1="300" x2="400" y2="120" stroke="#FF595E" stroke-width="4" marker-end="url(#redArrow)" />
+                <text x="410" y="190" font-size="18" fill="#FF595E" font-weight="bold">5</text>
+                
+                <!-- Trial 6 -->
+                <line x1="400" y1="300" x2="530" y2="170" stroke="#FF595E" stroke-width="4" marker-end="url(#redArrow)" />
+                <text x="470" y="220" font-size="18" fill="#FF595E" font-weight="bold">6</text>
+              </g>
+              
+              <!-- Successful path (green) -->
+              <line x1="400" y1="300" x2="680" y2="300" stroke="#36B37E" stroke-width="5" marker-end="url(#greenArrow)" />
+              <text x="550" y="290" font-size="18" fill="#36B37E" font-weight="bold">7</text>
+              
+              <!-- Psychological inertia (blue) -->
+              <path d="M 400 300 C 350 250, 280 300, 220 300" stroke="#4EA8DE" stroke-width="5" marker-end="url(#blueArrow)" />
+              
+              <!-- Feedback loops (gray dashed) -->
+              <path d="M 530 430 Q 450 480 400 300" stroke="#BFC0C0" stroke-width="3" stroke-dasharray="8,4" marker-end="url(#grayArrow)" fill="none" />
+              <path d="M 270 430 Q 350 480 400 300" stroke="#BFC0C0" stroke-width="3" stroke-dasharray="8,4" marker-end="url(#grayArrow)" fill="none" />
+              <path d="M 530 170 Q 450 120 400 300" stroke="#BFC0C0" stroke-width="3" stroke-dasharray="8,4" marker-end="url(#grayArrow)" fill="none" />
+              
+              <!-- Labels -->
+              <text x="400" y="220" text-anchor="middle" font-size="18" fill="#EEF2F7" font-weight="bold"></text>
+              <text x="700" y="380" text-anchor="middle" font-size="18" fill="#EEF2F7" font-weight="bold">Solution (goal state)</text>
+              <text x="515" y="500" text-anchor="middle" font-size="16" fill="#FF595E" font-weight="bold">Unsuccessful Trials (1-6)</text>
+              <text x="550" y="260" text-anchor="middle" font-size="16" fill="#36B37E" font-weight="bold">Successful Trial (7)</text>
+              <text x="240" y="250" text-anchor="middle" font-size="16" fill="#4EA8DE" font-weight="bold">Psychological Inertia</text>
+              <text x="450" y="450" text-anchor="middle" font-size="16" fill="#EEF2F7" font-weight="bold">Feedback (learning)</text>
+              
+              <text x="400" y="560" text-anchor="middle" font-size="20" fill="#EF7B45" font-weight="bold">Trial and Error Problem Solving Method</text>
+            </svg>
+        </div>
+        
+        <div class="legend">
+            <h2>Legend</h2>
+            <div class="legend-item">
+                <div class="color-box problem-circle"></div>
+                <div>Problem (Initial State) - The starting point where the problem is identified</div>
+            </div>
+            <div class="legend-item">
+                <div class="color-box solution-circle"></div>
+                <div>Solution (Goal State) - The desired outcome or solution to the problem</div>
+            </div>
+            <div class="legend-item">
+                <div class="color-box red-arrow"></div>
+                <div>Unsuccessful Trials (1-6) - Failed attempts at solving the problem</div>
+            </div>
+            <div class="legend-item">
+                <div class="color-box green-arrow"></div>
+                <div>Successful Trial (7) - The successful approach that leads to the solution</div>
+            </div>
+            <div class="legend-item">
+                <div class="color-box blue-arrow"></div>
+                <div>Psychological Inertia - The tendency to approach problems in familiar ways despite their ineffectiveness</div>
+            </div>
+            <div class="legend-item">
+                <div class="color-box gray-arrow"></div>
+                <div>Feedback Loops - Learning from unsuccessful trials to inform future attempts</div>
+            </div>
+        </div>
+        
+        <div class="description">
+            <h2>About Trial and Error Problem Solving</h2>
+            <p>The trial and error method is a fundamental problem-solving approach where multiple attempts are made to reach a solution. Each unsuccessful attempt provides valuable feedback that helps refine subsequent trials until a successful solution is found.</p>
+            <p>Key aspects illustrated in this diagram:</p>
+            <ul>
+                <li><strong>Multiple Attempts:</strong> The problem-solving process often requires several attempts (trials 1-7) before finding success.</li>
+                <li><strong>Learning Process:</strong> Gray feedback loops show how information from failed attempts informs future trials.</li>
+                <li><strong>Psychological Inertia:</strong> The blue curve represents our tendency to get stuck in familiar thinking patterns, which can delay finding the solution.</li>
+                <li><strong>Directional Exploration:</strong> Trials spread in different directions, representing varied approaches to solving the problem.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

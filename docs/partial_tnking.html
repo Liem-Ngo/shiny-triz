@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Pizza Perspective: A Lesson in Understanding</title>
+    <style>
+        /* Core variables */
+        :root {
+            --pizza-crust: #d2a679;
+            --pizza-crust-dark: #b38150;
+            --pizza-crust-light: #e0c4a8;
+            --pizza-sauce: #e63e2e;
+            --pizza-sauce-dark: #c52d20;
+            --pizza-sauce-light: #ff7f73;
+            --pizza-cheese: #ffd700;
+            --pizza-cheese-dark: #e6c200;
+            --pizza-cheese-light: #ffeb99;
+            --primary: #e63e2e;
+            --primary-dark: #c52d20;
+            --primary-light: #ff7f73;
+            --secondary: #f8f8f8;
+            --accent: #4a6fa5;
+            --accent-light: #d0e0fa;
+            --success: #4caf50;
+            --text: #333;
+            --text-light: #777;
+            --shadow: 0 4px 8px rgba(0,0,0,0.1);
+            --shadow-strong: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* Basic styling with animations */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--secondary);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 25px 0;
+            background-color: white;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--pizza-crust), var(--pizza-sauce), var(--pizza-cheese));
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+        
+        h1::after {
+            content: '🍕';
+            margin-left: 10px;
+            font-size: 1.5rem;
+            position: relative;
+            top: -5px;
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+
+        /* Animation keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes scaleIn {
+            from { transform: scale(0.95); opacity: 0.8; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes progressShine {
+            to { background-position: -200% 0; }
+        }
+
+        /* Scene management with animations */
+        .scene-container {
+            position: relative;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 30px;
+            min-height: 400px;
+            transition: all 0.3s ease;
+        }
+        
+        .scene-container:hover {
+            box-shadow: var(--shadow-strong);
+        }
+        
+        .scene {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .scene.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .scene-title {
+            position: relative;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .scene-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background-color: var(--primary);
+            border-radius: 3px;
+        }
+
+        /* Scene indicator dots */
+        .scene-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .scene-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .scene-dot:hover {
+            background-color: var(--text-light);
+        }
+        
+        .scene-dot.active {
+            background-color: var(--primary);
+            transform: scale(1.2);
+        }
+
+        /* Enhanced pizza visualization with 3D effects and textures */
+        .pizza-container {
+            width: 220px;
+            height: 220px;
+            margin: 30px auto;
+            position: relative;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            cursor: pointer;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .pizza-container:hover {
+            transform: rotate(5deg) scale(1.05) translateY(-10px);
+            filter: drop-shadow(0 15px 20px rgba(0,0,0,0.25));
+        }
+        
+        .pizza-part {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.4s ease;
+        }
+        
+        .pizza-crust {
+            background: radial-gradient(circle at 40% 40%, var(--pizza-crust-light) 0%, var(--pizza-crust) 60%, var(--pizza-crust-dark) 100%);
+            z-index: 1;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.1);
+            transform: translateZ(0px);
+        }
+        
+        .pizza-crust::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 70%),
+                radial-gradient(circle at 70% 70%, rgba(179, 129, 80, 0.15) 0, rgba(179, 129, 80, 0.15) 4px, transparent 4px),
+                radial-gradient(circle at 30% 40%, rgba(179, 129, 80, 0.15) 0, rgba(179, 129, 80, 0.15) 5px, transparent 5px),
+                radial-gradient(circle at 60% 30%, rgba(179, 129, 80, 0.15) 0, rgba(179, 129, 80, 0.15) 3px, transparent 3px);
+            background-size: 100%, 30px 30px, 40px 40px, 35px 35px;
+            z-index: 2;
+        }
+        
+        .pizza-crust::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: 
+                linear-gradient(45deg, transparent 65%, rgba(224, 196, 168, 0.4) 70%, transparent 75%),
+                linear-gradient(135deg, transparent 5%, rgba(224, 196, 168, 0.4) 10%, transparent 15%),
+                linear-gradient(225deg, transparent 25%, rgba(224, 196, 168, 0.4) 30%, transparent 35%),
+                linear-gradient(315deg, transparent 45%, rgba(224, 196, 168, 0.4) 50%, transparent 55%);
+            z-index: 1;
+        }
+        
+        .pizza-sauce {
+            background: radial-gradient(circle at 40% 40%, var(--pizza-sauce-light) 0%, var(--pizza-sauce) 60%, var(--pizza-sauce-dark) 100%);
+            width: 82%;
+            height: 82%;
+            top: 9%;
+            left: 9%;
+            z-index: 2;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+            transform: translateZ(2px);
+        }
+        
+        .pizza-sauce::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: 
+                radial-gradient(circle at 70% 70%, rgba(150,20,20,0.15) 0, rgba(150,20,20,0.15) 3px, transparent 4px),
+                radial-gradient(circle at 30% 40%, rgba(150,20,20,0.15) 0, rgba(150,20,20,0.15) 4px, transparent 5px),
+                radial-gradient(circle at 60% 30%, rgba(150,20,20,0.15) 0, rgba(150,20,20,0.15) 2px, transparent 3px),
+                radial-gradient(circle at 40% 60%, rgba(150,20,20,0.15) 0, rgba(150,20,20,0.15) 3px, transparent 4px);
+            background-size: 30px 30px, 40px 40px, 35px 35px, 25px 25px;
+            z-index: 3;
+            opacity: 0.8;
+        }
+        
+        .pizza-sauce::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0,0,0,0.05) 0%, transparent 40%);
+            z-index: 4;
+        }
+        
+        .pizza-cheese {
+            background: radial-gradient(circle at 40% 40%, var(--pizza-cheese-light) 0%, var(--pizza-cheese) 60%, var(--pizza-cheese-dark) 100%);
+            width: 74%;
+            height: 74%;
+            top: 13%;
+            left: 13%;
+            z-index: 3;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+            transform: translateZ(4px);
+        }
+        
+        .pizza-cheese::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(255, 235, 153, 0.4) 0, rgba(255, 235, 153, 0.4) 6px, transparent 7px),
+                radial-gradient(circle at 75% 75%, rgba(255, 235, 153, 0.4) 0, rgba(255, 235, 153, 0.4) 5px, transparent 6px),
+                radial-gradient(circle at 50% 40%, rgba(255, 235, 153, 0.4) 0, rgba(255, 235, 153, 0.4) 8px, transparent 9px),
+                radial-gradient(circle at 20% 70%, rgba(255, 235, 153, 0.4) 0, rgba(255, 235, 153, 0.4) 7px, transparent 8px);
+            background-size: 40px 40px, 50px 50px, 60px 60px, 45px 45px;
+            z-index: 4;
+        }
+        
+        .pizza-cheese::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2) 0%, transparent 60%),
+                linear-gradient(45deg, transparent 40%, rgba(230, 194, 0, 0.1) 45%, transparent 50%),
+                linear-gradient(135deg, transparent 15%, rgba(230, 194, 0, 0.1) 20%, transparent 25%),
+                linear-gradient(225deg, transparent 30%, rgba(230, 194, 0, 0.1) 35%, transparent 40%);
+            z-index: 5;
+        }
+        
+        /* Basil leaves on top of cheese */
+        .pizza-cheese .basil-1,
+        .pizza-cheese .basil-2,
+        .pizza-cheese .basil-3 {
+            position: absolute;
+            background-color: #1D8348;
+            opacity: 0.85;
+            border-radius: 50% 0 50% 0;
+            transform: rotate(45deg);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            z-index: 6;
+        }
+        
+        .pizza-cheese .basil-1 {
+            width: 20px;
+            height: 25px;
+            top: 25%;
+            left: 32%;
+            transform: rotate(25deg);
+        }
+        
+        .pizza-cheese .basil-2 {
+            width: 18px;
+            height: 22px;
+            top: 55%;
+            right: 35%;
+            transform: rotate(-15deg);
+        }
+        
+        .pizza-cheese .basil-3 {
+            width: 15px;
+            height: 18px;
+            bottom: 30%;
+            left: 45%;
+            transform: rotate(60deg);
+        }
+        
+        /* Steam effect */
+        @keyframes steam {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translateY(-15px) translateX(5px) scale(1.5); opacity: 0; }
+        }
+        
+        .pizza-steam {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .steam-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.6);
+            opacity: 0;
+            animation: steam 3s infinite ease-out;
+        }
+        
+        .steam-1 { top: 40%; left: 30%; animation-delay: 0.2s; }
+        .steam-2 { top: 30%; left: 60%; animation-delay: 0.8s; }
+        .steam-3 { top: 60%; left: 40%; animation-delay: 1.5s; }
+        .steam-4 { top: 45%; left: 70%; animation-delay: 2.2s; }
+        
+        /* Pizza highlight effects */
+        .fade-pizza .pizza-sauce,
+        .fade-pizza .pizza-cheese {
+            opacity: 0.2;
+            transform: translateZ(0px);
+        }
+        
+        .highlight-crust .pizza-crust {
+            transform: translateZ(4px) scale(1.04);
+            box-shadow: 0 0 25px rgba(210, 166, 121, 0.7);
+            z-index: 10;
+            animation: pulsate 2s infinite alternate;
+        }
+        
+        .highlight-sauce .pizza-sauce {
+            transform: translateZ(6px) scale(1.04);
+            box-shadow: 0 0 25px rgba(230, 62, 46, 0.7);
+            z-index: 10;
+            animation: pulsate 2s infinite alternate;
+        }
+        
+        .highlight-cheese .pizza-cheese {
+            transform: translateZ(8px) scale(1.04);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+            z-index: 10;
+            animation: pulsate 2s infinite alternate;
+        }
+        
+        @keyframes pulsate {
+            from { box-shadow: 0 0 15px rgba(255, 255, 255, 0.5); }
+            to { box-shadow: 0 0 25px rgba(255, 255, 255, 0.8); }
+        }
+        
+        /* Pizza plate */
+        .pizza-container::after {
+            content: '';
+            position: absolute;
+            width: 110%;
+            height: 10%;
+            bottom: -5%;
+            left: -5%;
+            background: radial-gradient(ellipse at center, rgba(220,220,220,0.7) 0%, rgba(220,220,220,0) 70%);
+            z-index: 0;
+            filter: blur(2px);
+        }
+
+        /* Improved character visualization */
+        .characters-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .character-wrapper {
+            text-align: center;
+            position: relative;
+        }
+        
+        .character {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+        
+        .character::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3) 0%, transparent 70%);
+            z-index: 2;
+        }
+        
+        .character:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        
+        .character.dough {
+            background: linear-gradient(135deg, var(--pizza-crust-light), var(--pizza-crust), var(--pizza-crust-dark));
+        }
+        
+        .character.sauce {
+            background: linear-gradient(135deg, var(--pizza-sauce-light), var(--pizza-sauce), var(--pizza-sauce-dark));
+            color: white;
+        }
+        
+        .character.cheese {
+            background: linear-gradient(135deg, var(--pizza-cheese-light), var(--pizza-cheese), var(--pizza-cheese-dark));
+        }
+        
+        .character-name {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        .character-quote {
+            position: absolute;
+            top: -70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            box-shadow: var(--shadow);
+            width: 180px;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .character-quote::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: white transparent transparent;
+        }
+        
+        .character:hover + .character-quote,
+        .character:focus + .character-quote {
+            opacity: 1;
+            visibility: visible;
+            top: -80px;
+        }
+
+        /* Improved slices for perspective */
+        .slices-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        
+        .slice-wrapper {
+            text-align: center;
+            margin: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .slice-wrapper:hover {
+            transform: translateY(-5px) rotate(5deg);
+        }
+        
+        .slice {
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 60px 120px 60px;
+            border-color: transparent transparent #f5f5f5 transparent;
+            position: relative;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+            transform-origin: 50% 100%;
+            filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1));
+        }
+        
+        .slice.crust {
+            border-bottom-color: var(--pizza-crust);
+        }
+        
+        .slice.sauce {
+            border-bottom-color: var(--pizza-sauce);
+        }
+        
+        .slice.cheese {
+            border-bottom-color: var(--pizza-cheese);
+        }
+        
+        .slice-name {
+            margin-top: 15px;
+            font-weight: bold;
+            padding: 5px 10px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .slice-wrapper:hover .slice-name {
+            background-color: var(--primary-light);
+            color: white;
+        }
+        
+        .slice-desc {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            font-size: 0.9rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 5;
+        }
+        
+        .slice-desc::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: white transparent transparent;
+        }
+        
+        .slice-wrapper:hover .slice-desc {
+            opacity: 1;
+            visibility: visible;
+            top: -70px;
+        }
+
+        /* Enhanced navigation controls */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .nav-button {
+            padding: 12px 24px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-strong);
+        }
+        
+        .nav-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .nav-button:focus {
+            outline: 3px solid rgba(230, 62, 46, 0.3);
+            outline-offset: 2px;
+        }
+        
+        .nav-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .progress-container {
+            width: 100%;
+            max-width: 400px;
+            height: 8px;
+            background-color: #eee;
+            border-radius: 4px;
+            margin: 20px auto 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255,255,255,0.3) 50%, 
+                transparent 100%);
+            animation: progressShine 2s infinite linear;
+            background-size: 200% 100%;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-dark), var(--primary), var(--primary-light));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Improved callout boxes */
+        .callout {
+            background-color: var(--accent-light);
+            border-left: 5px solid var(--accent);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 10px 10px 0;
+            position: relative;
+            box-shadow: var(--shadow);
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .callout strong {
+            color: var(--accent);
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(74, 111, 165, 0.2);
+        }
+        
+        .quote {
+            font-style: italic;
+            text-align: center;
+            margin: 30px 0;
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            position: relative;
+            padding: 0 40px;
+        }
+        
+        .quote::before,
+        .quote::after {
+            content: '"';
+            font-size: 3rem;
+            position: absolute;
+            opacity: 0.2;
+            color: var(--primary);
+        }
+        
+        .quote::before {
+            top: -20px;
+            left: 0;
+        }
+        
+        .quote::after {
+            bottom: -40px;
+            right: 0;
+        }
+        
+        /* Interactive pizza builder for scene 6 */
+        .pizza-builder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+        
+        .builder-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .builder-button {
+            padding: 10px 15px;
+            border: 2px solid;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .builder-button.crust {
+            border-color: var(--pizza-crust);
+            color: var(--pizza-crust-dark);
+        }
+        
+        .builder-button.sauce {
+            border-color: var(--pizza-sauce);
+            color: var(--pizza-sauce-dark);
+        }
+        
+        .builder-button.cheese {
+            border-color: var(--pizza-cheese);
+            color: var(--pizza-cheese-dark);
+        }
+        
+        .builder-button.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .builder-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+        
+        .builder-insight {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--accent-light);
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            border-left: 4px solid var(--accent);
+            display: none;
+        }
+        
+        .builder-insight.visible {
+            display: block;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        /* Mobile adjustments */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .scene-container {
+                padding: 20px;
+            }
+            
+            .pizza-container {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .character {
+                width: 80px;
+                height: 80px;
+                font-size: 30px;
+            }
+            
+            .quote {
+                padding: 0 20px;
+                font-size: 1.1rem;
+            }
+            
+            .quote::before,
+            .quote::after {
+                font-size: 2rem;
+            }
+            
+            .nav-button {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+        
+        /* Accessibility improvements */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary);
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .scene {
+                display: block !important;
+                opacity: 1 !important;
+                transform: none !important;
+                page-break-after: always;
+                box-shadow: none;
+                border: 1px solid #eee;
+                margin-bottom: 20px;
+            }
+            
+            .navigation,
+            .scene-dots,
+            .character-quote,
+            .slice-desc {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>The Pizza Tasting Party</h1>
+        <p>A Lesson in Perspective and Understanding</p>
+    </header>
+    
+    <div class="container">
+        <div class="scene-container">
+            <!-- Scene 1: Introduction -->
+            <div class="scene active" id="scene1">
+                <h2 class="scene-title">Introduction: The Pizza Challenge</h2>
+                
+                <p>Imagine a group of friends coming together for a pizza tasting party, each with their own passionate idea of what makes a pizza truly great. Despite tasting the exact same pizza, they each focus on different elements and draw different conclusions about what makes it special.</p>
+                
+                <div class="pizza-container">
+                    <div class="pizza-part pizza-crust"></div>
+                    <div class="pizza-part pizza-sauce"></div>
+                    <div class="pizza-part pizza-cheese"></div>
+                </div>
+                
+                <div class="quote">
+                    "What we see depends mainly on what we look for."
+                </div>
+                
+                <p>This story illustrates how we often see only part of the truth, and how combining perspectives leads to a richer understanding of the whole picture.</p>
+            </div>
+            
+            <!-- Scene 2: Meet the Characters -->
+            <div class="scene" id="scene2">
+                <h2 class="scene-title">Meet Our Pizza Enthusiasts</h2>
+                
+                <p>Meet our three friends: the Dough Expert, the Sauce Lover, and the Cheese Fan. Each has spent years developing a deep appreciation for their favorite aspect of pizza-making and strongly believes their focus is the most important element of a truly great pizza.</p>
+                
+                <div class="characters-container">
+                    <div>
+                        <div class="character dough">🍞</div>
+                        <div class="character-name">Dough Expert</div>
+                    </div>
+                    <div>
+                        <div class="character sauce">🍅</div>
+                        <div class="character-name">Sauce Lover</div>
+                    </div>
+                    <div>
+                        <div class="character cheese">🧀</div>
+                        <div class="character-name">Cheese Fan</div>
+                    </div>
+                </div>
+                
+                <p>As they gather to taste a famous local pizza, they're excited to share their expertise with each other. Little do they know, they're about to learn an important lesson about perspective and the limitations of seeing only part of the whole picture.</p>
+                
+                <div class="callout">
+                    <strong>Character Profiles:</strong>
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li><strong>Dough Expert:</strong> Studies fermentation techniques, flour types, and baking methods. Believes the crust is the foundation of pizza excellence.</li>
+                        <li><strong>Sauce Lover:</strong> Passionate about tomato varieties, herb combinations, and flavor development. Sees sauce as the heart and soul of pizza.</li>
+                        <li><strong>Cheese Fan:</strong> Obsessed with melt properties, stretchy pulls, and flavor profiles. Considers cheese the crowning glory of any pizza.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Scene 3: The Dough Expert's Perspective -->
+            <div class="scene" id="scene3">
+                <h2 class="scene-title">The Dough Expert's Perspective</h2>
+                
+                <p>The Dough Expert has spent years perfecting the art of pizza crust. In their mind, the perfect balance of crispy exterior and chewy interior is what defines a great pizza. They notice nuances that others miss: the golden-brown color, the air pockets that create texture, the subtle flavor of the fermented dough, and the satisfying resistance when bitten.</p>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <div style="display: inline-block; width: 200px; height: 200px; position: relative;">
+                        <div style="position: absolute; width: 100%; height: 100%; border-radius: 50%; background-color: var(--pizza-crust); opacity: 1;"></div>
+                        <div style="position: absolute; width: 80%; height: 80%; top: 10%; left: 10%; border-radius: 50%; background-color: var(--pizza-sauce); opacity: 0.3;"></div>
+                        <div style="position: absolute; width: 70%; height: 70%; top: 15%; left: 15%; border-radius: 50%; background-color: var(--pizza-cheese); opacity: 0.3;"></div>
+                    </div>
+                </div>
+                
+                <div class="quote">
+                    "The crust is the canvas upon which all pizza greatness is built!"
+                </div>
+                
+                <p>But while they focus intensely on the base, they barely notice the quality of the sauce and cheese. When asked about these elements, the Dough Expert shrugs and says they're "just toppings" that play a supporting role to the true star—the perfectly crafted crust.</p>
+                
+                <div class="callout">
+                    <p>The Dough Expert's focus demonstrates how expertise in one area can create a form of tunnel vision. Their deep knowledge allows them to see incredible depth and detail in the crust's qualities, but this specialization blinds them to equally important elements of the complete pizza experience.</p>
+                </div>
+            </div>
+            
+            <!-- Scene 4: The Sauce Lover's Perspective -->
+            <div class="scene" id="scene4">
+                <h2 class="scene-title">The Sauce Lover's Perspective</h2>
+                
+                <p>For the Sauce Lover, it's all about that perfect balance of sweet and tangy tomato sauce. Their eyes light up as they describe the sauce's complexity—the hint of garlic, the balance of acidity, the fresh basil notes, and the exact ripeness of the San Marzano tomatoes used. To them, sauce is where the soul of a pizza lives.</p>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <div style="display: inline-block; width: 200px; height: 200px; position: relative;">
+                        <div style="position: absolute; width: 100%; height: 100%; border-radius: 50%; background-color: var(--pizza-crust); opacity: 0.3;"></div>
+                        <div style="position: absolute; width: 80%; height: 80%; top: 10%; left: 10%; border-radius: 50%; background-color: var(--pizza-sauce); opacity: 1;"></div>
+                        <div style="position: absolute; width: 70%; height: 70%; top: 15%; left: 15%; border-radius: 50%; background-color: var(--pizza-cheese); opacity: 0.3;"></div>
+                    </div>
+                </div>
+                
+                <div class="quote">
+                    "Without a great sauce, you might as well be eating glorified bread with cheese!"
+                </div>
+                
+                <p>They're so enamored with the sauce that they hardly register the texture of the crust or the quality of the cheese. When their friends comment on these other elements, the Sauce Lover looks confused—how could anyone focus on anything but the sauce's perfect flavor profile?</p>
+                
+                <div class="callout">
+                    <p>The Sauce Lover demonstrates how passion for one aspect can completely dominate our perception. Their focus on flavor reveals important insights about the sauce's complexity and contribution, but they miss how that flavor interacts with and is supported by other elements.</p>
+                </div>
+            </div>
+            
+            <!-- Scene 5: The Cheese Fan's Perspective -->
+            <div class="scene" id="scene5">
+                <h2 class="scene-title">The Cheese Fan's Perspective</h2>
+                
+                <p>The Cheese Fan believes the melt, stretch, and flavor of the cheese is what elevates a pizza from good to extraordinary. They analyze the perfect browning on top, the creaminess of the mouthfeel, and the way it pulls into those Instagram-worthy cheese pulls. They can identify the precise blend of mozzarella, provolone, and parmesan by appearance alone.</p>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <div style="display: inline-block; width: 200px; height: 200px; position: relative;">
+                        <div style="position: absolute; width: 100%; height: 100%; border-radius: 50%; background-color: var(--pizza-crust); opacity: 0.3;"></div>
+                        <div style="position: absolute; width: 80%; height: 80%; top: 10%; left: 10%; border-radius: 50%; background-color: var(--pizza-sauce); opacity: 0.3;"></div>
+                        <div style="position: absolute; width: 70%; height: 70%; top: 15%; left: 15%; border-radius: 50%; background-color: var(--pizza-cheese); opacity: 1;"></div>
+                    </div>
+                </div>
+                
+                <div class="quote">
+                    "People eat with their eyes first, and nothing says 'delicious' like perfectly melted cheese!"
+                </div>
+                
+                <p>They're so captivated by the cheese that the foundation of crust and the flavor of the sauce fade into the background of their experience. When their friends try to discuss these other elements, the Cheese Fan just points to the beautiful golden top as if that's all the evidence needed for pizza greatness.</p>
+                
+                <div class="callout">
+                    <p>The Cheese Fan shows how we often focus on what's most immediately visible or impressive. While the cheese is indeed crucial to the pizza experience and provides the most visually appealing aspect, this singular focus prevents seeing how it's the marriage of all elements that creates true excellence.</p>
+                </div>
+            </div>
+            
+            <!-- Scene 6: Different Perspectives -->
+            <div class="scene" id="scene6">
+                <h2 class="scene-title">Different Perspectives, Partial Understandings</h2>
+                
+                <p>As they share their impressions, a fascinating discussion unfolds. Each friend passionately defends their perspective, using their specialized knowledge to point out subtleties the others have missed in their respective areas of expertise.</p>
+                
+                <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; margin: 20px 0;">
+                    <div style="text-align: center; width: 120px;">
+                        <div style="width: 0; height: 0; border-style: solid; border-width: 0 60px 120px 60px; border-color: transparent transparent var(--pizza-crust) transparent; margin: 0 auto;"></div>
+                        <p><strong>Crust View</strong></p>
+                    </div>
+                    <div style="text-align: center; width: 120px;">
+                        <div style="width: 0; height: 0; border-style: solid; border-width: 0 60px 120px 60px; border-color: transparent transparent var(--pizza-sauce) transparent; margin: 0 auto;"></div>
+                        <p><strong>Sauce View</strong></p>
+                    </div>
+                    <div style="text-align: center; width: 120px;">
+                        <div style="width: 0; height: 0; border-style: solid; border-width: 0 60px 120px 60px; border-color: transparent transparent var(--pizza-cheese) transparent; margin: 0 auto;"></div>
+                        <p><strong>Cheese View</strong></p>
+                    </div>
+                </div>
+                
+                <div class="quote">
+                    "We don't see things as they are, we see them as we are." — Anaïs Nin
+                </div>
+                
+                <p>Gradually, they realize something important: they're all experiencing the same pizza in dramatically different ways. No single view captures the whole truth about what makes this pizza special. Each has a valid but incomplete understanding—like looking at different pieces of the same puzzle.</p>
+            </div>
+            
+            <!-- Scene 7: Integration -->
+            <div class="scene" id="scene7">
+                <h2 class="scene-title">The Power of Integration</h2>
+                
+                <p>As they listen to each other's perspectives, something magical happens. Rather than continuing to argue about which element is most important, they begin to appreciate how each component contributes uniquely to the pizza experience.</p>
+                
+                <div class="pizza-container">
+                    <div class="pizza-part pizza-crust"></div>
+                    <div class="pizza-part pizza-sauce"></div>
+                    <div class="pizza-part pizza-cheese"></div>
+                </div>
+                
+                <p>They realize that the crust provides the perfect foundation—a structural element that offers contrasting texture that enhances everything above it. The sauce contributes essential flavor complexity that balances the relative blandness of the dough and richness of the cheese. And the cheese isn't just about appearance—it provides a creamy mouthfeel that ties everything together.</p>
+                
+                <div class="quote">
+                    "None of us was wrong—we were all right, just incomplete."
+                </div>
+                
+                <p>The pizza isn't great because of any single element—it's extraordinary because of how these elements interact and complement each other. Each expert's knowledge, when shared and integrated, creates a more complete appreciation than any could achieve alone.</p>
+            </div>
+            
+            <!-- Scene 8: Real-World Applications -->
+            <div class="scene" id="scene8">
+                <h2 class="scene-title">Beyond Pizza: Real-World Applications</h2>
+                
+                <p>The pizza party lesson extends far beyond food. Consider complex challenges like urban development: traffic engineers focus on flow and efficiency, environmentalists on green spaces and sustainability, economists on business growth and tax revenue, and residents on livability and community. No single perspective captures the complete picture of what makes a city thrive.</p>
+                
+                <div class="callout">
+                    <strong>Urban Planning Example:</strong>
+                    <p style="margin-top: 10px;">A city was planning a new commercial district. Initially, traffic engineers proposed wide roads for maximum vehicle throughput, environmental planners wanted minimal development and maximum green space, economic development focused on maximizing retail and office space, and community representatives advocated for walkability and public spaces.</p>
+                    <p>By integrating these perspectives rather than letting one dominate, they created a design with efficient public transportation, mixed-use buildings with green roofs, walkable neighborhoods with local businesses, and strategic vehicle corridors—a solution no single perspective would have developed alone.</p>
+                </div>
+                
+                <p>Similar patterns emerge in business strategy, healthcare, education, product design, and virtually any complex field. When organizations and teams operate in silos—like our pizza friends initially did—they develop incomplete solutions that optimize for one dimension while potentially harming others.</p>
+                
+                <div class="quote">
+                    "The greatest innovations happen at the intersection of different disciplines."
+                </div>
+            </div>
+            
+            <!-- Scene 9: Conclusion -->
+            <div class="scene" id="scene9">
+                <h2 class="scene-title">From Perspectives to Wholeness</h2>
+                
+                <p>As our friends leave the pizza party, they carry with them a profound lesson about understanding. They've discovered that true insight comes from embracing diverse perspectives and seeing how they fit together into a cohesive whole. Each viewpoint has value, but none tells the complete story on its own.</p>
+                
+                <div class="pizza-container">
+                    <div class="pizza-part pizza-crust"></div>
+                    <div class="pizza-part pizza-sauce"></div>
+                    <div class="pizza-part pizza-cheese"></div>
+                </div>
+                
+                <p>The Dough Expert now appreciates how the sauce's flavor enhances their perfectly crafted crust. The Sauce Lover recognizes that their beloved sauce needs the right foundation to shine. And the Cheese Fan acknowledges that without quality crust and sauce, even the best cheese can't create a truly exceptional pizza.</p>
+                
+                <div class="quote">
+                    "Look beyond your slice of the story—combine diverse perspectives for a fuller understanding."
+                </div>
+                
+                <p>By combining their insights and respecting each contribution, they gained a richer, more nuanced appreciation for what truly makes a great pizza—and by extension, a more complete understanding of the world. The next time they gather, rather than arguing about which element matters most, they'll focus on how the elements work together in harmony.</p>
+                
+                <div class="callout">
+                    <strong>Key Takeaways:</strong>
+                    <ul style="margin-top: 10px; margin-left: 20px;">
+                        <li><strong>Specialist Blindness:</strong> Expertise in one area often creates blind spots to other important dimensions</li>
+                        <li><strong>Partial Perspectives:</strong> Each viewpoint captures valuable insights but remains incomplete on its own</li>
+                        <li><strong>Integration Value:</strong> Combining diverse perspectives leads to more robust understanding and solutions</li>
+                        <li><strong>Collaborative Wisdom:</strong> Respectful exchange of diverse viewpoints creates insights no individual could achieve alone</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <div class="navigation">
+            <button id="prevBtn" class="nav-button" disabled>◀ Previous</button>
+            <button id="nextBtn" class="nav-button">Next ▶</button>
+        </div>
+        <div class="progress-text" id="progressText">Scene 1 of 9</div>
+    </div>
+    
+    <script>
+        // Very simple navigation script
+        document.addEventListener('DOMContentLoaded', function() {
+            // Basic variables
+            var currentScene = 1;
+            var totalScenes = 9;
+            
+            // Get elements
+            var prevBtn = document.getElementById('prevBtn');
+            var nextBtn = document.getElementById('nextBtn');
+            var progressText = document.getElementById('progressText');
+            
+            // Navigation functions
+            function showScene(sceneNumber) {
+                // Hide all scenes
+                document.querySelectorAll('.scene').forEach(function(scene) {
+                    scene.classList.remove('active');
+                });
+                
+                // Show current scene
+                var sceneToShow = document.getElementById('scene' + sceneNumber);
+                if (sceneToShow) {
+                    sceneToShow.classList.add('active');
+                }
+                
+                // Update progress text
+                if (progressText) {
+                    progressText.textContent = 'Scene ' + sceneNumber + ' of ' + totalScenes;
+                }
+                
+                // Update button states
+                if (prevBtn) {
+                    prevBtn.disabled = sceneNumber <= 1;
+                }
+                
+                if (nextBtn) {
+                    nextBtn.disabled = sceneNumber >= totalScenes;
+                    nextBtn.textContent = sceneNumber >= totalScenes ? 'Finish ✓' : 'Next ▶';
+                }
+            }
+            
+            // Set up button click events
+            if (prevBtn) {
+                prevBtn.addEventListener('click', function() {
+                    if (currentScene > 1) {
+                        currentScene--;
+                        showScene(currentScene);
+                    }
+                });
+            }
+            
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function() {
+                    if (currentScene < totalScenes) {
+                        currentScene++;
+                        showScene(currentScene);
+                    } else {
+                        alert('Congratulations! You\'ve completed the Pizza Perspective story.');
+                    }
+                });
+            }
+            
+            // Set up keyboard navigation
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'ArrowRight' && currentScene < totalScenes) {
+                    currentScene++;
+                    showScene(currentScene);
+                } else if (event.key === 'ArrowLeft' && currentScene > 1) {
+                    currentScene--;
+                    showScene(currentScene);
+                }
+            });
+            
+            // Initialize
+            showScene(currentScene);
+        });
+    </script>
+</body>
+</html>

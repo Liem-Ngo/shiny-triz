@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRIZ40: Solving Technical Problems with TRIZ Methodology</title>
+    <meta name="description" content="TRIZ Interactive Matrix, illustrated TRIZ 40 principles and 39 feature contradiction table">
+    <meta name="keywords" content="TRIZ, matrix, contradiction, principles, interactive, table, 40, forty, overcome, TRIZ40">
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #0d6efd;
+            --secondary: #6c757d;
+            --success: #198754;
+            --info: #0dcaf0;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .banner {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .navbar {
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        
+        .innovant {
+            font-weight: 300;
+        }
+        
+        .subline {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .step-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            border: none;
+            padding: 1.5rem;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        
+        .pulse-btn {
+            animation: pulse 2s infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(13, 110, 253, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(13, 110, 253, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(13, 110, 253, 0);
+            }
+        }
+        
+        .solution-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .solution-card-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            font-weight: 600;
+        }
+        
+        .solution-card-body {
+            padding: 1.5rem;
+        }
+        
+        .solution-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .solution-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .solution-item-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer {
+            background-color: #f8f9fa;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .lang-selector {
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .lang-selector img {
+            width: 24px;
+            height: 16px;
+            margin-left: 5px;
+        }
+        
+        select.form-select {
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+        }
+        
+        #principles-container {
+            transition: all 0.3s ease;
+        }
+        
+        #loading-spinner {
+            display: none;
+        }
+        
+        .principle-explanation {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .principle-examples {
+            padding-left: 2rem;
+        }
+        
+        .principle-example {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .banner {
+                padding: 2rem 0;
+            }
+            
+            .step-card {
+                margin-bottom: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Banner / Header -->
+    <div class="banner">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">TRIZ<span class="innovant">40</span></a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#">TRIZ40</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Principles</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Matrix</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">
+                                    <i class="fa-solid fa-hand-point-right"></i> ASIT
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Contact</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link lang-selector" href="#">
+                                    <img src="/api/placeholder/24/16" alt="English">
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link lang-selector" href="#">
+                                    <img src="/api/placeholder/24/16" alt="French">
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link lang-selector" href="#">
+                                    <img src="/api/placeholder/24/16" alt="German">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            
+            <div class="text-center mt-5 mb-5">
+                <h1 class="display-4 fw-bold mb-3">Your TRIZ Tool</h1>
+                <p class="lead mb-4">
+                    Solving your technological contradictions with TRIZ.<br>
+                    The TRIZ matrix gathers lists of innovative principles that have already proven their worth.<br>
+                    Browsing this matrix, you can pick solutions to your current technological problems.
+                </p>
+                <a class="btn btn-success btn-lg" href="#">
+                    <i class="fa-solid fa-comments"></i> Contact us
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <h2 class="subline mb-4">Solving a Problem</h2>
+        
+        <div class="row g-4 mb-5">
+            <!-- Step 1 -->
+            <div class="col-md-6">
+                <div class="step-card bg-light">
+                    <div class="step-number">1</div>
+                    <h4 class="mb-3">Describe your problem as a Contradiction</h4>
+                    <p>
+                        You want to improve the 'Feature to improve' <i class="fa-solid fa-arrow-up"></i> 
+                        without damaging the 'Feature to preserve' <i class="fa-solid fa-triangle-exclamation"></i>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Step 2 -->
+            <div class="col-md-6">
+                <div class="step-card">
+                    <h4 class="mb-3">Contradiction to solve</h4>
+                    <form id="contradiction-form">
+                        <div class="mb-3">
+                            <label for="feature-to-improve" class="form-label">
+                                <i class="fa-solid fa-arrow-up"></i> Feature to improve
+                            </label>
+                            <select class="form-select form-select-lg" id="feature-to-improve">
+                                <option value="0" selected>Feature to improve</option>
+                                <!-- Will be populated by JavaScript -->
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="feature-to-preserve" class="form-label">
+                                <i class="fa-solid fa-triangle-exclamation"></i> Feature to preserve
+                            </label>
+                            <select class="form-select form-select-lg" id="feature-to-preserve">
+                                <option value="0" selected>Feature to preserve</option>
+                                <!-- Will be populated by JavaScript -->
+                            </select>
+                        </div>
+                        
+                        <div class="text-end">
+                            <button type="button" id="browse-matrix-btn" class="btn btn-primary btn-lg pulse-btn">
+                                <i class="fa-solid fa-magnifying-glass"></i> Browse the TRIZ Matrix
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Introduction -->
+        <div id="introduction-text" class="mb-5">
+            <div class="card">
+                <div class="card-body">
+                    <p>For TRIZ, systems evolve towards ideality. This progression is made by solving problems.</p>
+                    <p>TRIZ Matrix can help solving problems if we translate them in Contradictions; E.g. if an object must be longer without becoming heavier, this technical challenge can be translated in this Contradiction:</p>
+                    <ul>
+                        <li>Feature to improve: '4, length of stationary'.</li>
+                        <li>Feature to preserve: '2, weight of stationary'.</li>
+                    </ul>
+                    <p>Entering these values in the tool, one can browse the TRIZ Matrix to discover innovation Principles that can solve the said problem.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Loading Spinner -->
+        <div id="loading-spinner" class="text-center my-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Finding TRIZ principles...</p>
+        </div>
+        
+        <!-- Principles Container -->
+        <div id="principles-container" class="mb-5">
+            <!-- Will be populated by JavaScript -->
+        </div>
+        
+        <!-- Examples Container -->
+        <div id="examples-container" class="mb-5" style="display: none;">
+            <h2 class="subline mb-4">Examples</h2>
+            <div class="row">
+                <div class="col-md-8" id="example-text">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+                <div class="col-md-4" id="example-image">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="text-muted">
+                        Our work and service offers are notably respectful of the following works, authors and copyrights:
+                        - The works of Genrich Altshuller
+                        - Illustrations of Thierry Vilar
+                        - Photos from Unsplash
+                        - Code: PAO & Olivier Goguel
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="text-muted">
+                        © <b>Solid</b>Creativity 2025
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Complete set of TRIZ Principles from the original code
+        const trizPrinciples = [
+            // 1. Segmentation
+            ["Segmentation", [
+                ["Divide an object into independent parts.", 
+                "Replace mainframe computer by personal computers.", 
+                "Replace a large truck by a truck and trailer.", 
+                "Use a work breakdown structure for a large project."],
+                ["Make an object easy to disassemble.", 
+                "Modular furniture", 
+                "Quick disconnect joints in plumbing"],
+                ["Increase the degree of fragmentation or segmentation.", 
+                "Replace solid shades with Venetian blinds.", 
+                "Use powdered welding metal instead of foil or rod to get better penetration of the joint."]
+            ]],
+            // 2. Taking out
+            ["Taking out", [
+                ["Separate an interfering part or property from an object, or single out the only necessary part (or property) of an object.", 
+                "Locate a noisy compressor outside the building where compressed air is used.", 
+                "Use fiber optics or a light pipe to separate the hot light source from the location where light is needed.", 
+                "Use the sound of a barking dog, without the dog, as a burglar alarm."]
+            ]],
+            // 3. Local quality
+            ["Local quality", [
+                ["Change an object's structure from uniform to non-uniform, change an external environment (or external influence) from uniform to non-uniform.",
+                "Use a temperature, density, or pressure gradient instead of constant temperature, density or pressure."],
+                ["Make each part of an object function in conditions most suitable for its operation.",
+                "Lunch box with special compartments for hot and cold solid foods and for liquids."],
+                ["Make each part of an object fulfill a different and useful function.",
+                "Pencil with eraser",
+                "Hammer with nail puller",
+                "Multi-function tool that scales fish, acts as a pliers, a wire stripper, a flat-blade screwdriver, a Phillips screwdriver, manicure set, etc."]
+            ]],
+            // 4. Asymmetry
+            ["Asymmetry", [
+                ["Change the shape of an object from symmetrical to asymmetrical.",
+                "Asymmetrical mixing vessels or asymmetrical vanes in symmetrical vessels improve mixing (cement trucks, cake mixers, blenders).",
+                "Put a flat spot on a cylindrical shaft to attach a knob securely."],
+                ["If an object is asymmetrical, increase its degree of asymmetry.",
+                "Change from circular O-rings to oval cross-section to specialized shapes to improve sealing.",
+                "Use astigmatic optics to merge colors."]
+            ]],
+            // 5. Merging
+            ["Merging", [
+                ["Bring closer together (or merge) identical or similar objects, assemble identical or similar parts to perform parallel operations.",
+                "Personal computers in a network",
+                "Thousands of microprocessors in a parallel processor computer",
+                "Vanes in a ventilation system",
+                "Electronic chips mounted on both sides of a circuit board or subassembly"],
+                ["Make operations contiguous or parallel; bring them together in time.",
+                "Link slats together in Venetian or vertical blinds.",
+                "Medical diagnostic instruments that analyze multiple blood parameters simultaneously",
+                "Mulching lawnmower"]
+            ]],
+            // 6. Universality
+            ["Universality", [
+                ["Make a part or object perform multiple functions; eliminate the need for other parts.",
+                "Handle of a toothbrush contains toothpaste",
+                "Child's car safety seat converts to a stroller",
+                "Mulching lawnmower",
+                "Team leader acts as recorder and timekeeper",
+                "CCD with micro-lenses formed on the surface"]
+            ]],
+            // 7. Nested doll
+            ["Nested doll", [
+                ["Place one object inside another; place each object, in turn, inside the other.",
+                "Measuring cups or spoons",
+                "Russian dolls",
+                "Portable audio system (microphone fits inside transmitter, which fits inside amplifier case)"],
+                ["Make one part pass through a cavity in the other.",
+                "Extending radio antenna",
+                "Extending pointer",
+                "Zoom lens",
+                "Seat belt retraction mechanism",
+                "Retractable aircraft landing gear stow inside the fuselage"]
+            ]],
+            // 8. Anti-weight
+            ["Anti-weight", [
+                ["To compensate for the weight of an object, merge it with other objects that provide lift.",
+                "Inject foaming agent into a bundle of logs, to make it float better.",
+                "Use helium balloon to support advertising signs."],
+                ["To compensate for the weight of an object, make it interact with the environment (e.g. use aerodynamic, hydrodynamic, buoyancy and other forces).",
+                "Aircraft wing shape reduces air density above the wing, increases density below wing, to create lift.",
+                "Vortex strips improve lift of aircraft wings.",
+                "Hydrofoils lift ship out of the water to reduce drag."]
+            ]],
+            // 9. Preliminary anti-action
+            ["Preliminary anti-action", [
+                ["If it will be necessary to do an action with both harmful and useful effects, this action should be replaced with anti-actions to control harmful effects.",
+                "Buffer a solution to prevent harm from extremes of pH."],
+                ["Create beforehand stresses in an object that will oppose known undesirable working stresses later on.",
+                "Pre-stress rebar before pouring concrete.",
+                "Masking anything before harmful exposure: Use a lead apron on parts of the body not being exposed to X-rays."]
+            ]],
+            // 10. Preliminary action
+            ["Preliminary action", [
+                ["Perform, before it is needed, the required change of an object (either fully or partially).",
+                "Pre-pasted wall paper",
+                "Sterilize all instruments needed for a surgical procedure on a sealed tray."],
+                ["Pre-arrange objects such that they can come into action from the most convenient place and without losing time for their delivery.",
+                "Kanban arrangements in a Just-In-Time factory",
+                "Flexible manufacturing cell"]
+            ]],
+            // 11. Beforehand cushioning
+            ["Beforehand cushioning", [
+                ["Prepare emergency means beforehand to compensate for the relatively low reliability of an object.",
+                "Magnetic strip on photographic film that directs the developer to compensate for poor exposure",
+                "Back-up parachute",
+                "Alternate air system for aircraft instruments"]
+            ]],
+            // 12. Equipotentiality
+            ["Equipotentiality", [
+                ["In a potential field, limit position changes (e.g. change operating conditions to eliminate the need to raise or lower objects in a gravity field).",
+                "Spring loaded parts delivery system in a factory",
+                "Locks in a channel between 2 bodies of water (Panama Canal)",
+                "Skillets in an automobile plant that bring all tools to the right position"]
+            ]],
+            // 13. The other way round
+            ["The other way round", [
+                ["Invert the action(s) used to solve the problem (e.g. instead of cooling an object, heat it).",
+                "To loosen stuck parts, cool the inner part instead of heating the outer part.",
+                "Bring the mountain to Mohammed, instead of bringing Mohammed to the mountain."],
+                ["Make movable parts (or the external environment) fixed, and fixed parts movable.",
+                "Rotate the part instead of the tool.",
+                "Moving sidewalk with standing people.",
+                "Treadmill (for walking or running in place.)"],
+                ["Turn the object (or process) 'upside down'.",
+                "Turn an assembly upside down to insert fasteners (especially screws).",
+                "Empty grain from containers (ship or railroad) by inverting them."]
+            ]],
+            // 14. Spheroidality - Curvature
+            ["Spheroidality - Curvature", [
+                ["Instead of using rectilinear parts, surfaces, or forms, use curvilinear ones; move from flat surfaces to spherical ones; from parts shaped as a cube (parallelepiped) to ball-shaped structures.",
+                "Use arches and domes for strength in architecture."],
+                ["Use rollers, balls, spirals, domes.",
+                "Spiral gear (Nautilus) produces continuous resistance for weight lifting.",
+                "Ball point and roller point pens for smooth ink distribution"],
+                ["Go from linear to rotary motion, use centrifugal forces.",
+                "Produce linear motion of the cursor on the computer screen using a mouse or a trackball.",
+                "Replace wringing clothes to remove water with spinning clothes in a washing machine.",
+                "Use spherical casters instead of cylindrical wheels to move furniture."]
+            ]],
+            // 15. Dynamics
+            ["Dynamics", [
+                ["Allow (or design) the characteristics of an object, external environment, or process to change to be optimal or to find an optimal operating condition.",
+                "Adjustable steering wheel (or seat, or back support, or mirror position...)"],
+                ["Divide an object into parts capable of movement relative to each other.",
+                "The 'butterfly' computer keyboard"],
+                ["If an object (or process) is rigid or inflexible, make it movable or adaptive.",
+                "The flexible boroscope for examining engines",
+                "The flexible sigmoidoscope, for medical examination"]
+            ]],
+            // 16. Partial or excessive actions
+            ["Partial or excessive actions", [
+                ["If 100 percent of an object is hard to achieve using a given solution method then, by using 'slightly less' or 'slightly more' of the same method, the problem may be considerably easier to solve.",
+                "Over spray when painting, then remove excess.",
+                "Fill, then 'top off' when filling the gas tank of your car."]
+            ]],
+            // 17. Another dimension
+            ["Another dimension", [
+                ["To move an object in two- or three-dimensional space.",
+                "Infrared computer mouse moves in space, instead of on a surface, for presentations.",
+                "Five-axis cutting tool can be positioned where needed."],
+                ["Use a multi-story arrangement of objects instead of a single-story arrangement.",
+                "Cassette with 6 CD's to increase music time and variety",
+                "Electronic chips on both sides of a printed circuit board",
+                "Employees 'disappear' from the customers in a theme park, descend into a tunnel, and walk to their next assignment"],
+                ["Tilt or re-orient the object, lay it on its side.",
+                "Dump truck"],
+                ["Use 'another side' of a given area.",
+                "Stack microelectronic hybrid circuits to improve density."]
+            ]],
+            // 18. Mechanical vibration
+            ["Mechanical vibration", [
+                ["Cause an object to oscillate or vibrate.",
+                "Electric carving knife with vibrating blades"],
+                ["Increase its frequency (even up to the ultrasonic).",
+                "Distribute powder with vibration."],
+                ["Use an object's resonant frequency.",
+                "Destroy gall stones or kidney stones using ultrasonic resonance."],
+                ["Use piezoelectric vibrators instead of mechanical ones.",
+                "Quartz crystal oscillations drive high accuracy clocks."],
+                ["Use combined ultrasonic and electromagnetic field oscillations.",
+                "Mixing alloys in an induction furnace"]
+            ]],
+            // 19. Periodic action
+            ["Periodic action", [
+                ["Instead of continuous action, use periodic or pulsating actions.",
+                "Hitting something repeatedly with a hammer",
+                "Replace a continuous siren with a pulsed sound."],
+                ["If an action is already periodic, change the periodic magnitude or frequency.",
+                "Use Frequency Modulation to convey information, instead of Morse code.",
+                "Replace a continuous siren with sound that changes amplitude and frequency."],
+                ["Use pauses between impulses to perform a different action.",
+                "In cardio-pulmonary respiration (CPR) breathe after every 5 chest compressions."]
+            ]],
+            // 20. Continuity of useful action
+            ["Continuity of useful action", [
+                ["Carry on work continuously; make all parts of an object work at full load, all the time.",
+                "Flywheel (or hydraulic system) stores energy when a vehicle stops, so the motor can keep running at optimum power.",
+                "Run the bottleneck operations in a factory continuously, to reach the optimum pace."],
+                ["Eliminate all idle or intermittent actions or work.",
+                "Print during the return of a printer carriage--dot matrix printer, daisy wheel printers, inkjet printers."]
+            ]],
+            // 21. Skipping
+            ["Skipping", [
+                ["Conduct a process, or certain stages (e.g. destructible, harmful or hazardous operations) at high speed.",
+                "Use a high speed dentist's drill to avoid heating tissue.",
+                "Cut plastic faster than heat can propagate in the material, to avoid deforming the shape."]
+            ]],
+            // 22. Blessing in disguise
+            ["Blessing in disguise", [
+                ["Use harmful factors (particularly, harmful effects of the environment or surroundings) to achieve a positive effect.",
+                "Use waste heat to generate electric power.",
+                "Recycle waste (scrap) material from one process as raw materials for another."],
+                ["Eliminate the primary harmful action by adding it to another harmful action to resolve the problem.",
+                "Add a buffering material to a corrosive solution.",
+                "Use a helium-oxygen mix for diving, to eliminate both nitrogen narcosis and oxygen poisoning."],
+                ["Amplify a harmful factor to such a degree that it is no longer harmful.",
+                "Use a backfire to eliminate the fuel from a forest fire."]
+            ]],
+            // 23. Feedback
+            ["Feedback", [
+                ["Introduce feedback (referring back, cross-checking) to improve a process or action.",
+                "Automatic volume control in audio circuits",
+                "Signal from gyrocompass is used to control simple aircraft autopilots.",
+                "Statistical Process Control (SPC) -- Measurements are used to decide when to modify a process.",
+                "Budgets --Measurements are used to decide when to modify a process."],
+                ["If feedback is already used, change its magnitude or influence.",
+                "Change sensitivity of an autopilot when within 5 miles of an airport.",
+                "Change sensitivity of a thermostat when cooling vs. heating, since it uses energy less efficiently when cooling."]
+            ]],
+            // 24. Intermediary
+            ["Intermediary", [
+                ["Use an intermediary carrier article or intermediary process.",
+                "Carpenter's nailset, used between the hammer and the nail"],
+                ["Merge one object temporarily with another (which can be easily removed).",
+                "Pot holder to carry hot dishes to the table"]
+            ]],
+            // 25. Self-service
+            ["Self-service", [
+                ["Make an object serve itself by performing auxiliary helpful functions",
+                "A soda fountain pump that runs on the pressure of the carbon dioxide that is used to 'fizz' the drinks.",
+                "Halogen lamps regenerate the filament during use--evaporated material is redeposited."],
+                ["Use waste resources, energy, or substances.",
+                "Use heat from a process to generate electricity: 'Co-generation'.",
+                "Use animal waste as fertilizer.",
+                "Use food and lawn waste to create compost."]
+            ]],
+            // 26. Copying
+            ["Copying", [
+                ["Instead of an unavailable, expensive, fragile object, use simpler and inexpensive copies.",
+                "Virtual reality via computer instead of an expensive vacation",
+                "Listen to an audio tape instead of attending a seminar."],
+                ["Replace an object, or process with optical copies.",
+                "Do surveying from space photographs instead of on the ground.",
+                "Measure an object by measuring the photograph.",
+                "Make sonograms to evaluate the health of a fetus, instead of risking damage by direct testing."],
+                ["If visible optical copies are already used, move to infrared or ultraviolet copies.",
+                "Make images in infrared to detect heat sources, such as diseases in crops, or intruders in a security system."]
+            ]],
+            // 27. Cheap short-living objects
+            ["Cheap short-living objects", [
+                ["Replace an inexpensive object with a multiple of inexpensive objects, comprising certain qualities (such as service life, for instance).",
+                "Use disposable paper objects to avoid the cost of cleaning and storing durable objects. Plastic cups in motels, disposable diapers, many kinds of medical supplies."]
+            ]],
+            // 28. Mechanics substitution
+            ["Mechanics substitution", [
+                ["Replace a mechanical means with a sensory (optical, acoustic, taste or smell) means.",
+                "Replace a physical fence to confine a dog or cat with an acoustic 'fence' (signal audible to the animal).",
+                "Use a bad smelling compound in natural gas to alert users to leakage, instead of a mechanical or electrical sensor."],
+                ["Use electric, magnetic and electromagnetic fields to interact with the object.",
+                "To mix 2 powders, electrostatically charge one positive and the other negative. Either use fields to direct them, or mix them mechanically and let their acquired fields cause the grains of powder to pair up."],
+                ["Change from static to movable fields, from unstructured fields to those having structure.",
+                "Early communications used omnidirectional broadcasting. We now use antennas with very detailed structure of the pattern of radiation."],
+                ["Use fields in conjunction with field-activated (e.g. ferromagnetic) particles.",
+                "Heat a substance containing ferromagnetic material by using varying magnetic field. When the temperature exceeds the Curie point, the material becomes paramagnetic, and no longer absorbs heat."]
+            ]],
+            // 29. Pneumatics and hydraulics
+            ["Pneumatics and hydraulics", [
+                ["Use gas and liquid parts of an object instead of solid parts (e.g. inflatable, filled with liquids, air cushion, hydrostatic, hydro-reactive).",
+                "Comfortable shoe sole inserts filled with gel",
+                "Store energy from decelerating a vehicle in a hydraulic system, then use the stored energy to accelerate later."]
+            ]],
+            // 30. Flexible shells and thin films
+            ["Flexible shells and thin films", [
+                ["Use flexible shells and thin films instead of three dimensional structures",
+                "Use inflatable (thin film) structures as winter covers on tennis courts."],
+                ["Isolate the object from the external environment using flexible shells and thin films.",
+                "Float a film of bipolar material (one end hydrophilic, one end hydrophobic) on a reservoir to limit evaporation."]
+            ]],
+            // 31. Porous materials
+            ["Porous materials", [
+                ["Make an object porous or add porous elements (inserts, coatings, etc.).",
+                "Drill holes in a structure to reduce the weight."],
+                ["If an object is already porous, use the pores to introduce a useful substance or function.",
+                "Use a porous metal mesh to wick excess solder away from a joint.",
+                "Store hydrogen in the pores of a palladium sponge."]
+            ]],
+            // 32. Color changes
+            ["Color changes", [
+                ["Change the color of an object or its external environment.",
+                "Use safe lights in a photographic darkroom."],
+                ["Change the transparency of an object or its external environment.",
+                "Use photolithography to change transparent material to a solid mask for semiconductor processing."]
+            ]],
+            // 33. Homogeneity
+            ["Homogeneity", [
+                ["Make objects interacting with a given object of the same material (or material with identical properties).",
+                "Make the container out of the same material as the contents, to reduce chemical reactions.",
+                "Make a diamond cutting tool out of diamonds."]
+            ]],
+            // 34. Discarding and recovering
+            ["Discarding and recovering", [
+                ["Make portions of an object that have fulfilled their functions go away (discard by dissolving, evaporating, etc.) or modify these directly during operation.",
+                "Use a dissolving capsule for medicine.",
+                "Sprinkle water on cornstarch-based packaging and watch it reduce its volume by more than 1000X!",
+                "Ice structures: use water ice or carbon dioxide (dry ice) to make a template for a rammed earth structure, such as a temporary dam."],
+                ["Conversely, restore consumable parts of an object directly in operation.",
+                "Self-sharpening lawn mower blades",
+                "Automobile engines that give themselves a 'tune up' while running"]
+            ]],
+            // 35. Parameter changes
+            ["Parameter changes", [
+                ["Change an object's physical state (e.g. to a gas, liquid, or solid.)",
+                "Freeze the liquid centers of filled candies, then dip in melted chocolate, instead of handling the messy, gooey, hot liquid.",
+                "Transport oxygen or nitrogen or petroleum gas as a liquid, instead of a gas, to reduce volume."],
+                ["Change the concentration or consistency.",
+                "Liquid hand soap is concentrated and more viscous than bar soap at the point of use, making it easier to dispense in the correct amount."],
+                ["Change the degree of flexibility.",
+                "Use adjustable dampers to reduce the noise of parts falling into a container by restricting the motion of the walls of the container.",
+                "Vulcanize rubber to change its flexibility and durability."],
+                ["Change the temperature.",
+                "Raise the temperature above the Curie point to change a ferromagnetic substance to a paramagnetic substance.",
+                "Raise the temperature of food to cook it. (Changes taste, aroma, texture, chemical properties, etc.)",
+                "Lower the temperature of medical specimens to preserve them for later analysis."]
+            ]],
+            // 36. Phase transitions
+            ["Phase transitions", [
+                ["Use phenomena occurring during phase transitions (e.g. volume changes, loss or absorption of heat, etc.).",
+                "Water expands when frozen, unlike most other liquids. Hannibal is reputed to have used this when marching on Rome, pouring water on rocks and letting it freeze to split them.",
+                "Heat pumps use the heat of vaporization and heat of condensation of a closed thermodynamic cycle to do useful work."]
+            ]],
+            // 37. Thermal expansion
+            ["Thermal expansion", [
+                ["Use thermal expansion (or contraction) of materials.",
+                "Fit a tight joint together by cooling the inner part to contract, heating the outer part to expand, putting the joint together, and returning to equilibrium."],
+                ["If thermal expansion is being used, use multiple materials with different coefficients of thermal expansion.",
+                "The basic leaf spring thermostat: (2 metals with different coefficients of expansion are linked so that it bends one way when warmer than nominal and the opposite way when cooler.)"]
+            ]],
+            // 38. Strong oxidants
+            ["Strong oxidants", [
+                ["Replace common air with oxygen-enriched air.",
+                "Scuba diving with Nitrox or other non-air mixtures for extended endurance"],
+                ["Replace enriched air with pure oxygen.",
+                "Cut at a higher temperature using an oxy-acetylene torch.",
+                "Treat wounds in a high pressure oxygen environment to kill anaerobic bacteria and aid healing."],
+                ["Expose air or oxygen to ionizing radiation.",
+                "Ionize air to trap pollutants in an air cleaner."],
+                ["Use ionized oxygen.",
+                "Ionize air to trap pollutants in an air cleaner."],
+                ["Replace ozonized (or ionized) oxygen with ozone.",
+                "Speed up chemical reactions by ionizing the gas before use."]
+            ]],
+            // 39. Inert atmosphere
+            ["Inert atmosphere", [
+                ["Replace a normal environment with an inert one.",
+                "Prevent degradation of a hot metal filament by using an argon atmosphere."],
+                ["Add neutral parts, or inert additives to an object.",
+                "Increase the volume of powdered detergent by adding inert ingredients. This makes it easier to measure with conventional tools."]
+            ]],
+            // 40. Composite materials
+            ["Composite materials", [
+                ["Change from uniform to composite (multiple) materials.",
+                "Composite epoxy resin/carbon fiber golf club shafts are lighter, stronger, and more flexible than metal. Same for airplane parts.",
+                "Fiberglass surfboards are lighter and more controllable and easier to form into a variety of shapes than wooden ones."]
+            ]]
+        ];
+
+        // TRIZ Features from your original code
+        const trizFeatures = [
+            "1: Weight of moving object",
+            "2: Weight of stationary",
+            "3: Length of moving object",
+            "4: Length of stationary",
+            "5: Area of moving object",
+            "6: Area of stationary",
+            "7: Volume of moving object",
+            "8: Volume of stationary",
+            "9: Speed",
+            "10: Force (Intensity)",
+            "11: Stress or pressure",
+            "12: Shape",
+            "13: Stability of the object",
+            "14: Strength",
+            "15: Durability of moving obj.",
+            "16: Durability of non moving obj.",
+            "17: Temperature",
+            "18: Illumination intensity",
+            "19: Use of energy by moving",
+            "20: Use of energy by stationary",
+            "21: Power",
+            "22: Loss of Energy",
+            "23: Loss of substance",
+            "24: Loss of Information",
+            "25: Loss of Time",
+            "26: Quantity of substance/the",
+            "27: Reliability",
+            "28: Measurement accuracy",
+            "29: Manufacturing precision",
+            "30: Object-affected harmful",
+            "31: Object-generated harmful",
+            "32: Ease of manufacture",
+            "33: Ease of operation",
+            "34: Ease of repair",
+            "35: Adaptability or versatility",
+            "36: Device complexity",
+            "37: Difficulty of detecting",
+            "38: Extent of automation",
+            "39: Productivity"
+        ];
+
+        // TRIZ Matrix (directly adapted from the matrix.js file)
+        // This is a full implementation of the matrix data
+        const trizMatrix = [
+  // Row 1 (Weight of moving object)
+  [
+    [-1, 0], [-1, 0], [15, 8, 29, 34, 0], [-1, 0], [29, 17, 38, 34, 0], 
+    [-1, 0], [29, 2, 40, 28, 0], [-1, 0], [2, 8, 15, 38, 0], [8, 10, 18, 37, 0], 
+    [10, 36, 37, 40, 0], [10, 14, 35, 40, 0], [1, 35, 19, 39, 0], [28, 27, 18, 40, 0], 
+    [5, 34, 31, 35, 0], [-1, 0], [6, 29, 4, 38, 0], [19, 1, 32, 0], 
+    [35, 12, 34, 31, 0], [-1, 0], [12, 36, 18, 31, 0], [6, 2, 34, 19, 0], 
+    [5, 35, 3, 31, 0], [10, 24, 35, 0], [10, 35, 20, 28, 0], [3, 26, 18, 31, 0], 
+    [1, 3, 11, 27, 0], [28, 27, 35, 26, 0], [28, 35, 26, 18, 0], [22, 21, 18, 27, 0], 
+    [22, 35, 31, 39, 0], [27, 28, 1, 36, 0], [35, 3, 2, 24, 0], [2, 27, 28, 11, 0], 
+    [29, 5, 15, 8, 0], [26, 30, 36, 34, 0], [28, 29, 26, 32, 0], [26, 35, 18, 19, 0], 
+    [35, 3, 24, 37, 0]
+  ],
+  // Row 2 (Weight of stationary object)
+  [
+    [-1, 0], [-1, 0], [-1, 0], [10, 1, 29, 35, 0], [-1, 0], 
+    [35, 30, 13, 2, 0], [-1, 0], [5, 35, 14, 2, 0], [-1, 0], [8, 10, 19, 35, 0], 
+    [13, 29, 10, 18, 0], [13, 10, 29, 14, 0], [26, 39, 1, 40, 0], [28, 2, 10, 27, 0], 
+    [-1, 0], [2, 27, 19, 6, 0], [28, 19, 32, 22, 0], [19, 32, 35, 0], 
+    [-1, 0], [18, 19, 28, 1, 0], [15, 19, 18, 22, 0], [18, 19, 28, 15, 0], 
+    [5, 8, 13, 30, 0], [10, 15, 35, 0], [10, 20, 35, 26, 0], [19, 6, 18, 26, 0], 
+    [10, 28, 8, 3, 0], [18, 26, 28, 0], [10, 1, 35, 17, 0], [2, 19, 22, 37, 0], 
+    [35, 22, 1, 39, 0], [28, 1, 9, 0], [6, 13, 1, 32, 0], [2, 27, 28, 11, 0], 
+    [19, 15, 29, 0], [1, 10, 26, 39, 0], [25, 28, 17, 15, 0], [2, 26, 35, 0], 
+    [1, 28, 15, 35, 0]
+  ],
+  // Row 3 (Length of moving object)
+  [
+    [8, 15, 29, 34, 0], [-1, 0], [-1, 0], [-1, 0], [15, 17, 4, 0],
+    [-1, 0], [7, 17, 4, 35, 0], [-1, 0], [13, 4, 8, 0], [17, 10, 4, 0],
+    [1, 8, 35, 0], [1, 8, 10, 29, 0], [1, 8, 15, 34, 0], [8, 35, 29, 34, 0],
+    [19, 0], [-1, 0], [10, 15, 19, 0], [32, 0],
+    [8, 35, 24, 0], [-1, 0], [1, 35, 0], [7, 2, 35, 39, 0],
+    [4, 29, 23, 10, 0], [1, 24, 0], [15, 2, 29, 0], [29, 35, 0],
+    [10, 14, 29, 40, 0], [28, 32, 4, 0], [10, 28, 29, 37, 0], [1, 15, 17, 24, 0],
+    [17, 15, 0], [1, 29, 17, 0], [15, 29, 35, 4, 0], [1, 28, 10, 0],
+    [14, 15, 1, 16, 0], [1, 19, 26, 24, 0], [35, 1, 26, 24, 0], [17, 24, 26, 16, 0],
+    [14, 4, 28, 29, 0]
+  ],
+  // Row 4 (Length of stationary object)
+  [
+    [-1, 0], [35, 28, 40, 29, 0], [-1, 0], [-1, 0], [-1, 0],
+    [17, 7, 10, 40, 0], [-1, 0], [35, 8, 2, 14, 0], [-1, 0], [28, 10, 0],
+    [1, 14, 35, 0], [13, 14, 15, 7, 0], [39, 37, 35, 0], [15, 14, 28, 26, 0],
+    [-1, 0], [1, 10, 35, 0], [3, 35, 38, 18, 0], [3, 25, 0],
+    [-1, 0], [-1, 0], [12, 8, 0], [6, 28, 0],
+    [10, 28, 24, 35, 0], [24, 26, 0], [30, 29, 14, 0], [-1, 0],
+    [15, 29, 28, 0], [32, 28, 3, 0], [2, 32, 10, 0], [1, 18, 0],
+    [-1, 0], [15, 17, 27, 0], [2, 25, 0], [3, 0],
+    [1, 35, 0], [1, 26, 0], [26, 0], [-1, 0],
+    [30, 14, 7, 26, 0]
+  ],
+  // Row 5 (Area of moving object)
+  [
+    [2, 17, 29, 4, 0], [-1, 0], [14, 15, 18, 4, 0], [-1, 0], [-1, 0],
+    [-1, 0], [7, 14, 17, 4, 0], [-1, 0], [29, 30, 4, 34, 0], [19, 30, 35, 2, 0],
+    [10, 15, 36, 28, 0], [5, 34, 29, 4, 0], [11, 2, 13, 39, 0], [3, 15, 40, 14, 0],
+    [6, 3, 0], [-1, 0], [2, 15, 16, 0], [15, 32, 19, 13, 0],
+    [19, 32, 0], [-1, 0], [19, 10, 32, 18, 0], [15, 17, 30, 26, 0],
+    [10, 35, 2, 39, 0], [30, 26, 0], [26, 4, 0], [29, 30, 6, 13, 0],
+    [29, 9, 0], [26, 28, 32, 3, 0], [2, 32, 0], [22, 33, 28, 1, 0],
+    [17, 2, 18, 39, 0], [13, 1, 26, 24, 0], [15, 17, 13, 16, 0], [15, 13, 10, 1, 0],
+    [15, 30, 0], [14, 1, 13, 0], [2, 36, 26, 18, 0], [14, 30, 28, 23, 0],
+    [10, 26, 34, 2, 0]
+  ],
+  // Row 6 (Area of stationary object)
+  [
+    [-1, 0], [30, 2, 14, 18, 0], [-1, 0], [26, 7, 9, 39, 0], [-1, 0],
+    [-1, 0], [-1, 0], [-1, 0], [-1, 0], [1, 18, 35, 36, 0],
+    [10, 15, 36, 37, 0], [-1, 0], [2, 38, 0], [40, 0],
+    [-1, 0], [2, 10, 19, 30, 0], [35, 39, 38, 0], [-1, 0],
+    [-1, 0], [-1, 0], [17, 32, 0], [17, 7, 30, 0],
+    [10, 14, 18, 39, 0], [30, 16, 0], [10, 35, 4, 18, 0], [2, 18, 40, 4, 0],
+    [32, 35, 40, 4, 0], [26, 28, 32, 3, 0], [2, 29, 18, 36, 0], [27, 2, 39, 35, 0],
+    [22, 1, 40, 0], [40, 16, 0], [16, 4, 0], [16, 0],
+    [15, 16, 0], [1, 18, 36, 0], [2, 35, 30, 18, 0], [23, 0],
+    [10, 15, 17, 7, 0]
+  ],
+  // Row 7 (Volume of moving object)
+  [
+    [2, 26, 29, 40, 0], [-1, 0], [1, 7, 4, 35, 0], [-1, 0], [1, 7, 4, 17, 0],
+    [-1, 0], [-1, 0], [-1, 0], [29, 4, 38, 34, 0], [15, 35, 36, 37, 0],
+    [6, 35, 36, 37, 0], [1, 15, 29, 4, 0], [28, 10, 1, 39, 0], [9, 14, 15, 7, 0],
+    [6, 35, 4, 0], [-1, 0], [34, 39, 10, 18, 0], [2, 13, 10, 0],
+    [35, 0], [-1, 0], [35, 6, 13, 18, 0], [7, 15, 13, 16, 0],
+    [36, 39, 34, 10, 0], [2, 22, 0], [2, 6, 34, 10, 0], [29, 30, 7, 0],
+    [14, 1, 40, 11, 0], [25, 26, 28, 0], [25, 28, 2, 16, 0], [22, 21, 27, 35, 0],
+    [17, 2, 40, 1, 0], [29, 1, 40, 0], [15, 13, 30, 12, 0], [10, 0],
+    [15, 29, 0], [26, 1, 0], [29, 26, 4, 0], [35, 34, 16, 24, 0],
+    [10, 6, 2, 34, 0]
+  ],
+  // Row 8 (Volume of stationary object)
+  [
+    [-1, 0], [35, 10, 19, 14, 0], [19, 14, 0], [35, 8, 2, 14, 0], [-1, 0],
+    [-1, 0], [-1, 0], [-1, 0], [-1, 0], [2, 18, 37, 0],
+    [24, 35, 0], [7, 2, 35, 0], [34, 28, 35, 40, 0], [9, 14, 17, 15, 0],
+    [-1, 0], [35, 34, 38, 0], [35, 6, 4, 0], [-1, 0],
+    [-1, 0], [-1, 0], [30, 6, 0], [-1, 0],
+    [10, 39, 35, 34, 0], [-1, 0], [35, 16, 32, 18, 0], [35, 3, 0],
+    [2, 35, 16, 0], [-1, 0], [35, 10, 25, 0], [34, 39, 19, 27, 0],
+    [30, 18, 35, 4, 0], [35, 0], [-1, 0], [1, 0],
+    [-1, 0], [1, 31, 0], [2, 17, 26, 0], [-1, 0],
+    [35, 37, 10, 2, 0]
+  ],
+  // Row 9 (Speed)
+  [
+    [2, 28, 13, 38, 0], [-1, 0], [13, 14, 8, 0], [-1, 0], [29, 30, 34, 0],
+    [-1, 0], [7, 29, 34, 0], [-1, 0], [-1, 0], [13, 28, 15, 19, 0],
+    [6, 18, 38, 40, 0], [35, 15, 18, 34, 0], [28, 33, 1, 18, 0], [8, 3, 26, 14, 0],
+    [3, 19, 35, 5, 0], [-1, 0], [28, 30, 36, 2, 0], [10, 13, 19, 0],
+    [8, 15, 35, 38, 0], [-1, 0], [19, 35, 38, 2, 0], [14, 20, 19, 35, 0],
+    [10, 13, 28, 38, 0], [13, 26, 0], [-1, 0], [10, 19, 29, 38, 0],
+    [11, 35, 27, 28, 0], [28, 32, 1, 24, 0], [10, 28, 32, 25, 0], [1, 28, 35, 23, 0],
+    [2, 24, 35, 21, 0], [35, 13, 8, 1, 0], [32, 28, 13, 12, 0], [34, 2, 28, 27, 0],
+    [15, 10, 26, 0], [10, 28, 4, 34, 0], [3, 34, 27, 16, 0], [10, 18, 0],
+    [-1, 0]
+  ],
+  // Row 10 (Force)
+  [
+    [8, 1, 37, 18, 0], [18, 13, 1, 28, 0], [17, 19, 9, 36, 0], [28, 10, 0], [19, 10, 15, 0],
+    [1, 18, 36, 37, 0], [15, 9, 12, 37, 0], [2, 36, 18, 37, 0], [13, 28, 15, 12, 0], [-1, 0],
+    [18, 21, 11, 0], [10, 35, 40, 34, 0], [35, 10, 21, 0], [35, 10, 14, 27, 0],
+    [19, 2, 0], [-1, 0], [35, 10, 21, 0], [-1, 0],
+    [19, 17, 10, 0], [1, 16, 36, 37, 0], [19, 35, 18, 37, 0], [14, 15, 0],
+    [8, 35, 40, 5, 0], [-1, 0], [10, 37, 36, 0], [14, 29, 18, 36, 0],
+    [3, 35, 13, 21, 0], [35, 10, 23, 24, 0], [28, 29, 37, 36, 0], [1, 35, 40, 18, 0],
+    [13, 3, 36, 24, 0], [15, 37, 18, 1, 0], [1, 28, 3, 25, 0], [15, 1, 11, 0],
+    [15, 17, 18, 20, 0], [26, 35, 10, 18, 0], [36, 37, 10, 19, 0], [2, 35, 0],
+    [3, 28, 35, 37, 0]
+  ],
+  // Row 11 (Stress or pressure)
+  [
+    [10, 36, 37, 40, 0], [13, 29, 10, 18, 0], [35, 10, 36, 0], [35, 1, 14, 16, 0], [10, 15, 36, 28, 0],
+    [10, 15, 36, 37, 0], [6, 35, 10, 0], [35, 24, 0], [6, 35, 36, 0], [36, 35, 21, 0],
+    [-1, 0], [35, 4, 15, 10, 0], [35, 33, 2, 40, 0], [9, 18, 3, 40, 0],
+    [19, 3, 27, 0], [-1, 0], [35, 39, 19, 2, 0], [-1, 0],
+    [14, 24, 10, 37, 0], [-1, 0], [10, 35, 14, 0], [2, 36, 25, 0],
+    [10, 36, 3, 37, 0], [-1, 0], [37, 36, 4, 0], [10, 14, 36, 0],
+    [10, 13, 19, 35, 0], [6, 28, 25, 0], [3, 35, 0], [22, 2, 37, 0],
+    [2, 33, 27, 18, 0], [1, 35, 16, 0], [11, 0], [2, 0],
+    [35, 0], [19, 1, 35, 0], [2, 36, 37, 0], [35, 24, 0],
+    [10, 14, 35, 37, 0]
+  ],
+  // Row 12 (Shape)
+  [
+    [8, 10, 29, 40, 0], [15, 10, 26, 3, 0], [29, 34, 5, 4, 0], [13, 14, 10, 7, 0], [5, 34, 4, 10, 0],
+    [-1, 0], [14, 4, 15, 22, 0], [7, 2, 35, 0], [35, 15, 34, 18, 0], [35, 10, 37, 40, 0],
+    [34, 15, 10, 14, 0], [-1, 0], [33, 1, 18, 4, 0], [30, 14, 10, 40, 0],
+    [14, 26, 9, 25, 0], [-1, 0], [22, 14, 19, 32, 0], [13, 15, 32, 0],
+    [2, 6, 34, 14, 0], [-1, 0], [4, 6, 2, 0], [14, 0],
+    [35, 29, 3, 5, 0], [-1, 0], [14, 10, 34, 17, 0], [36, 22, 0],
+    [10, 40, 16, 0], [28, 32, 1, 0], [32, 30, 40, 0], [22, 1, 2, 35, 0],
+    [35, 1, 0], [1, 32, 17, 28, 0], [32, 15, 26, 0], [2, 13, 1, 0],
+    [1, 15, 29, 0], [16, 29, 1, 28, 0], [15, 13, 39, 0], [15, 1, 32, 0],
+    [17, 26, 34, 10, 0]
+  ],
+  // Row 13 (Stability of the object's composition)
+  [
+    [21, 35, 2, 39, 0], [26, 39, 1, 40, 0], [13, 15, 1, 28, 0], [37, 0], [2, 11, 13, 0],
+    [39, 0], [28, 10, 19, 39, 0], [34, 28, 35, 40, 0], [33, 15, 28, 18, 0], [10, 35, 21, 16, 0],
+    [2, 35, 40, 0], [22, 1, 18, 4, 0], [-1, 0], [17, 9, 15, 0],
+    [13, 27, 10, 35, 0], [39, 3, 35, 23, 0], [35, 1, 32, 0], [32, 3, 27, 16, 0],
+    [13, 19, 0], [27, 4, 29, 18, 0], [32, 35, 27, 31, 0], [14, 2, 39, 6, 0],
+    [2, 14, 30, 40, 0], [-1, 0], [35, 27, 0], [15, 32, 35, 0],
+    [-1, 0], [13, 0], [18, 0], [35, 24, 30, 18, 0],
+    [35, 40, 27, 39, 0], [35, 19, 0], [32, 35, 30, 0], [2, 35, 10, 16, 0],
+    [35, 30, 34, 2, 0], [2, 35, 22, 26, 0], [35, 22, 39, 23, 0], [1, 8, 35, 0],
+    [23, 35, 40, 3, 0]
+  ],
+  // Row 14 (Strength)
+  [
+    [1, 8, 40, 15, 0], [40, 26, 27, 1, 0], [1, 15, 8, 35, 0], [15, 14, 28, 26, 0], [3, 34, 40, 29, 0],
+    [9, 40, 28, 0], [10, 15, 14, 7, 0], [9, 14, 17, 15, 0], [8, 13, 26, 14, 0], [10, 18, 3, 14, 0],
+    [10, 3, 18, 40, 0], [10, 30, 35, 40, 0], [13, 17, 35, 0], [-1, 0],
+    [27, 3, 26, 0], [-1, 0], [30, 10, 40, 0], [35, 19, 0],
+    [19, 35, 10, 0], [35, 0], [10, 26, 35, 28, 0], [35, 0],
+    [35, 28, 31, 40, 0], [-1, 0], [29, 3, 28, 10, 0], [29, 10, 27, 0],
+    [11, 3, 0], [3, 27, 16, 0], [3, 27, 0], [18, 35, 37, 1, 0],
+    [15, 35, 22, 2, 0], [11, 3, 10, 32, 0], [32, 40, 25, 2, 0], [27, 11, 3, 0],
+    [15, 3, 32, 0], [2, 13, 25, 28, 0], [27, 3, 15, 40, 0], [15, 0],
+    [29, 35, 10, 14, 0]
+  ],
+  // Row 15 (Duration of action of moving object)
+  [
+    [19, 5, 34, 31, 0], [-1, 0], [2, 19, 9, 0], [-1, 0], [3, 17, 19, 0],
+    [-1, 0], [10, 2, 19, 30, 0], [-1, 0], [3, 35, 5, 0], [19, 2, 16, 0],
+    [19, 3, 27, 0], [14, 26, 28, 25, 0], [13, 3, 35, 0], [27, 3, 10, 0],
+    [-1, 0], [-1, 0], [19, 35, 39, 0], [2, 19, 4, 35, 0],
+    [28, 6, 35, 18, 0], [-1, 0], [19, 10, 35, 38, 0], [-1, 0],
+    [28, 27, 3, 18, 0], [10, 0], [20, 10, 28, 18, 0], [3, 35, 10, 40, 0],
+    [11, 2, 13, 0], [3, 0], [3, 27, 16, 40, 0], [22, 15, 33, 28, 0],
+    [21, 39, 16, 22, 0], [27, 1, 4, 0], [12, 27, 0], [29, 10, 27, 0],
+    [1, 35, 13, 0], [10, 4, 29, 15, 0], [19, 29, 39, 35, 0], [6, 10, 0],
+    [35, 17, 14, 19, 0]
+  ],
+  // Row 16 (Duration of action of stationary object)
+  [
+    [-1, 0], [6, 27, 19, 16, 0], [-1, 0], [1, 40, 35, 0], [-1, 0],
+    [-1, 0], [-1, 0], [35, 34, 38, 0], [-1, 0], [-1, 0],
+    [-1, 0], [-1, 0], [39, 3, 35, 23, 0], [-1, 0],
+    [-1, 0], [-1, 0], [19, 18, 36, 40, 0], [-1, 0],
+    [-1, 0], [-1, 0], [16, 0], [-1, 0],
+    [27, 16, 18, 38, 0], [10, 0], [28, 20, 10, 16, 0], [3, 35, 31, 0],
+    [34, 27, 6, 40, 0], [10, 26, 24, 0], [-1, 0], [17, 1, 40, 33, 0],
+    [22, 0], [35, 10, 0], [1, 0], [1, 0],
+    [2, 0], [-1, 0], [25, 34, 6, 35, 0], [1, 0],
+    [20, 10, 16, 38, 0]
+  ],
+// Row 17 (Temperature) 
+    [ [36, 22, 6, 38, 0], [22, 35, 32, 0], [15, 19, 9, 0], [15, 19, 9, 0], 
+    [3, 35, 39, 18, 0], [35, 38, 0], [34, 39, 40, 18, 0], [35, 6, 4, 0], 
+    [2, 28, 36, 30, 0], [35, 10, 3, 21, 0], [35, 39, 19, 2, 0], [14, 22, 19, 32, 0], 
+    [1, 35, 32, 0], [10, 30, 22, 40, 0], [19, 13, 39, 0], [19, 18, 36, 40, 0], [-1, 0], 
+    [32, 30, 21, 16, 0], [19, 15, 3, 17, 0], [-1, 0], [2, 14, 17, 25, 0], [21, 17, 35, 38, 0],
+    [21, 36, 29, 31, 0], [-1, 0], [35, 28, 21, 18, 0], [3, 17, 30, 39, 0],
+    [19, 35, 3, 10, 0], [32, 19, 24, 0], [24, 0], [22, 33, 35, 2, 0],
+    [22, 35, 2, 24, 0], [26, 27, 0], [26, 27, 0], [4, 10, 16, 0],
+    [2, 18, 27, 0], [2, 17, 16, 0], [3, 27, 35, 31, 0], [26, 2, 19, 16, 0],
+    [15, 28, 35, 0]
+  ],
+  // Row 18 (Illumination intensity)
+  [
+    [19, 1, 32, 0], [2, 35, 32, 0], [19, 32, 16, 0], [-1, 0], [19, 32, 26, 0],
+    [-1, 0], [2, 13, 10, 0], [-1, 0], [10, 13, 19, 0], [26, 19, 6, 0],
+    [-1, 0], [32, 30, 0], [32, 3, 27, 0], [35, 19, 0],
+    [2, 19, 6, 0], [-1, 0], [32, 35, 19, 0], [-1, 0],
+    [32, 1, 19, 0], [32, 35, 1, 15, 0], [32, 0], [13, 16, 1, 6, 0],
+    [13, 1, 0], [1, 6, 0], [19, 1, 26, 17, 0], [1, 19, 0],
+    [-1, 0], [11, 15, 32, 0], [3, 32, 0], [15, 19, 0],
+    [35, 19, 32, 39, 0], [19, 35, 28, 26, 0], [28, 26, 19, 0], [15, 17, 13, 16, 0],
+    [15, 1, 19, 0], [6, 32, 13, 0], [32, 15, 0], [2, 26, 10, 0],
+    [2, 25, 16, 0]
+  ],
+  // Row 19 (Energy spent by moving object)
+  [
+    [12, 18, 28, 31, 0], [-1, 0], [12, 28, 0], [-1, 0], [15, 19, 25, 0],
+    [-1, 0], [35, 13, 18, 0], [-1, 0], [8, 35, 0], [16, 26, 21, 2, 0],
+    [23, 14, 25, 0], [12, 2, 29, 0], [19, 13, 17, 24, 0], [5, 19, 9, 35, 0],
+    [28, 35, 6, 18, 0], [-1, 0], [19, 24, 3, 14, 0], [2, 15, 19, 0],
+    [-1, 0], [-1, 0], [6, 19, 37, 18, 0], [12, 22, 15, 24, 0],
+    [35, 24, 18, 5, 0], [-1, 0], [35, 38, 19, 18, 0], [34, 23, 16, 18, 0],
+    [19, 21, 11, 27, 0], [3, 1, 32, 0], [-1, 0], [1, 35, 6, 27, 0],
+    [2, 35, 6, 0], [28, 26, 30, 0], [19, 35, 0], [1, 15, 17, 28, 0],
+    [15, 17, 13, 16, 0], [2, 29, 27, 28, 0], [35, 38, 0], [32, 2, 0],
+    [12, 28, 35, 0]
+  ],
+  // Row 20 (Energy spent by stationary object)
+  [
+    [-1, 0], [19, 9, 6, 27, 0], [-1, 0], [-1, 0], [-1, 0],
+    [-1, 0], [-1, 0], [-1, 0], [-1, 0], [36, 37, 0],
+    [-1, 0], [-1, 0], [27, 4, 29, 18, 0], [35, 0],
+    [-1, 0], [-1, 0], [-1, 0], [19, 2, 35, 32, 0],
+    [-1, 0], [-1, 0], [-1, 0], [-1, 0],
+    [28, 27, 18, 31, 0], [-1, 0], [-1, 0], [3, 35, 31, 0],
+    [10, 36, 23, 0], [-1, 0], [-1, 0], [10, 2, 22, 37, 0],
+    [19, 22, 18, 0], [1, 4, 0], [-1, 0], [-1, 0],
+    [-1, 0], [-1, 0], [19, 35, 16, 25, 0], [-1, 0],
+    [1, 6, 0]
+  ],
+  // Row 21 (Power)
+  [
+    [8, 36, 38, 31, 0], [19, 26, 17, 27, 0], [1, 10, 35, 37, 0], [-1, 0], [19, 38, 0],
+    [17, 32, 13, 38, 0], [35, 6, 38, 0], [30, 6, 25, 0], [15, 35, 2, 0], [26, 2, 36, 35, 0],
+    [22, 10, 35, 0], [29, 14, 2, 40, 0], [35, 32, 15, 31, 0], [26, 10, 28, 0],
+    [19, 35, 10, 38, 0], [16, 0], [2, 14, 17, 25, 0], [16, 6, 19, 0],
+    [16, 6, 19, 37, 0], [-1, 0], [-1, 0], [10, 35, 38, 0],
+    [28, 27, 18, 38, 0], [10, 19, 0], [35, 20, 10, 6, 0], [4, 34, 19, 0],
+    [19, 24, 26, 31, 0], [32, 15, 2, 0], [32, 2, 0], [19, 22, 31, 2, 0],
+    [2, 35, 18, 0], [26, 10, 34, 0], [26, 35, 10, 0], [35, 2, 10, 34, 0],
+    [19, 17, 34, 0], [20, 19, 30, 34, 0], [19, 35, 16, 0], [28, 2, 17, 0],
+    [28, 35, 34, 0]
+  ],
+  // Row 22 (Loss of Energy)
+  [
+    [15, 6, 19, 28, 0], [19, 6, 18, 9, 0], [7, 2, 6, 13, 0], [6, 38, 7, 0], [15, 26, 17, 30, 0],
+    [17, 7, 30, 18, 0], [7, 18, 23, 0], [7, 0], [16, 35, 38, 0], [36, 38, 0],
+    [-1, 0], [-1, 0], [14, 2, 39, 6, 0], [26, 0],
+    [-1, 0], [-1, 0], [19, 38, 7, 0], [1, 13, 32, 15, 0],
+    [-1, 0], [-1, 0], [3, 38, 0], [-1, 0],
+    [35, 27, 2, 37, 0], [19, 10, 0], [10, 18, 32, 7, 0], [7, 18, 25, 0],
+    [11, 10, 35, 0], [32, 0], [-1, 0], [21, 22, 35, 2, 0],
+    [21, 35, 2, 22, 0], [-1, 0], [35, 32, 1, 0], [2, 19, 0],
+    [-1, 0], [7, 23, 0], [35, 3, 15, 23, 0], [2, 0],
+    [28, 10, 29, 35, 0]
+  ],
+  // Row 23 (Loss of substance)
+  [
+    [35, 6, 23, 40, 0], [35, 6, 22, 32, 0], [14, 29, 10, 39, 0], [10, 28, 24, 0], [35, 2, 10, 31, 0],
+    [10, 18, 39, 31, 0], [1, 29, 30, 36, 0], [3, 39, 18, 31, 0], [10, 13, 28, 38, 0], [14, 15, 18, 40, 0],
+    [3, 36, 37, 10, 0], [29, 35, 3, 5, 0], [2, 14, 30, 40, 0], [35, 28, 31, 40, 0],
+    [28, 27, 3, 18, 0], [27, 16, 18, 38, 0], [21, 36, 39, 31, 0], [1, 6, 13, 0],
+    [35, 18, 24, 5, 0], [28, 27, 12, 31, 0], [28, 27, 18, 38, 0], [35, 27, 2, 31, 0],
+    [-1, 0], [-1, 0], [15, 18, 35, 10, 0], [6, 3, 10, 24, 0],
+    [10, 29, 39, 35, 0], [16, 34, 31, 28, 0], [35, 10, 24, 31, 0], [33, 22, 30, 40, 0],
+    [10, 1, 34, 29, 0], [15, 34, 33, 0], [32, 28, 2, 24, 0], [2, 35, 34, 27, 0],
+    [15, 10, 2, 0], [35, 10, 28, 24, 0], [35, 18, 10, 13, 0], [35, 10, 18, 0],
+    [28, 35, 10, 23, 0]
+  ],
+  // Row 24 (Loss of Information)
+  [
+    [10, 24, 35, 0], [10, 35, 5, 0], [1, 26, 0], [26, 0], [30, 26, 0],
+    [30, 16, 0], [-1, 0], [2, 22, 0], [26, 32, 0], [-1, 0],
+    [-1, 0], [-1, 0], [-1, 0], [-1, 0],
+    [10, 0], [10, 0], [-1, 0], [19, 0],
+    [-1, 0], [-1, 0], [10, 19, 0], [19, 10, 0],
+    [-1, 0], [-1, 0], [24, 26, 28, 32, 0], [24, 28, 35, 0],
+    [10, 28, 23, 0], [-1, 0], [-1, 0], [22, 10, 1, 0],
+    [10, 21, 22, 0], [32, 0], [27, 22, 0], [-1, 0],
+    [-1, 0], [-1, 0], [35, 33, 0], [35, 0],
+    [13, 23, 15, 0]
+  ],
+  // Row 25 (Loss of Time)
+  [
+    [10, 20, 37, 35, 0], [10, 20, 26, 5, 0], [15, 2, 29, 0], [30, 24, 14, 5, 0], [26, 4, 5, 16, 0],
+    [10, 35, 17, 4, 0], [2, 5, 34, 10, 0], [35, 16, 32, 18, 0], [-1, 0], [10, 37, 36, 5, 0],
+    [37, 36, 4, 0], [4, 10, 34, 17, 0], [35, 3, 22, 5, 0], [29, 3, 28, 18, 0],
+    [20, 10, 28, 18, 0], [28, 20, 10, 16, 0], [35, 29, 21, 18, 0], [1, 19, 26, 17, 0],
+    [35, 38, 19, 18, 0], [1, 0], [35, 20, 10, 6, 0], [10, 5, 18, 32, 0],
+    [35, 18, 10, 39, 0], [24, 26, 28, 32, 0], [-1, 0], [35, 38, 18, 16, 0],
+    [10, 30, 4, 0], [24, 34, 28, 32, 0], [24, 26, 28, 18, 0], [35, 18, 34, 0],
+    [35, 22, 18, 39, 0], [35, 28, 34, 4, 0], [4, 28, 10, 34, 0], [32, 1, 10, 0],
+    [35, 28, 0], [6, 29, 0], [18, 28, 32, 10, 0], [24, 28, 35, 30, 0],
+    [-1, 0]
+  ],
+  // Row 26 (Quantity of substance)
+  [
+    [35, 6, 18, 31, 0], [27, 26, 18, 35, 0], [29, 14, 35, 18, 0], [-1, 0], [15, 14, 29, 0],
+    [2, 18, 40, 4, 0], [15, 20, 29, 0], [-1, 0], [35, 29, 34, 28, 0], [35, 14, 3, 0],
+    [10, 36, 14, 3, 0], [35, 14, 0], [15, 2, 17, 40, 0], [14, 35, 34, 10, 0],
+    [3, 35, 10, 40, 0], [3, 35, 31, 0], [3, 17, 39, 0], [-1, 0],
+    [34, 29, 16, 18, 0], [3, 35, 31, 0], [35, 0], [7, 18, 25, 0],
+    [6, 3, 10, 24, 0], [24, 28, 35, 0], [35, 38, 18, 16, 0], [-1, 0],
+    [18, 3, 28, 40, 0], [13, 2, 28, 0], [33, 30, 0], [35, 33, 29, 31, 0],
+    [3, 35, 40, 39, 0], [29, 1, 35, 27, 0], [35, 29, 25, 10, 0], [2, 32, 10, 25, 0],
+    [15, 3, 29, 0], [3, 13, 27, 10, 0], [3, 27, 29, 18, 0], [8, 35, 0],
+    [13, 29, 3, 27, 0]
+  ],
+  // Row 27 (Reliability)
+  [
+    [3, 8, 10, 40, 0], [3, 10, 8, 28, 0], [15, 9, 14, 4, 0], [15, 29, 28, 11, 0], [17, 10, 14, 16, 0],
+    [32, 35, 40, 4, 0], [3, 10, 14, 24, 0], [2, 35, 24, 0], [21, 35, 11, 28, 0], [8, 28, 10, 3, 0],
+    [10, 24, 35, 19, 0], [35, 1, 16, 11, 0], [-1, 0], [11, 28, 0],
+    [2, 35, 3, 25, 0], [34, 27, 6, 40, 0], [3, 35, 10, 0], [11, 32, 13, 0],
+    [21, 11, 27, 19, 0], [36, 23, 0], [21, 11, 26, 31, 0], [10, 11, 35, 0],
+    [10, 35, 29, 39, 0], [10, 28, 0], [10, 30, 4, 0], [21, 28, 40, 3, 0],
+    [-1, 0], [32, 3, 11, 23, 0], [11, 32, 1, 0], [27, 35, 2, 40, 0],
+    [35, 2, 40, 26, 0], [-1, 0], [27, 17, 40, 0], [1, 11, 0],
+    [13, 35, 8, 24, 0], [13, 35, 1, 0], [27, 40, 28, 0], [11, 13, 27, 0],
+    [1, 35, 29, 38, 0]
+  ],
+  // Row 28 (Measurement accuracy)
+  [
+    [32, 35, 26, 28, 0], [28, 35, 25, 26, 0], [28, 26, 5, 16, 0], [32, 28, 3, 16, 0], [26, 28, 32, 3, 0],
+    [26, 28, 32, 3, 0], [32, 13, 6, 0], [-1, 0], [28, 13, 32, 24, 0], [32, 2, 0],
+    [6, 28, 32, 0], [6, 28, 32, 0], [32, 35, 13, 0], [28, 6, 32, 0],
+    [28, 6, 32, 0], [10, 26, 24, 0], [6, 19, 28, 24, 0], [6, 1, 32, 0],
+    [3, 6, 32, 0], [-1, 0], [3, 6, 32, 0], [26, 32, 27, 0],
+    [10, 16, 31, 28, 0], [-1, 0], [24, 34, 28, 32, 0], [2, 6, 32, 0],
+    [5, 11, 1, 23, 0], [-1, 0], [-1, 0], [28, 24, 22, 26, 0],
+    [3, 33, 39, 10, 0], [6, 35, 25, 18, 0], [1, 13, 17, 34, 0], [1, 32, 13, 11, 0],
+    [13, 35, 2, 0], [27, 35, 10, 34, 0], [26, 24, 32, 28, 0], [28, 2, 10, 34, 0],
+    [10, 34, 28, 32, 0]
+  ],
+  // Row 29 (Manufacturing precision)
+  [
+    [28, 32, 13, 18, 0], [28, 35, 27, 9, 0], [10, 28, 29, 37, 0], [2, 32, 10, 0], [28, 33, 29, 32, 0],
+    [2, 29, 18, 36, 0], [32, 23, 2, 0], [25, 10, 35, 0], [10, 28, 32, 0], [28, 19, 34, 36, 0],
+    [3, 35, 0], [32, 30, 40, 0], [30, 18, 0], [3, 27, 0],
+    [3, 27, 40, 0], [-1, 0], [19, 26, 0], [3, 32, 0],
+    [32, 2, 0], [-1, 0], [32, 2, 0], [13, 32, 2, 0],
+    [35, 31, 10, 24, 0], [-1, 0], [32, 26, 28, 18, 0], [32, 30, 0],
+    [11, 32, 1, 0], [-1, 0], [-1, 0], [26, 28, 10, 36, 0],
+    [4, 17, 34, 26, 0], [-1, 0], [1, 32, 35, 23, 0], [25, 10, 0],
+    [-1, 0], [26, 2, 18, 0], [-1, 0], [26, 28, 18, 23, 0],
+    [10, 18, 32, 39, 0]
+  ],
+  // Row 30 (Object-affected harmful factors)
+  [
+    [22, 21, 27, 39, 0], [2, 22, 13, 24, 0], [17, 1, 39, 4, 0], [1, 18, 0], [22, 1, 33, 28, 0],
+    [27, 2, 39, 35, 0], [22, 23, 37, 35, 0], [34, 39, 19, 27, 0], [21, 22, 35, 28, 0], [13, 35, 39, 18, 0],
+    [22, 2, 37, 0], [22, 1, 3, 35, 0], [35, 24, 30, 18, 0], [18, 35, 37, 1, 0],
+    [22, 15, 33, 28, 0], [17, 1, 40, 33, 0], [22, 33, 35, 2, 0], [1, 19, 32, 13, 0],
+    [1, 24, 6, 27, 0], [10, 2, 22, 37, 0], [19, 22, 31, 2, 0], [21, 22, 35, 2, 0],
+    [33, 22, 19, 40, 0], [22, 10, 2, 0], [35, 18, 34, 0], [35, 33, 29, 31, 0],
+    [27, 24, 2, 40, 0], [28, 33, 23, 26, 0], [26, 28, 10, 18, 0], [-1, 0],
+    [-1, 0], [24, 35, 2, 0], [2, 25, 28, 39, 0], [35, 10, 2, 0],
+    [35, 11, 22, 31, 0], [22, 19, 29, 40, 0], [22, 19, 29, 40, 0], [33, 3, 34, 0],
+    [22, 35, 13, 24, 0]
+  ],
+  // Row 31 (Object-generated harmful factors)
+  [
+    [19, 22, 15, 39, 0], [35, 22, 1, 39, 0], [17, 15, 16, 22, 0], [-1, 0], [17, 2, 18, 39, 0],
+    [22, 1, 40, 0], [17, 2, 40, 0], [30, 18, 35, 4, 0], [35, 28, 3, 23, 0], [35, 28, 1, 40, 0],
+    [2, 33, 27, 18, 0], [35, 1, 0], [35, 40, 27, 39, 0], [15, 35, 22, 2, 0],
+    [15, 22, 33, 31, 0], [21, 39, 16, 22, 0], [22, 35, 2, 24, 0], [19, 24, 39, 32, 0],
+    [2, 35, 6, 0], [19, 22, 18, 0], [2, 35, 18, 0], [21, 35, 2, 22, 0],
+    [10, 1, 34, 0], [10, 21, 29, 0], [1, 22, 0], [3, 24, 39, 1, 0],
+    [24, 2, 40, 39, 0], [3, 33, 26, 0], [4, 17, 34, 26, 0], [-1, 0],
+    [-1, 0], [-1, 0], [-1, 0], [-1, 0],
+    [-1, 0], [19, 1, 31, 0], [2, 21, 27, 1, 0], [2, 0],
+    [22, 35, 18, 39, 0]
+  ],
+  // Row 32 (Ease of manufacture)
+  [
+    [28, 29, 15, 16, 0], [1, 27, 36, 13, 0], [1, 29, 13, 17, 0], [15, 17, 27, 0], [13, 1, 26, 12, 0],
+    [16, 40, 0], [13, 29, 1, 40, 0], [35, 0], [35, 13, 8, 1, 0], [35, 12, 0],
+    [35, 19, 1, 37, 0], [1, 28, 13, 27, 0], [11, 13, 1, 0], [1, 3, 10, 32, 0],
+    [27, 1, 4, 0], [35, 16, 0], [27, 26, 18, 0], [28, 24, 27, 1, 0],
+    [28, 26, 27, 1, 0], [1, 4, 0], [27, 1, 12, 24, 0], [19, 35, 0],
+    [15, 34, 33, 0], [32, 24, 18, 16, 0], [35, 28, 34, 4, 0], [35, 23, 1, 24, 0],
+    [-1, 0], [1, 35, 12, 18, 0], [-1, 0], [24, 2, 0],
+    [-1, 0], [-1, 0], [2, 5, 13, 16, 0], [35, 1, 11, 9, 0],
+    [2, 13, 15, 0], [27, 26, 1, 0], [6, 28, 11, 1, 0], [8, 28, 1, 0],
+    [35, 1, 10, 28, 0]
+  ],
+  // Row 33 (Ease of operation)
+  [
+    [25, 2, 13, 15, 0], [6, 13, 1, 25, 0], [1, 17, 13, 12, 0], [-1, 0], [1, 17, 13, 16, 0],
+    [18, 16, 15, 39, 0], [1, 16, 35, 15, 0], [4, 18, 39, 31, 0], [18, 13, 34, 0], [28, 13, 35, 0],
+    [2, 32, 12, 0], [15, 34, 29, 28, 0], [32, 35, 30, 0], [32, 40, 3, 28, 0],
+    [29, 3, 8, 25, 0], [1, 16, 25, 0], [26, 27, 13, 0], [13, 17, 1, 24, 0],
+    [1, 13, 24, 0], [-1, 0], [35, 34, 2, 10, 0], [2, 19, 13, 0],
+    [28, 32, 2, 24, 0], [4, 10, 27, 22, 0], [4, 28, 10, 34, 0], [12, 35, 0],
+    [17, 27, 8, 40, 0], [25, 13, 2, 34, 0], [1, 32, 35, 23, 0], [2, 25, 28, 39, 0],
+    [-1, 0], [2, 5, 12, 0], [-1, 0], [12, 26, 1, 32, 0],
+    [15, 34, 1, 16, 0], [32, 26, 12, 17, 0], [-1, 0], [1, 34, 12, 3, 0],
+    [15, 1, 28, 0]
+  ],
+  // Row 34 (Repairability)
+  [
+    [2, 27, 35, 11, 0], [2, 27, 35, 11, 0], [1, 28, 10, 25, 0], [3, 18, 31, 0], [15, 13, 32, 0],
+    [16, 25, 0], [25, 2, 35, 11, 0], [1, 0], [34, 9, 0], [1, 11, 10, 0],
+    [13, 0], [1, 13, 2, 4, 0], [2, 35, 0], [11, 1, 2, 9, 0],
+    [11, 29, 28, 27, 0], [1, 0], [4, 10, 0], [15, 1, 13, 0],
+    [15, 1, 28, 16, 0], [-1, 0], [15, 10, 32, 2, 0], [15, 1, 32, 19, 0],
+    [2, 35, 34, 27, 0], [-1, 0], [32, 1, 10, 25, 0], [2, 28, 10, 25, 0],
+    [11, 10, 1, 16, 0], [10, 2, 13, 0], [25, 10, 0], [35, 10, 2, 16, 0],
+    [-1, 0], [1, 35, 11, 10, 0], [1, 12, 26, 15, 0], [-1, 0],
+    [7, 1, 4, 16, 0], [35, 1, 13, 11, 0], [-1, 0], [34, 35, 7, 13, 0],
+    [1, 32, 10, 0]
+  ],
+  // Row 35 (Adaptability)
+  [
+    [1, 6, 15, 8, 0], [19, 15, 29, 16, 0], [35, 1, 29, 2, 0], [1, 35, 16, 0], [35, 30, 29, 7, 0],
+    [15, 16, 0], [15, 35, 29, 0], [-1, 0], [35, 10, 14, 0], [15, 17, 20, 0],
+    [35, 16, 0], [15, 37, 1, 8, 0], [35, 30, 14, 0], [35, 3, 32, 6, 0],
+    [13, 1, 35, 0], [2, 16, 0], [27, 2, 3, 35, 0], [6, 22, 26, 1, 0],
+    [19, 35, 29, 13, 0], [-1, 0], [19, 1, 29, 0], [18, 15, 1, 0],
+    [15, 10, 2, 13, 0], [-1, 0], [35, 28, 0], [3, 35, 15, 0],
+    [35, 13, 8, 24, 0], [35, 5, 1, 10, 0], [-1, 0], [35, 11, 32, 31, 0],
+    [-1, 0], [1, 13, 31, 0], [15, 34, 1, 16, 0], [1, 16, 7, 4, 0],
+    [-1, 0], [15, 29, 37, 28, 0], [1, 0], [27, 34, 35, 0],
+    [35, 28, 6, 37, 0]
+  ],
+  // Row 36 (Device complexity)
+  [
+    [26, 30, 34, 36, 0], [2, 26, 35, 39, 0], [1, 19, 26, 24, 0], [26, 0], [14, 1, 13, 16, 0],
+    [6, 36, 0], [34, 26, 6, 0], [1, 16, 0], [34, 10, 28, 0], [26, 16, 0],
+    [19, 1, 35, 0], [29, 13, 28, 15, 0], [2, 22, 17, 19, 0], [2, 13, 28, 0],
+    [10, 4, 28, 15, 0], [-1, 0], [2, 17, 13, 0], [24, 17, 13, 0],
+    [27, 2, 29, 28, 0], [-1, 0], [20, 19, 30, 34, 0], [10, 35, 13, 2, 0],
+    [35, 10, 28, 29, 0], [-1, 0], [6, 29, 0], [13, 3, 27, 10, 0],
+    [13, 35, 1, 0], [2, 26, 10, 34, 0], [26, 24, 32, 0], [22, 19, 29, 40, 0],
+    [19, 1, 0], [27, 26, 1, 13, 0], [27, 9, 26, 24, 0], [1, 13, 0],
+    [29, 15, 28, 37, 0], [-1, 0], [15, 10, 37, 28, 0], [15, 1, 24, 0],
+    [12, 17, 28, 0]
+  ],
+  // Row 37 (Difficulty of detecting)
+  [
+    [27, 26, 28, 13, 0], [6, 13, 28, 1, 0], [16, 17, 26, 24, 0], [26, 0], [2, 13, 18, 17, 0],
+    [2, 39, 30, 16, 0], [29, 1, 4, 16, 0], [2, 18, 26, 31, 0], [3, 4, 16, 35, 0], [30, 28, 40, 19, 0],
+    [35, 36, 37, 32, 0], [27, 13, 1, 39, 0], [11, 22, 39, 30, 0], [27, 3, 15, 28, 0],
+    [19, 29, 39, 25, 0], [25, 34, 6, 35, 0], [3, 27, 35, 16, 0], [2, 24, 26, 0],
+    [35, 38, 0], [19, 35, 16, 0], [18, 1, 16, 10, 0], [35, 3, 15, 19, 0],
+    [1, 18, 10, 24, 0], [35, 33, 27, 22, 0], [18, 28, 32, 9, 0], [3, 27, 29, 18, 0],
+    [27, 40, 28, 8, 0], [26, 24, 32, 28, 0], [-1, 0], [22, 19, 29, 28, 0],
+    [2, 21, 0], [5, 28, 11, 29, 0], [2, 5, 0], [12, 26, 0],
+    [1, 15, 0], [15, 10, 37, 28, 0], [-1, 0], [34, 21, 0],
+    [35, 18, 0]
+  ],
+  // Row 38 (Extent of automation)
+  [
+    [28, 26, 18, 35, 0], [28, 26, 35, 10, 0], [14, 13, 17, 28, 0], [23, 0], [17, 14, 13, 0],
+    [-1, 0], [35, 13, 16, 0], [-1, 0], [28, 10, 0], [2, 35, 0],
+    [13, 35, 0], [15, 32, 1, 13, 0], [18, 1, 0], [25, 13, 0],
+    [6, 9, 0], [-1, 0], [26, 2, 19, 0], [8, 32, 19, 0],
+    [2, 32, 13, 0], [-1, 0], [28, 2, 27, 0], [23, 28, 0],
+    [35, 10, 18, 5, 0], [35, 33, 0], [24, 28, 35, 30, 0], [35, 13, 0],
+    [11, 27, 32, 0], [28, 26, 10, 34, 0], [28, 26, 18, 23, 0], [2, 33, 0],
+    [2, 0], [1, 26, 13, 0], [1, 12, 34, 3, 0], [1, 35, 13, 0],
+    [27, 4, 1, 35, 0], [15, 24, 10, 0], [34, 27, 25, 0], [-1, 0],
+    [5, 12, 35, 26, 0]
+  ],
+  // Row 39 (Productivity)
+  [
+    [35, 26, 24, 37, 0], [28, 27, 15, 3, 0], [18, 4, 28, 38, 0], [30, 7, 14, 26, 0], [10, 26, 34, 31, 0],
+    [10, 35, 17, 7, 0], [2, 6, 34, 10, 0], [35, 37, 10, 2, 0], [-1, 0], [28, 15, 10, 36, 0],
+    [10, 37, 14, 0], [14, 10, 34, 40, 0], [35, 3, 22, 39, 0], [29, 28, 10, 18, 0],
+    [35, 10, 2, 18, 0], [20, 10, 16, 38, 0], [35, 21, 28, 10, 0], [26, 17, 19, 1, 0],
+    [35, 10, 38, 19, 0], [1, 0], [35, 20, 10, 0], [28, 10, 29, 35, 0],
+    [28, 10, 35, 23, 0], [13, 15, 23, 0], [-1, 0], [35, 38, 0],
+    [1, 35, 10, 38, 0], [1, 10, 34, 28, 0], [18, 10, 32, 1, 0], [22, 35, 13, 24, 0],
+    [35, 22, 18, 39, 0], [35, 28, 2, 24, 0], [1, 28, 7, 10, 0], [1, 32, 10, 25, 0],
+    [1, 35, 28, 37, 0], [12, 17, 28, 24, 0], [35, 18, 27, 2, 0], [5, 12, 35, 26, 0],
+    [-1, 0]
+  ]
+            // More rows would be included here. For brevity, I've included only the first two rows
+            // In a real implementation, you would include all 39 rows from the matrix data
+        ];
+
+        // DOM Elements
+        const featureToImproveSelect = document.getElementById('feature-to-improve');
+        const featureToPreserveSelect = document.getElementById('feature-to-preserve');
+        const browseMatrixBtn = document.getElementById('browse-matrix-btn');
+        const principlesContainer = document.getElementById('principles-container');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const introductionText = document.getElementById('introduction-text');
+        const examplesContainer = document.getElementById('examples-container');
+
+        // Populate feature dropdowns
+        function populateFeatureDropdowns() {
+            // Clear current options except the first one
+            featureToImproveSelect.innerHTML = '<option value="0" selected>Feature to improve</option>';
+            featureToPreserveSelect.innerHTML = '<option value="0" selected>Feature to preserve</option>';
+            
+            // Add feature options
+            trizFeatures.forEach((feature, index) => {
+                const option1 = document.createElement('option');
+                option1.value = index + 1; // 1-based indexing
+                option1.textContent = feature;
+                featureToImproveSelect.appendChild(option1);
+                
+                const option2 = document.createElement('option');
+                option2.value = index + 1; // 1-based indexing
+                option2.textContent = feature;
+                featureToPreserveSelect.appendChild(option2);
+            });
+        }
+
+        // Get matrix principles
+        function getMatrixPrinciples(improveId, preserveId) {
+            // Convert 1-based to 0-based indexing
+            const rowIndex = improveId - 1;
+            const colIndex = preserveId - 1;
+            
+            // Check if the indices are valid
+            if (rowIndex >= 0 && rowIndex < trizMatrix.length && 
+                colIndex >= 0 && colIndex < trizMatrix[rowIndex].length) {
+                // Get principles for this combination
+                const principles = trizMatrix[rowIndex][colIndex];
+                
+                // Filter out 0 and -1 values (which indicate no principle)
+                return principles.filter(p => p > 0);
+            }
+            
+            return [];
+        }
+
+        // Render principles
+        function renderPrinciples(principles) {
+            if (!principles || principles.length === 0) {
+                principlesContainer.innerHTML = `
+                    <div class="alert alert-warning">
+                        <h4 class="alert-heading">No principles found</h4>
+                        <p>The TRIZ matrix does not suggest any principles for this contradiction. 
+                        Please try a different combination of features.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div class="solution-card">
+                    <div class="solution-card-header">
+                        <h3>Suggested TRIZ Principles</h3>
+                    </div>
+                    <div class="solution-card-body">
+            `;
+            
+            // We're using a simplified approach here - in a real implementation
+            // you would use your actual principles data
+            principles.forEach(principleId => {
+                // Only render if we have principle data (simplified example)
+                if (principleId > 0 && principleId <= 40) {
+                    html += `
+                        <div class="solution-item">
+                            <div class="solution-item-title">
+                                Principle ${principleId}: ${principleId <= trizPrinciples.length ? trizPrinciples[principleId-1][0] : "Unknown"}
+                            </div>
+                            <div class="principle-explanation">
+                                ${principleId <= trizPrinciples.length && trizPrinciples[principleId-1][1][0] ? 
+                                trizPrinciples[principleId-1][1][0][0] : "No explanation available"}
+                            </div>
+                            ${principleId <= trizPrinciples.length && trizPrinciples[principleId-1][1][0] && trizPrinciples[principleId-1][1][0].length > 1 ? 
+                            `<div class="principle-examples">
+                                <strong>Examples:</strong>
+                                <ul>
+                                    ${trizPrinciples[principleId-1][1][0].slice(1).map(example => 
+                                        `<li class="principle-example">${example}</li>`).join('')}
+                                </ul>
+                            </div>` : ''}
+                        </div>
+                    `;
+                }
+            });
+            
+            html += `
+                    </div>
+                </div>
+            `;
+            
+            principlesContainer.innerHTML = html;
+        }
+
+        // Browse Matrix
+        function browseMatrix() {
+            const improveId = parseInt(featureToImproveSelect.value);
+            const preserveId = parseInt(featureToPreserveSelect.value);
+            
+            // Validate selection
+            if (improveId === 0 || preserveId === 0) {
+                alert('Please select both a feature to improve and a feature to preserve.');
+                return;
+            }
+            
+            if (improveId === preserveId) {
+                alert('The feature to improve and the feature to preserve must be different.');
+                return;
+            }
+            
+            // Show loading spinner
+            introductionText.style.display = 'none';
+            principlesContainer.style.opacity = '0';
+            loadingSpinner.style.display = 'block';
+            
+            // Simulate network delay
+            setTimeout(() => {
+                // Hide loading spinner
+                loadingSpinner.style.display = 'none';
+                principlesContainer.style.opacity = '1';
+                
+                // Get principles from matrix
+                const principles = getMatrixPrinciples(improveId, preserveId);
+                
+                // Render principles
+                renderPrinciples(principles);
+                
+                // Scroll to results
+                principlesContainer.scrollIntoView({ behavior: 'smooth' });
+            }, 1000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            populateFeatureDropdowns();
+            browseMatrixBtn.addEventListener('click', browseMatrix);
+        });
+    </script>
+</body>
+</html>
